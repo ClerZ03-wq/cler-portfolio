@@ -35,13 +35,11 @@
         .reveal.active { opacity: 1; transform: translateY(0); }
 
         /* --- VIEW TRANSITION (SHOCKWAVE DARK MODE) --- */
-        /* Disable default crossfade */
         ::view-transition-old(root),
         ::view-transition-new(root) {
             animation: none;
             mix-blend-mode: normal;
         }
-        /* Keep old view underneath, animate new view expanding over it */
         ::view-transition-old(root) { z-index: 1; }
         ::view-transition-new(root) { z-index: 2; }
 
@@ -95,40 +93,44 @@
             animation: cinematicPop 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
         
-        /* --- REALISTIC PAPER PEEL EFFECTS --- */
+        /* --- REALISTIC CALENDAR PEEL EFFECTS --- */
         .notepad-stack {
             perspective: 2000px; 
             position: relative;
-            height: 15rem; 
+            height: 16rem; 
         }
 
         .notepad-page {
             position: absolute;
-            top: 0.5rem; 
+            top: 0; 
             left: 0;
             right: 0;
+            bottom: 0;
             opacity: 0; 
             transform-origin: top center; 
             transform-style: preserve-3d;
             
+            /* Clean, subtle lined paper background */
             background-color: #ffffff;
-            background-image: linear-gradient(rgba(148, 163, 184, 0.3) 1px, transparent 1px);
-            background-size: 100% 1.5rem;
-            background-position: 0 2.5rem; 
+            background-image: repeating-linear-gradient(transparent, transparent 1.9rem, rgba(148, 163, 184, 0.15) 1.9rem, rgba(148, 163, 184, 0.15) 2rem);
             
             transition: opacity 0.3s ease;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #f1f5f9;
         }
 
         :is(.dark) .notepad-page {
             background-color: #0f172a; 
-            background-image: linear-gradient(rgba(51, 65, 85, 0.6) 1px, transparent 1px); 
+            background-image: repeating-linear-gradient(transparent, transparent 1.9rem, rgba(51, 65, 85, 0.4) 1.9rem, rgba(51, 65, 85, 0.4) 2rem);
+            border-color: #1e293b;
         }
 
         @keyframes stickyPeel {
             0% {
                 transform: rotateX(0) rotateY(0) rotateZ(0) translateY(0);
                 opacity: 1;
-                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             }
             30% {
                 transform: rotateX(-25deg) rotateY(15deg) rotateZ(-3deg) translateY(-10px);
@@ -146,66 +148,31 @@
             animation: stickyPeel 1.2s cubic-bezier(0.5, 0, 0.2, 1) forwards;
         }
 
-        /* Spiral Notebook Binding */
-        .wire-binding {
+        /* Calendar Top Binder Rings */
+        .calendar-binder {
             position: absolute;
-            top: -0.5rem;
-            left: 5%;
-            right: 5%;
+            top: -0.6rem;
+            left: 0;
+            right: 0;
             height: 1.5rem;
             z-index: 30;
-            background-image: repeating-linear-gradient(
-                to right,
-                transparent,
-                transparent 20px,
-                #64748b 20px, 
-                #64748b 26px,
-                transparent 26px,
-                transparent 40px
-            );
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+            display: flex;
+            justify-content: space-evenly;
+            padding: 0 1.5rem;
+            pointer-events: none;
         }
 
-        :is(.dark) .wire-binding {
-            background-image: repeating-linear-gradient(
-                to right,
-                transparent,
-                transparent 20px,
-                #1e293b 20px,
-                #1e293b 26px,
-                transparent 26px,
-                transparent 40px
-            );
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+        .calendar-ring {
+            width: 0.4rem;
+            height: 1.25rem;
+            background: linear-gradient(to bottom, #475569, #1e293b);
+            border-radius: 4px;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
 
-        .hole-punches {
-            position: absolute;
-            top: 0.25rem;
-            left: 5%;
-            right: 5%;
-            height: 0.5rem;
-            z-index: 25;
-            background-image: repeating-linear-gradient(
-                to right,
-                transparent,
-                transparent 21px,
-                #f8fafc 21px, 
-                #f8fafc 25px,
-                transparent 25px,
-                transparent 40px
-            );
-        }
-        :is(.dark) .hole-punches {
-            background-image: repeating-linear-gradient(
-                to right,
-                transparent,
-                transparent 21px,
-                #020617 21px, 
-                #020617 25px,
-                transparent 25px,
-                transparent 40px
-            );
+        :is(.dark) .calendar-ring {
+            background: linear-gradient(to bottom, #94a3b8, #475569);
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         }
 
         /* --- AUTO SCROLLING BADGES (MARQUEE) --- */
@@ -237,15 +204,9 @@
             66% { transform: translate(-20px, 20px) scale(0.9); }
             100% { transform: translate(0px, 0px) scale(1); }
         }
-        .animate-blob {
-            animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-            animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-            animation-delay: 4s;
-        }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
     </style>
 </head>
 <body class="bg-sky-50 text-slate-800 font-sans antialiased selection:bg-sky-300 selection:text-slate-900 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-500 overflow-x-hidden">
@@ -441,113 +402,123 @@
                     <span class="w-8 h-[2px] bg-sky-400 inline-block"></span> Achievements
                 </h2>
 
-                <div class="mb-4 max-w-sm mx-auto relative pt-2 px-3 pb-4 bg-slate-100 dark:bg-slate-900 rounded-2xl shadow-inner overflow-hidden border border-slate-200 dark:border-slate-800">
+                <div class="mb-4 max-w-sm mx-auto relative mt-8">
                     
-                    <div class="wire-binding"></div>
-                    <div class="hole-punches"></div>
-
-                    <div class="notepad-stack mt-2" id="notepad-peel-container">
-                        <div class="notepad-page rounded-xl p-5 border border-slate-200 dark:border-slate-700 shadow-md">
-                            <div class="flex items-center gap-2 mb-3 pt-1">
-                                <div class="bg-cyan-500/10 p-1.5 rounded-lg border border-cyan-500/20">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                                    </svg>
-                                </div>
-                                <span class="text-cyan-600 dark:text-cyan-400 font-bold text-[10px] tracking-widest uppercase">2nd Runner Up</span>
-                            </div>
-                            <h3 class="text-slate-950 dark:text-white text-xl font-black font-heading tracking-tight mb-1">Infotechnolympics</h3>
-                            <h4 class="text-sky-700 dark:text-indigo-300 text-base font-bold font-heading mb-4 tracking-tight">Web Design (2024-2025)</h4>
-                            <div class="mt-auto flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs font-medium border-t border-slate-200 dark:border-slate-700 pt-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <span>2024 – 2025</span>
-                            </div>
+                    <div class="absolute inset-0 bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 translate-y-3 translate-x-1.5 opacity-60"></div>
+                    <div class="absolute inset-0 bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 translate-y-1.5 translate-x-0.5 opacity-80"></div>
+                    
+                    <div class="relative bg-slate-50 dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700">
+                        
+                        <div class="calendar-binder">
+                            <div class="calendar-ring"></div>
+                            <div class="calendar-ring"></div>
+                            <div class="calendar-ring"></div>
+                            <div class="calendar-ring"></div>
+                            <div class="calendar-ring"></div>
+                            <div class="calendar-ring"></div>
+                            <div class="calendar-ring"></div>
                         </div>
 
-                        <div class="notepad-page rounded-xl p-5 border border-slate-200 dark:border-slate-700 shadow-md">
-                            <div class="flex items-center gap-2 mb-3 pt-1">
-                                <div class="bg-emerald-500/10 p-1.5 rounded-lg border border-emerald-500/20">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <div class="notepad-stack" id="notepad-peel-container">
+                            
+                            <div class="notepad-page p-6 flex flex-col justify-center">
+                                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold tracking-widest uppercase mb-4 self-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path d="M12 14l9-5-9-5-9 5 9 5z" />
                                         <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
                                     </svg>
+                                    Academic Excellence
                                 </div>
-                                <span class="text-emerald-600 dark:text-emerald-400 font-bold text-[10px] tracking-widest uppercase">Academic Excellence</span>
+                                <h3 class="text-slate-900 dark:text-white text-2xl font-black font-heading tracking-tight mb-1">Dean's Lister</h3>
+                                <h4 class="text-sky-600 dark:text-sky-400 text-sm font-bold mb-6">1st to 3rd Year</h4>
+                                
+                                <div class="mt-auto flex items-center gap-2 text-xs text-slate-500 font-medium pt-4 border-t border-slate-100 dark:border-slate-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    </svg>
+                                    <span>University of Makati</span>
+                                </div>
                             </div>
-                            <h3 class="text-slate-950 dark:text-white text-xl font-black font-heading tracking-tight mb-1">Dean's Lister</h3>
-                            <h4 class="text-sky-700 dark:text-indigo-300 text-base font-bold font-heading mb-4 tracking-tight">1st to 3rd Year</h4>
-                            <div class="mt-auto flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs font-medium border-t border-slate-200 dark:border-slate-700 pt-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-                                <span>University of Makati</span>
+                            <div class="notepad-page p-6 flex flex-col justify-center">
+                                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800/50 text-cyan-600 dark:text-cyan-400 text-[10px] font-bold tracking-widest uppercase mb-4 self-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                    </svg>
+                                    2nd Runner Up
+                                </div>
+                                <h3 class="text-slate-900 dark:text-white text-2xl font-black font-heading tracking-tight mb-1">Infotechnolympics</h3>
+                                <h4 class="text-sky-600 dark:text-sky-400 text-sm font-bold mb-6">Web Design (2024-2025)</h4>
+                                
+                                <div class="mt-auto flex items-center gap-2 text-xs text-slate-500 font-medium pt-4 border-t border-slate-100 dark:border-slate-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span>2024 – 2025</span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="notepad-page rounded-xl p-5 border border-slate-200 dark:border-slate-700 shadow-md">
-                            <div class="flex items-center gap-2 mb-3 pt-1">
-                                <div class="bg-blue-500/10 p-1.5 rounded-lg border border-blue-500/20">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <div class="notepad-page p-6 flex flex-col justify-center">
+                                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 text-[10px] font-bold tracking-widest uppercase mb-4 self-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
+                                    National Certificate II
                                 </div>
-                                <span class="text-blue-600 dark:text-blue-400 font-bold text-[10px] tracking-widest uppercase">National Certificate II</span>
+                                <h3 class="text-slate-900 dark:text-white text-2xl font-black font-heading tracking-tight mb-1">TESDA Passer</h3>
+                                <h4 class="text-sky-600 dark:text-sky-400 text-sm font-bold mb-6">Professional Certification</h4>
+                                
+                                <div class="mt-auto flex items-center gap-2 text-xs text-slate-500 font-medium pt-4 border-t border-slate-100 dark:border-slate-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <span>Philippines</span>
+                                </div>
                             </div>
-                            <h3 class="text-slate-950 dark:text-white text-xl font-black font-heading tracking-tight mb-1">TESDA Passer</h3>
-                            <h4 class="text-sky-700 dark:text-indigo-300 text-base font-bold font-heading mb-4 tracking-tight">Professional Certification</h4>
-                            <div class="mt-auto flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs font-medium border-t border-slate-200 dark:border-slate-700 pt-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                                <span>Philippines</span>
-                            </div>
-                        </div>
                          
+                        </div>
                     </div>
                 </div>
-
-                <div class="badge-scroller">
+                <br>
+                <div class="badge-scroller mt-8">
                     <div class="badge-scroller__inner cursor-pointer" id="badge-track">
                         
-                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all">
+                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
                             <img src="img/c-essentials-1.png" alt="C++ Essentials" class="w-10 h-10 mb-3 object-contain">
                             <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">C++ Essentials 1</h4>
                             <p class="text-[9px] uppercase tracking-wider text-slate-400">Cisco Academy</p>
                         </div>
 
-                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all">
+                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
                             <img src="img/computer-hardware-basics.png" alt="Hardware Basics" class="w-10 h-10 mb-3 object-contain">
                             <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">Hardware Basics</h4>
                             <p class="text-[9px] uppercase tracking-wider text-slate-400">Cisco Academy</p>
                         </div>
 
-                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all">
+                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
                             <img src="img/cyber-threat-management.png" alt="Cyber Threat Mgt" class="w-10 h-10 mb-3 object-contain">
                             <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">Cyber Threat Mgt.</h4>
                             <p class="text-[9px] uppercase tracking-wider text-slate-400">Cisco Academy</p>
                         </div>
 
-                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all">
+                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
                             <img src="img/introduction-to-cybersecurity.png" alt="Intro to Cyber" class="w-10 h-10 mb-3 object-contain">
                             <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">Intro to Cyber</h4>
                             <p class="text-[9px] uppercase tracking-wider text-slate-400">Cisco Academy</p>
                         </div>
 
-                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all">
+                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
                             <img src="img/introduction-to-iot.png" alt="Intro to IoT" class="w-10 h-10 mb-3 object-contain">
                             <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">Intro to IoT</h4>
                             <p class="text-[9px] uppercase tracking-wider text-slate-400">Cisco Academy</p>
                         </div>
 
-                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all">
+                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
                             <img src="img/isc2-candidate.png" alt="ISC2 Candidate" class="w-10 h-10 mb-3 object-contain">
                             <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">ISC2 Candidate</h4>
                             <p class="text-[9px] uppercase tracking-wider text-slate-400">ISC2</p>
                         </div>
 
-                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all">
+                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
                             <img src="img/networking-basics.png" alt="Networking Basics" class="w-10 h-10 mb-3 object-contain">
                             <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">Networking Basics</h4>
                             <p class="text-[9px] uppercase tracking-wider text-slate-400">Cisco Academy</p>
@@ -561,7 +532,7 @@
 
     </main>
 
-<section id="contact" class="border-t border-sky-100 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 py-20 reveal scroll-mt-24">
+    <section id="contact" class="border-t border-sky-100 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 py-20 reveal scroll-mt-24">
         <div class="max-w-4xl mx-auto px-6">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-heading font-black mb-4 text-slate-800 dark:text-slate-100">Let's Connect</h2>
@@ -626,24 +597,19 @@
             const isDark = html.classList.contains('dark');
             const targetTheme = isDark ? 'light' : 'dark';
 
-            // Check if browser supports the new View Transitions API
             if (!document.startViewTransition) {
-                setTheme(targetTheme); // Fallback for older browsers
+                setTheme(targetTheme); 
                 return;
             }
 
-            // Get the click coordinates to originate the shockwave
             const x = e.clientX;
             const y = e.clientY;
-            // Calculate the maximum radius needed to cover the screen
             const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
 
-            // Start the transition
             const transition = document.startViewTransition(() => {
                 setTheme(targetTheme);
             });
 
-            // Animate the shockwave
             transition.ready.then(() => {
                 const clipPath = [
                     `circle(0px at ${x}px ${y}px)`,
