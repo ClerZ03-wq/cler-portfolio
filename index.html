@@ -1,11 +1,147 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>ClerDev | Portfolio</title>
+    <link rel="icon" href="img/503561419_2735814616619356_9132110206694480000_n.jpg" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 25px -5px rgba(56, 189, 248, 0.15), 0 8px 10px -6px rgba(56, 189, 248, 0.1);
+        }
+    </style>
 </head>
-<body>
-    
+<body class="bg-sky-50 text-slate-800 font-sans antialiased selection:bg-sky-300 selection:text-slate-900">
+
+    <nav class="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-sky-100">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="font-bold text-xl text-sky-600 tracking-tight">ClerDev</a>
+            <div class="hidden md:flex space-x-8 font-medium text-sm text-slate-500">
+                <a href="#about" class="hover:text-sky-500 transition-colors">About</a>
+                <a href="#skills" class="hover:text-sky-500 transition-colors">Skills</a>
+                <a href="#projects" class="hover:text-sky-500 transition-colors">Projects</a>
+                <a href="#contact" class="hover:text-sky-500 transition-colors">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="max-w-5xl mx-auto px-6 py-24 md:py-32 flex flex-col justify-center min-h-[70vh]">
+        
+        <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 mb-4">
+            <img 
+                src="img/503561419_2735814616619356_9132110206694480000_n.jpg" 
+                alt="John Clerwin Profile" 
+                class="w-28 h-28 md:w-36 md:h-36 rounded-full border-4 border-white object-cover shadow-lg shadow-sky-200/50 hover:-translate-y-1 hover:shadow-xl hover:shadow-sky-300/40 transition-all duration-300"
+            >
+            
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-800">
+                John Clerwin N. <br class="hidden md:block"/>Dela Cruz
+            </h1>
+        </div>
+
+        <p class="text-xl md:text-2xl text-slate-500 mb-8 font-medium mt-2">
+            Creatives Lead @ AWS - Heron <span class="text-sky-300 mx-1">|</span> Web Developer <span class="text-sky-300 mx-1">|</span> Backend Programmer <span class="text-sky-300 mx-1">|</span> Network Administrator
+        </p>
+        
+        <div class="flex flex-wrap items-center gap-4">
+            <a href="#projects" class="bg-sky-400 text-white px-6 py-2.5 rounded-full font-semibold shadow-md shadow-sky-200 hover:bg-sky-500 hover:shadow-lg hover:shadow-sky-300 transition-all">
+                View My Work
+            </a>
+            
+            <a href="https://linkedin.com/in/clerz" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-full text-sm text-slate-600 font-medium border border-sky-100 shadow-sm hover:text-sky-600 hover:border-sky-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                LinkedIn
+            </a>
+
+            <a href="https://github.com/ClerZ03-wq" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-full text-sm text-slate-600 font-medium border border-sky-100 shadow-sm hover:text-sky-600 hover:border-sky-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.2c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                GitHub
+            </a>
+        </div>
+    </section>
+
+    <section id="about" class="bg-white/60 border-y border-sky-100">
+        <div class="max-w-5xl mx-auto px-6 py-20">
+            <h2 class="text-3xl font-bold mb-6 text-slate-800">About Me</h2>
+            <p class="text-lg text-slate-600 leading-relaxed max-w-3xl">
+                I am an IT undergraduate specializing in Information and Network Security, and an aspiring full-stack developer who genuinely enjoys architecting the backend logic that powers robust web applications. My primary focus is on continuously exploring emerging technologies and expanding my mastery of modern programming languages to elevate my development skills. Ultimately, I bridge the gap between building dynamic software and ensuring the networks they run on are secure, reliable, and scalable.
+            </p>
+        </div>
+    </section>
+
+    <section id="skills" class="max-w-5xl mx-auto px-6 py-20">
+        <h2 class="text-3xl font-bold mb-10 text-slate-800">Technical Arsenal</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-2xl border border-sky-100 p-8 card-hover shadow-sm">
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-sky-50 pb-2 text-sky-600">Full-Stack Development</h3>
+                <ul class="space-y-2 text-slate-600 font-medium">
+                    <li>Django (Python)</li>
+                    <li>PHP</li>
+                    <li>JavaScript</li>
+                    <li>HTML5 & CSS3 (Tailwind CSS)</li>
+                    <li>PostgreSQL</li>
+                    <li>C++</li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-2xl border border-sky-100 p-8 card-hover shadow-sm">
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-sky-50 pb-2 text-sky-600">Networking & Security</h3>
+                <ul class="space-y-2 text-slate-600 font-medium">
+                    <li>Windows Server (AD DS, GPO, IIS)</li>                    
+                    <li>Cisco Routing (STATIC, OSPF, EIGRP)</li>
+                    <li>VPN Configuration</li>
+                    <li>Vulnerability Assessments</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="bg-sky-100/50">
+        <div class="max-w-5xl mx-auto px-6 py-20">
+            <h2 class="text-3xl font-bold mb-10 text-slate-800">Featured Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <div class="bg-white rounded-2xl p-8 border border-sky-100 shadow-sm card-hover">
+                    <h3 class="text-2xl font-bold mb-2 text-slate-800">FIL-TRACK</h3>
+                    <p class="text-sky-500 text-sm font-mono mb-4 bg-sky-50 inline-block px-2 py-1 rounded">Django / PostgreSQL / Tailwind</p>
+                    <p class="text-slate-600 mb-6">
+                        An IT asset inventory management system designed for enterprise logistics. Features include role-based access control and comprehensive lifecycle monitoring for hardware assets.
+                    </p>
+                    <a href="#" class="text-sky-600 font-medium hover:text-sky-800 transition-colors pb-1">View Project &rarr;</a>
+                </div>
+
+                <div class="bg-white rounded-2xl p-8 border border-sky-100 shadow-sm card-hover">
+                    <h3 class="text-2xl font-bold mb-2 text-slate-800">ServeLink</h3>
+                    <p class="text-sky-500 text-sm font-mono mb-4 bg-sky-50 inline-block px-2 py-1 rounded">Lead Developer | Web Platform</p>
+                    <p class="text-slate-600 mb-6">
+                        A web-based reporting platform for technical troubleshooting and repair solutions, streamlining the process of identifying and resolving IT issues within academic and enterprise networks.
+                    </p>
+                    <a href="#" class="text-sky-600 font-medium hover:text-sky-800 transition-colors pb-1">View Project &rarr;</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="max-w-5xl mx-auto px-6 py-20 text-center">
+        <h2 class="text-3xl font-bold mb-6 text-slate-800">Let's Connect</h2>
+        <p class="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
+            I'm currently open for opportunities in web development, backend programming, and network administration. Feel free to reach out!
+        </p>
+        <div class="flex justify-center space-x-6">
+          
+            <a href="https://github.com/ClerZ03-wq" target="_blank" class="text-sky-600 font-bold hover:text-sky-400 transition-colors">GitHub</a>
+            <a href="https://linkedin.com/in/clerz" target="_blank" class="text-sky-600 font-bold hover:text-sky-400 transition-colors">LinkedIn</a>
+        </div>
+    </section>
+
+    <footer class="bg-white/80 border-t border-sky-100 py-8 text-center text-sm text-slate-400 font-medium">
+        <p>&copy; 2026 John Clerwin N. Dela Cruz. All rights reserved.</p>
+    </footer>
+
 </body>
 </html>
