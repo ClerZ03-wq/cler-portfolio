@@ -448,12 +448,15 @@
 
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Profile Avatar Image</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="edit-hero-avatar" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                        <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center justify-center cursor-pointer shrink-0">
-                            Upload File
-                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'edit-hero-avatar')">
-                        </label>
+                    <div class="flex items-center gap-3">
+                        <img id="edit-hero-avatar-preview" src="img/logo.svg" alt="Preview" class="w-12 h-12 rounded-full border border-sky-200 dark:border-slate-700 object-cover shrink-0 shadow-sm">
+                        <div class="flex gap-2 flex-1">
+                            <input type="text" id="edit-hero-avatar" required oninput="document.getElementById('edit-hero-avatar-preview').src = getImageUrl(this.value)" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                            <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center justify-center cursor-pointer shrink-0">
+                                Upload File
+                                <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'edit-hero-avatar')">
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -553,12 +556,15 @@
 
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Project Logo Image Path / URL</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="edit-proj-logo" required placeholder="img/logo.svg" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                        <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center justify-center cursor-pointer shrink-0">
-                            Upload Logo
-                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'edit-proj-logo')">
-                        </label>
+                    <div class="flex items-center gap-3">
+                        <img id="edit-proj-logo-preview" src="img/logo.svg" alt="Preview" class="w-10 h-10 rounded-lg border border-sky-200 dark:border-slate-700 object-contain p-1 bg-white shrink-0">
+                        <div class="flex gap-2 flex-1">
+                            <input type="text" id="edit-proj-logo" required placeholder="img/logo.svg" oninput="document.getElementById('edit-proj-logo-preview').src = getImageUrl(this.value)" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                            <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center justify-center cursor-pointer shrink-0">
+                                Upload Logo
+                                <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'edit-proj-logo')">
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -939,7 +945,7 @@
 
                 <div class="relative z-10 w-full">
                     <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 mb-4">
-                        <img src="${h.avatar}" alt="${h.name}" class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white object-cover shadow-lg shadow-sky-200/50 dark:border-slate-800 transition-all duration-500">
+                        <img src="${getImageUrl(h.avatar)}" onerror="handleImgError(this, '${h.avatar}')" alt="${h.name}" class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white object-cover shadow-lg shadow-sky-200/50 dark:border-slate-800 transition-all duration-500">
                         <h1 class="text-5xl md:text-7xl font-heading font-black tracking-tight text-slate-800 dark:text-slate-100">${h.name}</h1>
                     </div>
                     <p class="text-xl md:text-2xl text-slate-500 mb-8 font-medium mt-2 dark:text-slate-400">
@@ -1031,7 +1037,7 @@
                                     <span class="text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-sky-50 dark:bg-sky-900/30 text-sky-600 dark:text-sky-300 rounded-md mb-3 inline-block">${p.role}</span>
                                     <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100">${p.title}</h3>
                                 </div>
-                                <img src="${p.logo}" alt="${p.title} Logo" class="w-14 h-14 object-contain rounded-xl bg-slate-50 dark:bg-slate-800 p-2 border border-slate-100 dark:border-slate-700 shadow-sm">
+                                <img src="${getImageUrl(p.logo)}" onerror="handleImgError(this, '${p.logo}')" alt="${p.title} Logo" class="w-14 h-14 object-contain rounded-xl bg-slate-50 dark:bg-slate-800 p-2 border border-slate-100 dark:border-slate-700 shadow-sm">
                             </div>
                             <p class="text-slate-600 dark:text-slate-400 mb-6 text-sm leading-relaxed">
                                 ${p.description}
@@ -1141,7 +1147,7 @@
             ach.badges.forEach(b => {
                 badgesHtml += `
                     <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
-                        <img src="${b.icon}" alt="${b.title}" class="w-10 h-10 mb-3 object-contain">
+                        <img src="${getImageUrl(b.icon)}" onerror="handleImgError(this, '${b.icon}')" alt="${b.title}" class="w-10 h-10 mb-3 object-contain">
                         <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">${b.title}</h4>
                         <p class="text-[9px] uppercase tracking-wider text-slate-400">${b.provider}</p>
                     </div>
@@ -1391,6 +1397,10 @@
         function markUnsaved() {
             adminState.unsavedChanges = true;
             document.getElementById('unsaved-badge').classList.remove('hidden');
+            const saveBtn = document.getElementById('btn-save-github');
+            if (saveBtn) {
+                saveBtn.classList.add('ring-4', 'ring-emerald-400/60', 'animate-pulse');
+            }
         }
 
         // --- COMMIT DATA DIRECTLY TO GITHUB REPOSITORY ---
@@ -1443,6 +1453,7 @@
                     adminState.fileSha = responseData.content.sha;
                     adminState.unsavedChanges = false;
                     document.getElementById('unsaved-badge').classList.add('hidden');
+                    saveBtn.classList.remove('ring-4', 'ring-emerald-400/60', 'animate-pulse');
                     showToast('Successfully committed to GitHub repository! Page updates will be live shortly.', 'success');
                 } else {
                     console.error('GitHub API error:', responseData);
@@ -1463,6 +1474,46 @@
             }
         }
 
+        // --- IMAGE RESOLUTION & ERROR FALLBACK HELPERS ---
+        function getImageUrl(path) {
+            if (!path) return 'img/logo.svg';
+            if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+                return path;
+            }
+            const cached = sessionStorage.getItem('img_cache_' + path);
+            if (cached) return cached;
+            return path;
+        }
+
+        function handleImgError(img, originalPath) {
+            const cfg = (portfolioData && portfolioData.githubConfig) || (DEFAULT_DATA && DEFAULT_DATA.githubConfig) || { owner: 'ClerZ03-wq', repo: 'cler-portfolio', branch: 'main' };
+            if (originalPath && originalPath.startsWith('img/') && !img.dataset.triedRaw) {
+                img.dataset.triedRaw = 'true';
+                img.src = `https://raw.githubusercontent.com/${cfg.owner}/${cfg.repo}/${cfg.branch || 'main'}/${originalPath}`;
+                return;
+            }
+            img.src = 'img/logo.svg';
+        }
+
+        function updateFormImagePreview(targetInputId, srcUrl) {
+            if (targetInputId === 'edit-hero-avatar') {
+                const prev = document.getElementById('edit-hero-avatar-preview');
+                if (prev) prev.src = srcUrl;
+            } else if (targetInputId === 'edit-proj-logo') {
+                const prev = document.getElementById('edit-proj-logo-preview');
+                if (prev) prev.src = srcUrl;
+            } else {
+                const elem = document.getElementById(targetInputId);
+                if (elem) {
+                    const group = elem.closest('.group');
+                    if (group) {
+                        const prev = group.querySelector('.badge-preview-img');
+                        if (prev) prev.src = srcUrl;
+                    }
+                }
+            }
+        }
+
         // --- IMAGE UPLOAD HELPER TO GITHUB ---
         async function handleImageUpload(event, targetInputId) {
             const file = event.target.files[0];
@@ -1474,8 +1525,8 @@
             }
 
             const inputElem = document.getElementById(targetInputId);
-            const originalVal = inputElem.value;
-            inputElem.value = 'Uploading image...';
+            const originalVal = inputElem ? inputElem.value : '';
+            if (inputElem) inputElem.value = 'Uploading image...';
 
             const cfg = portfolioData.githubConfig || DEFAULT_DATA.githubConfig;
             const filename = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
@@ -1483,13 +1534,13 @@
 
             try {
                 const reader = new FileReader();
-                reader.readAsArrayBuffer(file);
+                reader.readAsDataURL(file);
                 reader.onload = async () => {
-                    const arrayBuffer = reader.result;
-                    const bytes = new Uint8Array(arrayBuffer);
-                    let binary = '';
-                    bytes.forEach(b => binary += String.fromCharCode(b));
-                    const base64 = btoa(binary);
+                    const dataUrl = reader.result;
+                    const base64 = dataUrl.split(',')[1];
+
+                    // Cache data URL for instant zero-delay display across current session
+                    sessionStorage.setItem('img_cache_' + targetPath, dataUrl);
 
                     const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${targetPath}`;
                     const res = await fetch(url, {
@@ -1506,15 +1557,25 @@
                     });
 
                     if (res.ok) {
-                        inputElem.value = targetPath;
-                        showToast(`Uploaded ${filename} successfully!`, 'success');
+                        if (inputElem) {
+                            inputElem.value = targetPath;
+                            inputElem.dispatchEvent(new Event('input', { bubbles: true }));
+                            inputElem.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                        updateFormImagePreview(targetInputId, dataUrl);
+                        showToast(`Uploaded ${filename} successfully! Apply edits and click "Save Changes to GitHub" at top to publish.`, 'success');
                     } else {
-                        inputElem.value = originalVal;
-                        showToast('Failed to upload image to GitHub repository.', 'error');
+                        const errData = await res.json().catch(() => ({}));
+                        if (inputElem) inputElem.value = originalVal;
+                        showToast(`Failed to upload image: ${errData.message || 'Permission denied or GitHub API error'}`, 'error');
                     }
                 };
+                reader.onerror = () => {
+                    if (inputElem) inputElem.value = originalVal;
+                    showToast('Error reading image file.', 'error');
+                };
             } catch (err) {
-                inputElem.value = originalVal;
+                if (inputElem) inputElem.value = originalVal;
                 showToast('Error uploading image file.', 'error');
             }
         }
@@ -1533,6 +1594,8 @@
             document.getElementById('edit-hero-name').value = h.name;
             document.getElementById('edit-hero-roles').value = h.roles.join(', ');
             document.getElementById('edit-hero-avatar').value = h.avatar;
+            const prev = document.getElementById('edit-hero-avatar-preview');
+            if (prev) prev.src = getImageUrl(h.avatar);
             document.getElementById('edit-hero-cta-text').value = h.ctaText;
             document.getElementById('edit-hero-cta-link').value = h.ctaLink;
             document.getElementById('edit-hero-linkedin').value = h.socials.linkedin || '';
@@ -1556,7 +1619,7 @@
             renderHero();
             closeModal('modal-edit-hero');
             markUnsaved();
-            showToast('Hero section updated locally!', 'info');
+            showToast('Hero updated! Click "Save Changes to GitHub" at top to publish live.', 'info');
         }
 
         // About Modal
@@ -1574,7 +1637,7 @@
             renderAbout();
             closeModal('modal-edit-about');
             markUnsaved();
-            showToast('About section updated locally!', 'info');
+            showToast('About section updated! Click "Save Changes to GitHub" at top to publish live.', 'info');
         }
 
         // Project Modal
@@ -1585,6 +1648,8 @@
             document.getElementById('edit-proj-role').value = '';
             document.getElementById('edit-proj-period').value = '';
             document.getElementById('edit-proj-logo').value = 'img/logo.svg';
+            const prev = document.getElementById('edit-proj-logo-preview');
+            if (prev) prev.src = getImageUrl('img/logo.svg');
             document.getElementById('edit-proj-description').value = '';
             document.getElementById('edit-proj-tags').value = '';
             document.getElementById('edit-proj-link').value = '#';
@@ -1600,6 +1665,8 @@
             document.getElementById('edit-proj-role').value = proj.role;
             document.getElementById('edit-proj-period').value = proj.period;
             document.getElementById('edit-proj-logo').value = proj.logo;
+            const prev = document.getElementById('edit-proj-logo-preview');
+            if (prev) prev.src = getImageUrl(proj.logo);
             document.getElementById('edit-proj-description').value = proj.description;
             document.getElementById('edit-proj-tags').value = proj.tags.join(', ');
             document.getElementById('edit-proj-link').value = proj.link;
@@ -1817,7 +1884,7 @@
             div.className = 'p-4 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-sky-100 dark:border-slate-700 relative text-xs flex flex-col md:flex-row gap-3 items-center group hover:border-sky-300 dark:hover:border-sky-500/50 transition-all';
             div.innerHTML = `
                 <div class="w-12 h-12 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-2 flex items-center justify-center shrink-0 shadow-sm">
-                    <img src="${b.icon}" alt="Badge Preview" class="w-full h-full object-contain badge-preview-img" onerror="this.src='img/logo.svg'">
+                    <img src="${getImageUrl(b.icon)}" alt="Badge Preview" class="w-full h-full object-contain badge-preview-img" onerror="handleImgError(this, '${b.icon}')">
                 </div>
 
                 <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2 w-full">
@@ -1832,7 +1899,7 @@
                     <div class="sm:col-span-2">
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5">Icon Image Path</label>
                         <div class="flex gap-2">
-                            <input type="text" id="${uniqueId}" placeholder="img/c-essentials-1.png" value="${b.icon}" onchange="this.closest('.group').querySelector('.badge-preview-img').src=this.value" class="badge-icon flex-1 px-3 py-1.5 rounded-lg border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-mono text-[11px] focus:ring-2 focus:ring-sky-500">
+                            <input type="text" id="${uniqueId}" placeholder="img/c-essentials-1.png" value="${b.icon}" oninput="this.closest('.group').querySelector('.badge-preview-img').src=getImageUrl(this.value)" class="badge-icon flex-1 px-3 py-1.5 rounded-lg border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-mono text-[11px] focus:ring-2 focus:ring-sky-500">
                             <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1.5 rounded-lg text-[11px] flex items-center justify-center cursor-pointer shrink-0 transition-all shadow-sm">
                                 Upload Icon
                                 <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, '${uniqueId}')">
