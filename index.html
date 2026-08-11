@@ -613,41 +613,62 @@
     </div>
 
     <!-- ACHIEVEMENTS EDIT MODAL -->
-    <div id="modal-edit-achievements" class="hidden fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-2xl w-full p-8 shadow-2xl my-8">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white">Edit Achievements & Certifications</h3>
-                <button onclick="closeModal('modal-edit-achievements')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    <div id="modal-edit-achievements" class="hidden fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl my-8 relative">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6 pb-4 border-b border-sky-100 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center border border-sky-500/20 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-heading font-black text-slate-800 dark:text-white">Achievements & Certifications</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Manage flip notepad cards and sliding marquee badges</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('modal-edit-achievements')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
-            
+
+            <!-- Navigation Tabs -->
+            <div class="flex border-b border-sky-100 dark:border-slate-800 mb-6 gap-2">
+                <button type="button" id="tab-btn-cards" onclick="switchAchievementTab('cards')" class="pb-3 px-4 text-xs font-bold transition-all border-b-2 border-sky-500 text-sky-600 dark:text-sky-400 flex items-center gap-2">
+                    <span>📄 Peel Cards</span>
+                    <span id="tab-count-cards" class="px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/40 text-[10px]">0</span>
+                </button>
+                <button type="button" id="tab-btn-badges" onclick="switchAchievementTab('badges')" class="pb-3 px-4 text-xs font-bold transition-all border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-2">
+                    <span>🎖️ Scroller Badges</span>
+                    <span id="tab-count-badges" class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px]">0</span>
+                </button>
+            </div>
+
             <form onsubmit="saveAchievementsData(event)" class="space-y-6">
-                <div>
-                    <h4 class="text-sm font-black uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-3">1. Peel Notepad Cards</h4>
-                    <div id="achieve-cards-editor" class="space-y-4">
-                        <!-- Dynamic cards list -->
-                    </div>
-                    <button type="button" onclick="addCardEditorItem()" class="mt-3 text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1">
-                        + Add Peel Card
+                <!-- TAB 1: PEEL CARDS -->
+                <div id="tab-content-cards" class="space-y-4">
+                    <div id="achieve-cards-editor" class="space-y-4 max-h-[420px] overflow-y-auto pr-1"></div>
+                    <button type="button" onclick="addCardEditorItem()" class="w-full py-3 border-2 border-dashed border-sky-200 dark:border-slate-700 hover:border-sky-400 text-sky-600 dark:text-sky-400 font-bold rounded-2xl text-xs transition-all flex items-center justify-center gap-2 hover:bg-sky-50 dark:hover:bg-slate-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                        Add New Peel Notepad Card
                     </button>
                 </div>
 
-                <hr class="border-sky-100 dark:border-slate-800">
-
-                <div>
-                    <h4 class="text-sm font-black uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-3">2. Marquee Scroller Badges</h4>
-                    <div id="achieve-badges-editor" class="space-y-3">
-                        <!-- Dynamic badges list -->
-                    </div>
-                    <button type="button" onclick="addBadgeEditorItem()" class="mt-3 text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1">
-                        + Add Badge Scroller Item
+                <!-- TAB 2: MARQUEE BADGES -->
+                <div id="tab-content-badges" class="hidden space-y-4">
+                    <div id="achieve-badges-editor" class="space-y-3 max-h-[420px] overflow-y-auto pr-1"></div>
+                    <button type="button" onclick="addBadgeEditorItem()" class="w-full py-3 border-2 border-dashed border-sky-200 dark:border-slate-700 hover:border-sky-400 text-sky-600 dark:text-sky-400 font-bold rounded-2xl text-xs transition-all flex items-center justify-center gap-2 hover:bg-sky-50 dark:hover:bg-slate-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                        Add New Marquee Badge Item
                     </button>
                 </div>
 
+                <!-- Modal Footer -->
                 <div class="pt-4 flex justify-end gap-3 border-t border-sky-100 dark:border-slate-800">
-                    <button type="button" onclick="closeModal('modal-edit-achievements')" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
-                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl shadow-md">Apply Edits</button>
+                    <button type="button" onclick="closeModal('modal-edit-achievements')" class="px-5 py-2.5 rounded-xl font-bold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">Cancel</button>
+                    <button type="submit" class="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-sky-500/25 text-xs transition-all flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        Save Achievements
+                    </button>
                 </div>
             </form>
         </div>
@@ -1688,7 +1709,33 @@
             showToast('Technical Arsenal updated locally!', 'info');
         }
 
-        // Achievements Modal
+        // Achievements Modal Logic & Tabs
+        function switchAchievementTab(tab) {
+            const cardsContent = document.getElementById('tab-content-cards');
+            const badgesContent = document.getElementById('tab-content-badges');
+            const cardsBtn = document.getElementById('tab-btn-cards');
+            const badgesBtn = document.getElementById('tab-btn-badges');
+
+            if (tab === 'cards') {
+                cardsContent.classList.remove('hidden');
+                badgesContent.classList.add('hidden');
+                cardsBtn.className = "pb-3 px-4 text-xs font-bold transition-all border-b-2 border-sky-500 text-sky-600 dark:text-sky-400 flex items-center gap-2";
+                badgesBtn.className = "pb-3 px-4 text-xs font-bold transition-all border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-2";
+            } else {
+                cardsContent.classList.add('hidden');
+                badgesContent.classList.remove('hidden');
+                badgesBtn.className = "pb-3 px-4 text-xs font-bold transition-all border-b-2 border-sky-500 text-sky-600 dark:text-sky-400 flex items-center gap-2";
+                cardsBtn.className = "pb-3 px-4 text-xs font-bold transition-all border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-2";
+            }
+        }
+
+        function updateAchievementTabCounts() {
+            const cardsCount = document.querySelectorAll('#achieve-cards-editor > div').length;
+            const badgesCount = document.querySelectorAll('#achieve-badges-editor > div').length;
+            document.getElementById('tab-count-cards').textContent = cardsCount;
+            document.getElementById('tab-count-badges').textContent = badgesCount;
+        }
+
         function openEditAchievementsModal() {
             const cardsContainer = document.getElementById('achieve-cards-editor');
             const badgesContainer = document.getElementById('achieve-badges-editor');
@@ -1703,43 +1750,103 @@
                 addBadgeEditorItem(b);
             });
 
+            switchAchievementTab('cards');
+            updateAchievementTabCounts();
             openModal('modal-edit-achievements');
         }
 
         function addCardEditorItem(c = { badge: '', title: '', subtitle: '', detail: '', theme: 'emerald' }) {
             const container = document.getElementById('achieve-cards-editor');
             const div = document.createElement('div');
-            div.className = 'p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-sky-100 dark:border-slate-700 relative text-xs space-y-2';
+            const cardNum = container.children.length + 1;
+            div.className = 'p-5 bg-gradient-to-b from-slate-50 to-white dark:from-slate-800/80 dark:to-slate-900/90 rounded-2xl border border-sky-100 dark:border-slate-700/80 shadow-sm relative text-xs space-y-3 group hover:border-sky-300 dark:hover:border-sky-500/50 transition-all';
+            
             div.innerHTML = `
-                <button type="button" onclick="this.parentElement.remove()" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 font-bold">Remove</button>
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="text" placeholder="Badge Category (e.g. Dean's List)" value="${c.badge}" class="card-badge px-3 py-1.5 rounded-lg border dark:bg-slate-900 font-bold">
-                    <select class="card-theme px-3 py-1.5 rounded-lg border dark:bg-slate-900 font-bold">
-                        <option value="emerald" ${c.theme === 'emerald' ? 'selected' : ''}>Theme: Emerald</option>
-                        <option value="cyan" ${c.theme === 'cyan' ? 'selected' : ''}>Theme: Cyan</option>
-                        <option value="blue" ${c.theme === 'blue' ? 'selected' : ''}>Theme: Blue</option>
-                        <option value="purple" ${c.theme === 'purple' ? 'selected' : ''}>Theme: Purple</option>
-                        <option value="rose" ${c.theme === 'rose' ? 'selected' : ''}>Theme: Rose</option>
-                    </select>
+                <div class="flex justify-between items-center pb-2 border-b border-slate-200/60 dark:border-slate-700/60">
+                    <span class="font-bold text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800/50 px-2.5 py-0.5 rounded-full">
+                        Card #${cardNum}
+                    </span>
+                    <button type="button" onclick="this.closest('.group').remove(); updateAchievementTabCounts();" class="text-slate-400 hover:text-rose-500 font-bold flex items-center gap-1 transition-colors text-[11px]" title="Delete card">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        Delete Card
+                    </button>
                 </div>
-                <input type="text" placeholder="Achievement Title" value="${c.title}" class="card-title w-full px-3 py-1.5 rounded-lg border dark:bg-slate-900 font-bold text-sm">
-                <input type="text" placeholder="Subtitle" value="${c.subtitle}" class="card-subtitle w-full px-3 py-1.5 rounded-lg border dark:bg-slate-900">
-                <input type="text" placeholder="Institution / Detail" value="${c.detail}" class="card-detail w-full px-3 py-1.5 rounded-lg border dark:bg-slate-900">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Badge Tag Category</label>
+                        <input type="text" placeholder="e.g. Academic Excellence" value="${c.badge}" class="card-badge w-full px-3.5 py-2 rounded-xl border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold focus:ring-2 focus:ring-sky-500 shadow-sm">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Badge Color Theme</label>
+                        <select class="card-theme w-full px-3.5 py-2 rounded-xl border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold focus:ring-2 focus:ring-sky-500 shadow-sm cursor-pointer">
+                            <option value="emerald" ${c.theme === 'emerald' ? 'selected' : ''}>🟢 Emerald Green</option>
+                            <option value="cyan" ${c.theme === 'cyan' ? 'selected' : ''}>🔷 Cyan Teal</option>
+                            <option value="blue" ${c.theme === 'blue' ? 'selected' : ''}>🔵 Sky Blue</option>
+                            <option value="purple" ${c.theme === 'purple' ? 'selected' : ''}>🟣 Royal Purple</option>
+                            <option value="rose" ${c.theme === 'rose' ? 'selected' : ''}>🌹 Rose Pink</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Achievement Title</label>
+                    <input type="text" placeholder="e.g. Dean's Lister" value="${c.title}" class="card-title w-full px-3.5 py-2 rounded-xl border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-black text-sm focus:ring-2 focus:ring-sky-500 shadow-sm">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Subtitle / Years</label>
+                        <input type="text" placeholder="1st to 3rd Year" value="${c.subtitle}" class="card-subtitle w-full px-3.5 py-2 rounded-xl border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 shadow-sm">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Institution / Location</label>
+                        <input type="text" placeholder="University of Makati" value="${c.detail}" class="card-detail w-full px-3.5 py-2 rounded-xl border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 shadow-sm">
+                    </div>
+                </div>
             `;
             container.appendChild(div);
+            updateAchievementTabCounts();
         }
 
         function addBadgeEditorItem(b = { title: '', provider: '', icon: 'img/c-essentials-1.png' }) {
             const container = document.getElementById('achieve-badges-editor');
             const div = document.createElement('div');
-            div.className = 'p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-sky-100 dark:border-slate-700 relative text-xs flex flex-wrap gap-2 items-center';
+            const uniqueId = `badge-img-input-${Date.now()}-${Math.floor(Math.random()*1000)}`;
+            
+            div.className = 'p-4 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-sky-100 dark:border-slate-700 relative text-xs flex flex-col md:flex-row gap-3 items-center group hover:border-sky-300 dark:hover:border-sky-500/50 transition-all';
             div.innerHTML = `
-                <input type="text" placeholder="Badge Title" value="${b.title}" class="badge-title flex-1 min-w-[120px] px-3 py-1.5 rounded-lg border dark:bg-slate-900 font-bold">
-                <input type="text" placeholder="Provider" value="${b.provider}" class="badge-provider w-28 px-3 py-1.5 rounded-lg border dark:bg-slate-900">
-                <input type="text" placeholder="Icon Path" value="${b.icon}" class="badge-icon flex-1 min-w-[140px] px-3 py-1.5 rounded-lg border dark:bg-slate-900">
-                <button type="button" onclick="this.parentElement.remove()" class="text-rose-500 hover:text-rose-700 font-bold px-2">X</button>
+                <div class="w-12 h-12 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-2 flex items-center justify-center shrink-0 shadow-sm">
+                    <img src="${b.icon}" alt="Badge Preview" class="w-full h-full object-contain badge-preview-img" onerror="this.src='img/logo.svg'">
+                </div>
+
+                <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2 w-full">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5">Badge Title</label>
+                        <input type="text" placeholder="C++ Essentials 1" value="${b.title}" class="badge-title w-full px-3 py-1.5 rounded-lg border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold focus:ring-2 focus:ring-sky-500">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5">Provider / Issuer</label>
+                        <input type="text" placeholder="Cisco Academy" value="${b.provider}" class="badge-provider w-full px-3 py-1.5 rounded-lg border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5">Icon Image Path</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="${uniqueId}" placeholder="img/c-essentials-1.png" value="${b.icon}" onchange="this.closest('.group').querySelector('.badge-preview-img').src=this.value" class="badge-icon flex-1 px-3 py-1.5 rounded-lg border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-mono text-[11px] focus:ring-2 focus:ring-sky-500">
+                            <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1.5 rounded-lg text-[11px] flex items-center justify-center cursor-pointer shrink-0 transition-all shadow-sm">
+                                Upload Icon
+                                <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, '${uniqueId}')">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" onclick="this.closest('.group').remove(); updateAchievementTabCounts();" class="text-slate-400 hover:text-rose-500 p-2 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors shrink-0" title="Delete badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
             `;
             container.appendChild(div);
+            updateAchievementTabCounts();
         }
 
         function saveAchievementsData(e) {
