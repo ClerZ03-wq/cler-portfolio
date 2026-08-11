@@ -692,6 +692,49 @@
         </div>
     </div>
 
+    <!-- TOKEN PERMISSION ERROR GUIDANCE MODAL -->
+    <div id="modal-token-permission-error" class="hidden fixed inset-0 z-[110] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-900/50 rounded-3xl max-w-md w-full p-8 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4">
+                <button onclick="closeModal('modal-token-permission-error')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20 shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-heading font-black text-slate-800 dark:text-white">GitHub Token Needs Write Access</h3>
+                    <p class="text-xs text-amber-600 dark:text-amber-400 font-bold">Resource not accessible by PAT</p>
+                </div>
+            </div>
+
+            <p class="text-xs text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">
+                Your current GitHub token was authenticated, but GitHub returned a <strong>403 Forbidden</strong> because the token does not have <strong>Repository Contents: Read & Write</strong> permissions.
+            </p>
+
+            <div class="bg-amber-50 dark:bg-amber-950/40 p-4 rounded-2xl border border-amber-200 dark:border-amber-900/40 mb-5 text-xs text-slate-700 dark:text-slate-300 space-y-2">
+                <p class="font-bold text-amber-800 dark:text-amber-300">How to fix in 1 minute:</p>
+                <ol class="list-decimal list-inside space-y-1 text-[11px] leading-relaxed">
+                    <li>Click the button below to open GitHub token generator.</li>
+                    <li>Ensure the <strong>repo</strong> checkbox (or <strong>Contents → Read and write</strong>) is checked.</li>
+                    <li>Copy the new token and click <strong>Update Token</strong> below!</li>
+                </ol>
+            </div>
+
+            <div class="space-y-2">
+                <a href="https://github.com/settings/tokens/new?scopes=repo&description=Portfolio+Admin+Token" target="_blank" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 rounded-xl shadow transition-all flex items-center justify-center gap-2 text-xs">
+                    🔑 Generate Classic PAT with Repo Scope &rarr;
+                </a>
+                <button onclick="closeModal('modal-token-permission-error'); openLoginModal();" class="w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2.5 rounded-xl transition-all text-xs">
+                    Update Stored Token
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- TOAST NOTIFICATION CONTAINER -->
     <div id="toast-container" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-2 pointer-events-none"></div>
 
@@ -1382,7 +1425,12 @@
                     showToast('Successfully committed to GitHub repository! Page updates will be live shortly.', 'success');
                 } else {
                     console.error('GitHub API error:', responseData);
-                    showToast(`GitHub Save Error: ${responseData.message || 'Permission denied'}`, 'error');
+                    const errMsg = responseData.message || 'Permission denied';
+                    showToast(`GitHub Save Error: ${errMsg}`, 'error');
+
+                    if (res.status === 403 || res.status === 404 || errMsg.includes('Resource not accessible') || errMsg.includes('Permission')) {
+                        setTimeout(() => openModal('modal-token-permission-error'), 800);
+                    }
                 }
 
             } catch (err) {
