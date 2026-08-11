@@ -13,7 +13,23 @@
       "linkedin": "https://linkedin.com/in/clerz",
       "github": "https://github.com/ClerZ03-wq",
       "facebook": "https://facebook.com/clerz.pogi.meow/"
-    }
+    },
+    "leadership": [
+      {
+        "id": "lead-1",
+        "role": "Lead Developer & Tech Manager",
+        "organization": "FIL-TRACK / Filoil Logistics",
+        "period": "March 2026 — Present",
+        "icon": "img/logo.svg"
+      },
+      {
+        "id": "lead-2",
+        "role": "Project Manager & Lead Dev",
+        "organization": "ServeLink Academic Network",
+        "period": "Oct 2025 — Jan 2026",
+        "icon": "img/servelink-logo.png"
+      }
+    ]
   },
   "about": {
     "title": "About Me",
