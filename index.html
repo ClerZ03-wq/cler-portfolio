@@ -427,9 +427,9 @@
 
     <!-- HERO EDIT MODAL -->
     <div id="modal-edit-hero" class="hidden fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-xl w-full p-6 md:p-8 shadow-2xl my-8">
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-xl w-full p-8 shadow-2xl my-8 relative">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white">Edit Hero & Leadership</h3>
+                <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white">Edit Hero Section</h3>
                 <button onclick="closeModal('modal-edit-hero')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
@@ -486,21 +486,6 @@
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Facebook URL</label>
                     <input type="url" id="edit-hero-facebook" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                </div>
-
-                <hr class="border-sky-100 dark:border-slate-800 my-2">
-
-                <!-- LEADERSHIP ROLES EDITOR -->
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Leadership & Organization Roles</label>
-                        <button type="button" onclick="addLeadershipEditorItem()" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1 rounded-lg text-xs flex items-center gap-1 shadow-sm">
-                            + Add Role
-                        </button>
-                    </div>
-                    <div id="hero-leadership-editor" class="space-y-3 max-h-64 overflow-y-auto p-1">
-                        <!-- Populated dynamically by JS -->
-                    </div>
                 </div>
 
                 <div class="pt-4 flex justify-end gap-3">
@@ -797,23 +782,7 @@
               "linkedin": "https://linkedin.com/in/clerz",
               "github": "https://github.com/ClerZ03-wq",
               "facebook": "https://facebook.com/clerz.pogi.meow/"
-            },
-            "leadership": [
-              {
-                "id": "lead-1",
-                "role": "Lead Developer & Tech Manager",
-                "organization": "FIL-TRACK / Filoil Logistics",
-                "period": "March 2026 — Present",
-                "icon": "img/logo.svg"
-              },
-              {
-                "id": "lead-2",
-                "role": "Project Manager & Lead Dev",
-                "organization": "ServeLink Academic Network",
-                "period": "Oct 2025 — Jan 2026",
-                "icon": "img/servelink-logo.png"
-              }
-            ]
+            }
           },
           "about": {
             "title": "About Me",
@@ -1006,32 +975,6 @@
                             </a>
                         ` : ''}
                     </div>
-
-                    <!-- LEADERSHIP & ROLES SECTION -->
-                    ${h.leadership && h.leadership.length > 0 ? `
-                        <div class="mt-10 pt-8 border-t border-slate-200/60 dark:border-slate-800/80">
-                            <div class="flex items-center gap-2 mb-4">
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 rounded-full font-bold text-xs">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                    Leadership & Organization Roles
-                                </span>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                ${h.leadership.map(item => `
-                                    <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-sky-100 dark:border-slate-800 p-4 rounded-2xl shadow-sm hover:shadow-md hover:border-sky-300 dark:hover:border-sky-500/40 transition-all duration-300 flex items-center gap-3.5 group">
-                                        <div class="w-12 h-12 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-100 dark:border-slate-700 p-2 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                                            <img src="${getImageUrl(item.icon)}" onerror="handleImgError(this, '${item.icon}')" alt="${item.organization}" class="w-full h-full object-contain">
-                                        </div>
-                                        <div class="min-w-0 flex-1">
-                                            <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100 truncate">${item.role}</h4>
-                                            <p class="text-xs text-sky-600 dark:text-sky-400 font-semibold truncate">${item.organization}</p>
-                                            ${item.period ? `<span class="inline-block mt-1 text-[10px] font-bold text-slate-400 dark:text-slate-500">${item.period}</span>` : ''}
-                                        </div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    ` : ''}
                 </div>
             `;
         }
@@ -1060,218 +1003,69 @@
             `;
         }
 
-        // --- FEATURED PROJECTS SLIDER ENGINE ---
-        let currentProjectIndex = 0;
-        let projectTouchStartX = 0;
-        let projectTouchEndX = 0;
-
-        function prevProjectSlide() {
-            const total = (portfolioData.projects || []).length;
-            if (total === 0) return;
-            currentProjectIndex = (currentProjectIndex - 1 + total) % total;
-            renderProjects();
-        }
-
-        function nextProjectSlide() {
-            const total = (portfolioData.projects || []).length;
-            if (total === 0) return;
-            currentProjectIndex = (currentProjectIndex + 1) % total;
-            renderProjects();
-        }
-
-        function goToProjectSlide(idx) {
-            const total = (portfolioData.projects || []).length;
-            if (idx >= 0 && idx < total) {
-                currentProjectIndex = idx;
-                renderProjects();
-            }
-        }
-
-        function handleProjectTouchStart(e) {
-            if (e.changedTouches && e.changedTouches.length > 0) {
-                projectTouchStartX = e.changedTouches[0].screenX;
-            }
-        }
-
-        function handleProjectTouchEnd(e) {
-            if (e.changedTouches && e.changedTouches.length > 0) {
-                projectTouchEndX = e.changedTouches[0].screenX;
-                if (projectTouchStartX - projectTouchEndX > 40) {
-                    nextProjectSlide();
-                } else if (projectTouchEndX - projectTouchStartX > 40) {
-                    prevProjectSlide();
-                }
-            }
-        }
-
-        function moveProject(id, direction) {
-            const projects = portfolioData.projects || [];
-            const idx = projects.findIndex(p => p.id === id);
-            if (idx === -1) return;
-            const targetIdx = idx + direction;
-            if (targetIdx < 0 || targetIdx >= projects.length) return;
-
-            const temp = projects[idx];
-            projects[idx] = projects[targetIdx];
-            projects[targetIdx] = temp;
-
-            if (currentProjectIndex === idx) currentProjectIndex = targetIdx;
-            else if (currentProjectIndex === targetIdx) currentProjectIndex = idx;
-
-            renderProjects();
-            markUnsaved();
-            showToast('Project reordered! Click "Save Changes to GitHub" to publish live.', 'info');
-        }
-
-        function sortProjectsByDate() {
-            const projects = portfolioData.projects || [];
-            if (projects.length <= 1) return;
-
-            function extractYear(str) {
-                const matches = (str || '').match(/\b(20\d\d|19\d\d)\b/g);
-                if (!matches) return 0;
-                return Math.max(...matches.map(Number));
-            }
-
-            projects.sort((a, b) => extractYear(b.period) - extractYear(a.period));
-            currentProjectIndex = 0;
-            renderProjects();
-            markUnsaved();
-            showToast('Projects sorted by date (newest first)! Click "Save Changes to GitHub" to publish.', 'info');
-        }
-
         // 3. Projects Section Render
         function renderProjects() {
             const projects = portfolioData.projects || [];
             const container = document.getElementById('projects');
             const showEdit = adminState.isLoggedIn && adminState.mode === 'edit';
 
-            if (projects.length === 0) {
-                container.innerHTML = `
-                    <div class="flex justify-between items-center mb-10">
-                        <h2 class="text-2xl font-heading font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
-                            <span class="w-8 h-[2px] bg-sky-400 inline-block"></span> Featured Projects
-                        </h2>
-                        ${showEdit ? `
-                            <button onclick="openCreateProjectModal()" class="admin-edit-btn bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-3.5 py-1.5 rounded-full text-xs shadow flex items-center gap-1 cursor-pointer">
-                                + Add Project
-                            </button>
-                        ` : ''}
+            let itemsHtml = '';
+
+            projects.forEach((p, index) => {
+                const isFirst = index === 0;
+                const tagsHtml = p.tags.map(t => `<span class="text-[10px] font-bold text-slate-500 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded">${t}</span>`).join(' ');
+
+                itemsHtml += `
+                    <div class="relative mb-12 ml-8 reveal">
+                        <div class="absolute w-4 h-4 ${isFirst ? 'bg-sky-500 animate-pulse' : 'bg-sky-400'} rounded-full -left-[9px] border-4 border-sky-50 dark:border-slate-950 shadow-sm"></div>
+                        <span class="ml-2 text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-widest block mb-3">${p.period}</span>
+                        
+                        <div class="bg-white rounded-2xl p-8 border border-sky-100 shadow-sm card-hover dark:bg-slate-900 dark:border-slate-800 transition-all relative">
+                            ${showEdit ? `
+                                <div class="absolute top-4 right-4 flex gap-1.5 z-10">
+                                    <button onclick="openEditProjectModal('${p.id}')" class="admin-edit-btn bg-sky-500 hover:bg-sky-600 text-white font-bold p-1.5 rounded-lg text-xs shadow cursor-pointer" title="Edit Project">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    </button>
+                                    <button onclick="deleteProjectItem('${p.id}')" class="admin-edit-btn bg-rose-500 hover:bg-rose-600 text-white font-bold p-1.5 rounded-lg text-xs shadow cursor-pointer" title="Delete Project">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                    </button>
+                                </div>
+                            ` : ''}
+
+                            <div class="flex justify-between items-start mb-4 pr-12">
+                                <div>
+                                    <span class="text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-sky-50 dark:bg-sky-900/30 text-sky-600 dark:text-sky-300 rounded-md mb-3 inline-block">${p.role}</span>
+                                    <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100">${p.title}</h3>
+                                </div>
+                                <img src="${getImageUrl(p.logo)}" onerror="handleImgError(this, '${p.logo}')" alt="${p.title} Logo" class="w-14 h-14 object-contain rounded-xl bg-slate-50 dark:bg-slate-800 p-2 border border-slate-100 dark:border-slate-700 shadow-sm">
+                            </div>
+                            <p class="text-slate-600 dark:text-slate-400 mb-6 text-sm leading-relaxed">
+                                ${p.description}
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                ${tagsHtml}
+                            </div>
+                            <a href="${p.link}" class="text-sm text-sky-600 font-bold hover:text-sky-800 dark:text-sky-300 transition-colors pb-1 border-b border-sky-200">View Project &rarr;</a>
+                        </div>
                     </div>
-                    <p class="text-slate-500 italic">No projects found.</p>
                 `;
-                return;
-            }
-
-            if (currentProjectIndex >= projects.length) {
-                currentProjectIndex = 0;
-            }
-
-            const p = projects[currentProjectIndex];
-            const tagsHtml = p.tags.map(t => `<span class="text-xs font-bold text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800/50 px-2.5 py-1 rounded-lg">${t}</span>`).join(' ');
+            });
 
             container.innerHTML = `
-                <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
-                    <div>
-                        <h2 class="text-2xl md:text-3xl font-heading font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
-                            <span class="w-8 h-[2px] bg-sky-400 inline-block"></span> Featured Projects
-                        </h2>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
-                            Project ${currentProjectIndex + 1} of ${projects.length} • Swipe or use controls to navigate
-                        </p>
-                    </div>
-
-                    <div class="flex items-center gap-2">
-                        ${showEdit ? `
-                            <button onclick="sortProjectsByDate()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs shadow flex items-center gap-1.5 cursor-pointer transition-all" title="Sort by Date (Newest First)">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/></svg>
-                                Sort by Date
-                            </button>
-                            <button onclick="openCreateProjectModal()" class="admin-edit-btn bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs shadow flex items-center gap-1 cursor-pointer">
-                                + Add Project
-                            </button>
-                        ` : ''}
-                        <button onclick="prevProjectSlide()" class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500 transition-all shadow-sm cursor-pointer" title="Previous Project">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-                        </button>
-                        <button onclick="nextProjectSlide()" class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500 transition-all shadow-sm cursor-pointer" title="Next Project">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- SLIDER CARD CONTAINER -->
-                <div 
-                    ontouchstart="handleProjectTouchStart(event)" 
-                    ontouchend="handleProjectTouchEnd(event)"
-                    class="relative bg-gradient-to-br from-white via-sky-50/20 to-white dark:from-slate-900 dark:via-slate-900/90 dark:to-slate-950 rounded-3xl p-6 md:p-10 border border-sky-100 dark:border-slate-800/80 shadow-xl transition-all duration-500 overflow-hidden group"
-                >
-                    <!-- Background Glow -->
-                    <div class="absolute -top-12 -right-12 w-48 h-48 bg-sky-400/10 dark:bg-sky-500/10 rounded-full blur-2xl pointer-events-none"></div>
-
+                <div class="flex justify-between items-center mb-10">
+                    <h2 class="text-2xl font-heading font-black text-slate-800 dark:text-slate-100 flex items-center gap-3 reveal">
+                        <span class="w-8 h-[2px] bg-sky-400 inline-block"></span> Featured Projects
+                    </h2>
                     ${showEdit ? `
-                        <div class="flex flex-wrap justify-between items-center gap-2 mb-6 pb-3 border-b border-sky-100 dark:border-slate-800">
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Order:</span>
-                                <button onclick="moveProject('${p.id}', -1)" ${currentProjectIndex === 0 ? 'disabled' : ''} class="bg-slate-100 dark:bg-slate-800 disabled:opacity-40 hover:bg-sky-500 hover:text-white text-slate-700 dark:text-slate-300 font-bold px-2.5 py-1 rounded-lg text-xs transition-colors cursor-pointer" title="Move Left / Earlier">
-                                    &larr; Move Left
-                                </button>
-                                <button onclick="moveProject('${p.id}', 1)" ${currentProjectIndex === projects.length - 1 ? 'disabled' : ''} class="bg-slate-100 dark:bg-slate-800 disabled:opacity-40 hover:bg-sky-500 hover:text-white text-slate-700 dark:text-slate-300 font-bold px-2.5 py-1 rounded-lg text-xs transition-colors cursor-pointer" title="Move Right / Later">
-                                    Move Right &rarr;
-                                </button>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <button onclick="openEditProjectModal('${p.id}')" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1 rounded-lg text-xs shadow flex items-center gap-1 cursor-pointer">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit
-                                </button>
-                                <button onclick="deleteProjectItem('${p.id}')" class="bg-rose-500 hover:bg-rose-600 text-white font-bold px-3 py-1 rounded-lg text-xs shadow flex items-center gap-1 cursor-pointer">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Delete
-                                </button>
-                            </div>
-                        </div>
+                        <button onclick="openCreateProjectModal()" class="admin-edit-btn bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-3 py-1.5 rounded-full text-xs shadow flex items-center gap-1 cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                            Add New Project
+                        </button>
                     ` : ''}
-
-                    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-6">
-                        <div class="space-y-2">
-                            <div class="flex flex-wrap items-center gap-2">
-                                <span class="text-[11px] font-black uppercase tracking-wider px-3 py-1 bg-sky-500 text-white rounded-full shadow-sm">${p.role}</span>
-                                <span class="text-xs font-bold text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-slate-800 px-3 py-1 rounded-full border border-sky-100 dark:border-slate-700 flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                    ${p.period}
-                                </span>
-                            </div>
-                            <h3 class="text-3xl md:text-4xl font-heading font-black text-slate-800 dark:text-slate-100 tracking-tight">${p.title}</h3>
-                        </div>
-
-                        <img src="${getImageUrl(p.logo)}" onerror="handleImgError(this, '${p.logo}')" alt="${p.title} Logo" class="w-16 h-16 md:w-20 md:h-20 object-contain rounded-2xl bg-white dark:bg-slate-800 p-3 border border-sky-100 dark:border-slate-700 shadow-md shrink-0">
-                    </div>
-
-                    <p class="text-slate-600 dark:text-slate-300 text-base md:text-lg leading-relaxed mb-8">
-                        ${p.description}
-                    </p>
-
-                    <div class="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-sky-100 dark:border-slate-800/80">
-                        <div class="flex flex-wrap gap-2">
-                            ${tagsHtml}
-                        </div>
-                        ${p.link && p.link !== '#' ? `
-                            <a href="${p.link}" target="_blank" class="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-full shadow-lg shadow-sky-500/20 transition-all transform hover:-translate-y-0.5">
-                                View Project Live
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                            </a>
-                        ` : ''}
-                    </div>
-
-                    <!-- PAGINATION DOTS -->
-                    <div class="flex justify-center items-center gap-2 mt-8 pt-2">
-                        ${projects.map((_, i) => `
-                            <button 
-                                onclick="goToProjectSlide(${i})" 
-                                class="h-2.5 rounded-full transition-all duration-300 cursor-pointer ${i === currentProjectIndex ? 'w-8 bg-sky-500' : 'w-2.5 bg-slate-300 dark:bg-slate-700 hover:bg-sky-300'}"
-                                title="Go to card ${i + 1}"
-                            ></button>
-                        `).join('')}
-                    </div>
+                </div>
+                
+                <div class="relative border-l-2 border-sky-200 dark:border-slate-800 ml-3">
+                    ${itemsHtml}
                 </div>
             `;
         }
@@ -1807,55 +1601,7 @@
             document.getElementById('edit-hero-linkedin').value = h.socials.linkedin || '';
             document.getElementById('edit-hero-github').value = h.socials.github || '';
             document.getElementById('edit-hero-facebook').value = h.socials.facebook || '';
-
-            // Populate Leadership Editor
-            const container = document.getElementById('hero-leadership-editor');
-            if (container) {
-                container.innerHTML = '';
-                const items = h.leadership || [];
-                items.forEach(item => addLeadershipEditorItem(item));
-            }
             openModal('modal-edit-hero');
-        }
-
-        function addLeadershipEditorItem(item = { role: '', organization: '', period: '', icon: 'img/logo.svg' }) {
-            const container = document.getElementById('hero-leadership-editor');
-            if (!container) return;
-            const uniqueId = `lead-img-input-${Date.now()}-${Math.floor(Math.random()*1000)}`;
-            const div = document.createElement('div');
-            div.className = 'p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-sky-100 dark:border-slate-700 relative text-xs space-y-2 group';
-            div.innerHTML = `
-                <div class="flex justify-between items-center pb-1 border-b border-slate-200 dark:border-slate-700">
-                    <span class="font-bold text-[10px] uppercase text-sky-600 dark:text-sky-400">Leadership Entry</span>
-                    <button type="button" onclick="this.closest('.group').remove();" class="text-slate-400 hover:text-rose-500 font-bold text-[10px]" title="Remove Entry">Remove</button>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 mb-0.5">Role / Position</label>
-                        <input type="text" value="${item.role || ''}" placeholder="Lead Developer" class="lead-role w-full px-3 py-1.5 rounded-lg border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold focus:ring-2 focus:ring-sky-500">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 mb-0.5">Organization / Org</label>
-                        <input type="text" value="${item.organization || ''}" placeholder="FIL-TRACK / Filoil Logistics" class="lead-org w-full px-3 py-1.5 rounded-lg border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 mb-0.5">Period / Dates</label>
-                    <input type="text" value="${item.period || ''}" placeholder="March 2026 — Present" class="lead-period w-full px-3 py-1.5 rounded-lg border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 mb-0.5">Organization Icon</label>
-                    <div class="flex items-center gap-2">
-                        <img src="${getImageUrl(item.icon)}" alt="Preview" class="w-8 h-8 rounded-lg border border-sky-200 dark:border-slate-700 object-contain p-0.5 bg-white badge-preview-img shrink-0" onerror="handleImgError(this, '${item.icon}')">
-                        <input type="text" id="${uniqueId}" value="${item.icon || 'img/logo.svg'}" oninput="this.closest('.group').querySelector('.badge-preview-img').src=getImageUrl(this.value)" class="lead-icon flex-1 px-3 py-1.5 rounded-lg border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-mono text-[11px] focus:ring-2 focus:ring-sky-500">
-                        <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1.5 rounded-lg text-[10px] flex items-center justify-center cursor-pointer shrink-0">
-                            Upload
-                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, '${uniqueId}')">
-                        </label>
-                    </div>
-                </div>
-            `;
-            container.appendChild(div);
         }
 
         function saveHeroData(e) {
@@ -1870,30 +1616,10 @@
             h.socials.github = document.getElementById('edit-hero-github').value.trim();
             h.socials.facebook = document.getElementById('edit-hero-facebook').value.trim();
 
-            // Collect Leadership entries
-            const leadDivs = document.querySelectorAll('#hero-leadership-editor > div');
-            const leadershipList = [];
-            leadDivs.forEach((div, idx) => {
-                const role = div.querySelector('.lead-role')?.value.trim();
-                const organization = div.querySelector('.lead-org')?.value.trim();
-                const period = div.querySelector('.lead-period')?.value.trim();
-                const icon = div.querySelector('.lead-icon')?.value.trim();
-                if (role || organization) {
-                    leadershipList.push({
-                        id: `lead-${Date.now()}-${idx}`,
-                        role: role || 'Leader',
-                        organization: organization || '',
-                        period: period || '',
-                        icon: icon || 'img/logo.svg'
-                    });
-                }
-            });
-            h.leadership = leadershipList;
-
             renderHero();
             closeModal('modal-edit-hero');
             markUnsaved();
-            showToast('Hero & Leadership updated! Click "Save Changes to GitHub" at top to publish live.', 'info');
+            showToast('Hero updated! Click "Save Changes to GitHub" at top to publish live.', 'info');
         }
 
         // About Modal
