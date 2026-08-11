@@ -1,8 +1,12 @@
 {
   "hero": {
-    "avatar": "img/503561419_2735814616619356_9132110206694480000_n.jpg",
+    "avatar": "img/1786438536257_5aa4138b-ab3a-474d-8f37-d5dbf403b983.jpg",
     "name": "John Clerwin N. Dela Cruz",
-    "roles": ["Web Developer", "Backend Programmer", "Database Administrator"],
+    "roles": [
+      "Web Developer",
+      "Backend Programmer",
+      "Database Administrator"
+    ],
     "ctaText": "Let's Connect",
     "ctaLink": "#contact",
     "socials": {
@@ -23,7 +27,11 @@
       "period": "March 2026 — Present",
       "logo": "img/logo.svg",
       "description": "An IT asset inventory management system for Filoil Logistics. Features include role-based access control and comprehensive hardware lifecycle monitoring.",
-      "tags": ["Django", "PostgreSQL", "Tailwind"],
+      "tags": [
+        "Django",
+        "PostgreSQL",
+        "Tailwind"
+      ],
       "link": "#"
     },
     {
@@ -33,7 +41,11 @@
       "period": "Oct 2025 — Jan 2026",
       "logo": "img/servelink-logo.png",
       "description": "A web-based reporting platform for technical troubleshooting and repair solutions within academic networks.",
-      "tags": ["Docker", "PHP", "MySQL"],
+      "tags": [
+        "Docker",
+        "PHP",
+        "MySQL"
+      ],
       "link": "#"
     }
   ],
@@ -41,12 +53,26 @@
     {
       "id": "skill-1",
       "category": "Full-Stack Development",
-      "items": ["Django (Python)", "PHP", "C++", "JavaScript", "PostgreSQL", "MySQL", "Git", "Tailwind CSS"]
+      "items": [
+        "Django (Python)",
+        "PHP",
+        "C++",
+        "JavaScript",
+        "PostgreSQL",
+        "MySQL",
+        "Git",
+        "Tailwind CSS"
+      ]
     },
     {
       "id": "skill-2",
       "category": "Networking & Security",
-      "items": ["Windows Server (AD DS)", "Cisco Routing", "VPN Config", "Vulnerability Assessment"]
+      "items": [
+        "Windows Server (AD DS)",
+        "Cisco Routing",
+        "VPN Config",
+        "Vulnerability Assessment"
+      ]
     }
   ],
   "achievements": {
