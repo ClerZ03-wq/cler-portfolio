@@ -1,0 +1,138 @@
+{
+  "hero": {
+    "avatar": "img/503561419_2735814616619356_9132110206694480000_n.jpg",
+    "name": "John Clerwin N. Dela Cruz",
+    "roles": ["Web Developer", "Backend Programmer", "Database Administrator"],
+    "ctaText": "Let's Connect",
+    "ctaLink": "#contact",
+    "socials": {
+      "linkedin": "https://linkedin.com/in/clerz",
+      "github": "https://github.com/ClerZ03-wq",
+      "facebook": "https://facebook.com/clerz.pogi.meow/"
+    }
+  },
+  "about": {
+    "title": "About Me",
+    "content": "I am currently a third year IT student aspiring to become a full stack developer, with a strong passion for building dynamic, scalable, and secure applications. Beyond writing code, I continuously explore new tech stacks and emerging technologies to stay up to date with current industry trends."
+  },
+  "projects": [
+    {
+      "id": "proj-1",
+      "title": "FIL-TRACK",
+      "role": "Lead Developer",
+      "period": "March 2026 — Present",
+      "logo": "img/logo.svg",
+      "description": "An IT asset inventory management system for Filoil Logistics. Features include role-based access control and comprehensive hardware lifecycle monitoring.",
+      "tags": ["Django", "PostgreSQL", "Tailwind"],
+      "link": "#"
+    },
+    {
+      "id": "proj-2",
+      "title": "ServeLink",
+      "role": "Project Manager & Lead Dev",
+      "period": "Oct 2025 — Jan 2026",
+      "logo": "img/servelink-logo.png",
+      "description": "A web-based reporting platform for technical troubleshooting and repair solutions within academic networks.",
+      "tags": ["Docker", "PHP", "MySQL"],
+      "link": "#"
+    }
+  ],
+  "skills": [
+    {
+      "id": "skill-1",
+      "category": "Full-Stack Development",
+      "items": ["Django (Python)", "PHP", "C++", "JavaScript", "PostgreSQL", "MySQL", "Git", "Tailwind CSS"]
+    },
+    {
+      "id": "skill-2",
+      "category": "Networking & Security",
+      "items": ["Windows Server (AD DS)", "Cisco Routing", "VPN Config", "Vulnerability Assessment"]
+    }
+  ],
+  "achievements": {
+    "cards": [
+      {
+        "id": "card-1",
+        "badge": "Academic Excellence",
+        "title": "Dean's Lister",
+        "subtitle": "1st to 3rd Year",
+        "detail": "University of Makati",
+        "theme": "emerald"
+      },
+      {
+        "id": "card-2",
+        "badge": "2nd Runner Up",
+        "title": "Infotechnolympics",
+        "subtitle": "Web Design (2024-2025)",
+        "detail": "2024 – 2025",
+        "theme": "cyan"
+      },
+      {
+        "id": "card-3",
+        "badge": "National Certificate II",
+        "title": "Computer System Servicing (NCII)",
+        "subtitle": "Professional Certification",
+        "detail": "Philippines",
+        "theme": "blue"
+      }
+    ],
+    "badges": [
+      {
+        "id": "badge-1",
+        "title": "C++ Essentials 1",
+        "provider": "Cisco Academy",
+        "icon": "img/c-essentials-1.png"
+      },
+      {
+        "id": "badge-2",
+        "title": "Hardware Basics",
+        "provider": "Cisco Academy",
+        "icon": "img/computer-hardware-basics.png"
+      },
+      {
+        "id": "badge-3",
+        "title": "Cyber Threat Mgt.",
+        "provider": "Cisco Academy",
+        "icon": "img/cyber-threat-management.png"
+      },
+      {
+        "id": "badge-4",
+        "title": "Intro to Cyber",
+        "provider": "Cisco Academy",
+        "icon": "img/introduction-to-cybersecurity.png"
+      },
+      {
+        "id": "badge-5",
+        "title": "Intro to IoT",
+        "provider": "Cisco Academy",
+        "icon": "img/introduction-to-iot.png"
+      },
+      {
+        "id": "badge-6",
+        "title": "ISC2 Candidate",
+        "provider": "ISC2",
+        "icon": "img/isc2-candidate.png"
+      },
+      {
+        "id": "badge-7",
+        "title": "Networking Basics",
+        "provider": "Cisco Academy",
+        "icon": "img/networking-basics.png"
+      }
+    ]
+  },
+  "contact": {
+    "title": "Let's Connect",
+    "subtitle": "I'm currently open for opportunities in web development, backend programming, and network administration. Fill out the form below and I'll get back to you!",
+    "formspreeUrl": "https://formspree.io/f/xkoypkaa"
+  },
+  "footer": {
+    "copyright": "© 2026 John Clerwin N. Dela Cruz. All rights reserved."
+  },
+  "githubConfig": {
+    "owner": "ClerZ03-wq",
+    "repo": "cler-portfolio",
+    "branch": "main",
+    "dataPath": "data/portfolio-data.json"
+  }
+}

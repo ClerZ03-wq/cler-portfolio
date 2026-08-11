@@ -207,10 +207,60 @@
         .animate-blob { animation: blob 7s infinite; }
         .animation-delay-2000 { animation-delay: 2s; }
         .animation-delay-4000 { animation-delay: 4s; }
+
+        /* --- ADMIN CONTROLS ANIMATION & HIGHLIGHTS --- */
+        .admin-edit-btn {
+            opacity: 0.85;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .admin-edit-btn:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        .admin-editable-section {
+            position: relative;
+        }
+        .admin-editable-section:hover {
+            outline: 2px dashed rgba(56, 189, 248, 0.4);
+            outline-offset: 4px;
+            border-radius: 1rem;
+        }
     </style>
 </head>
-<body class="bg-sky-50 text-slate-800 font-sans antialiased selection:bg-sky-300 selection:text-slate-900 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-500 overflow-x-hidden">
+<body class="bg-sky-50 text-slate-800 font-sans antialiased selection:bg-sky-300 selection:text-slate-900 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-500 overflow-x-hidden pb-12">
 
+    <!-- TOP ADMIN HEADER BAR (Visible when logged in as Admin) -->
+    <div id="admin-top-bar" class="hidden sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md text-white border-b border-sky-500/30 px-6 py-2.5 shadow-xl transition-all">
+        <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs md:text-sm">
+            <div class="flex items-center gap-3 font-medium">
+                <span class="inline-flex items-center gap-1.5 bg-sky-500/20 text-sky-300 border border-sky-500/40 px-2.5 py-1 rounded-full font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Admin Mode
+                </span>
+                <span id="admin-user-info" class="text-slate-300 flex items-center gap-1">
+                    Logged in to <strong id="admin-repo-name" class="text-white">ClerZ03-wq/cler-portfolio</strong>
+                </span>
+                <span id="unsaved-badge" class="hidden bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded text-[11px] font-bold animate-pulse">
+                    ● Unsaved Changes
+                </span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="admin-toggle-mode-btn" onclick="toggleAdminViewMode()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 transition-all font-semibold flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    <span id="admin-mode-text">Editing Controls On</span>
+                </button>
+                <button id="btn-save-github" onclick="saveToGitHub()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 py-1.5 rounded-lg shadow-md transition-all flex items-center gap-1.5 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                    Save Changes to GitHub
+                </button>
+                <button onclick="logoutAdmin()" class="bg-slate-800 hover:bg-red-900/40 hover:text-red-300 text-slate-400 px-3 py-1.5 rounded-lg border border-slate-700 transition-all font-semibold" title="Logout Admin">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRELOADER -->
     <div id="loader" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white dark:bg-slate-950 origin-center">
         <div class="flex flex-col items-center">
             <h1 id="brand-text" class="text-3xl font-heading font-black text-sky-600 dark:text-sky-300 tracking-tighter mb-4 flex items-center justify-center">
@@ -228,6 +278,7 @@
         </div>
     </div>
 
+    <!-- NAVIGATION BAR -->
     <nav class="sticky top-0 z-40 bg-white/70 backdrop-blur-md border-b border-sky-100 dark:bg-slate-900/70 dark:border-slate-800 smooth-transition">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#" class="font-heading font-bold text-xl text-sky-600 tracking-tight dark:text-sky-300">ClerDev</a>
@@ -240,9 +291,14 @@
                     <a href="#contact" class="hover:text-sky-500 dark:hover:text-sky-300 transition-colors">Contact</a>
                 </div>
                 
-                <button id="dark-mode-toggle" class="p-2 rounded-full text-slate-500 hover:bg-sky-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-all">
+                <button id="dark-mode-toggle" title="Toggle theme" class="p-2 rounded-full text-slate-500 hover:bg-sky-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden dark:block"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/></svg>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="block dark:hidden"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                </button>
+
+                <!-- Admin Quick Trigger Button -->
+                <button id="nav-admin-btn" onclick="openLoginModal()" title="Admin Login (Ctrl+Shift+A)" class="p-2 rounded-full text-slate-500 hover:bg-sky-100 hover:text-sky-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-sky-300 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-2-2l2 2M11 11l9.5-9.5M11 11A5.5 5.5 0 1 1 5.5 0M11 11l-4 4m2 2l-2-2m-2 2l2 2"/></svg>
                 </button>
 
                 <button id="mobile-menu-btn" class="md:hidden p-2 rounded-full text-slate-500 hover:bg-sky-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-all">
@@ -252,6 +308,7 @@
         </div>
     </nav>
 
+    <!-- MOBILE MENU -->
     <div id="mobile-menu" class="fixed inset-0 z-50 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md transform translate-x-full transition-transform duration-300 flex flex-col items-center justify-center space-y-8 text-2xl font-heading font-black md:hidden">
         <button id="close-menu-btn" class="absolute top-6 right-6 p-4 text-slate-500 dark:text-slate-400 hover:text-sky-500 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -260,333 +317,1465 @@
         <a href="#projects" class="mobile-link text-slate-800 dark:text-slate-100 hover:text-sky-500 transition-colors">Projects</a>
         <a href="#certs" class="mobile-link text-slate-800 dark:text-slate-100 hover:text-sky-500 transition-colors">Achievements</a>
         <a href="#contact" class="mobile-link text-slate-800 dark:text-slate-100 hover:text-sky-500 transition-colors">Contact</a>
+        <button onclick="toggleMenu(); openLoginModal();" class="text-sky-600 dark:text-sky-400 hover:text-sky-500 text-xl font-bold flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Admin Panel Login
+        </button>
     </div>
 
-    <section class="relative max-w-6xl mx-auto px-6 py-20 md:py-32 flex flex-col justify-center min-h-[70vh] border-b border-sky-100 dark:border-slate-800 reveal overflow-hidden">
-        
-        <div class="absolute inset-0 z-0 pointer-events-none">
-            <div class="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] dark:bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:24px_24px] opacity-40"></div>
-            
-            <div class="absolute top-0 left-1/4 w-64 h-64 md:w-96 md:h-96 bg-sky-400/20 dark:bg-sky-600/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-70 animate-blob"></div>
-            <div class="absolute top-10 right-1/4 w-64 h-64 md:w-96 md:h-96 bg-indigo-400/20 dark:bg-indigo-600/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
-            <div class="absolute -bottom-8 left-1/3 w-64 h-64 md:w-96 md:h-96 bg-blue-400/20 dark:bg-blue-600/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
-        </div>
-
-        <div class="relative z-10 w-full">
-            <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 mb-4">
-                <img src="img/503561419_2735814616619356_9132110206694480000_n.jpg" alt="Profile" class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white object-cover shadow-lg shadow-sky-200/50 dark:border-slate-800 transition-all duration-500">
-                <h1 class="text-5xl md:text-7xl font-heading font-black tracking-tight text-slate-800 dark:text-slate-100">John Clerwin N. <br class="hidden md:block"/>Dela Cruz</h1>
-            </div>
-            <p class="text-xl md:text-2xl text-slate-500 mb-8 font-medium mt-2 dark:text-slate-400">
-                Web Developer <span class="text-sky-300 mx-1">|</span> Backend Programmer <span class="text-sky-300 mx-1">|</span> Database Administrator
-            </p>
-            <div class="flex flex-wrap items-center gap-4">
-                <a href="#contact" class="bg-sky-400 text-white px-6 py-2.5 rounded-full font-bold shadow-md hover:bg-sky-500 transition-all">Let's Connect</a>
-                
-                <a href="https://linkedin.com/in/clerz" target="_blank" class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-full text-sm text-slate-600 font-bold border border-sky-100 shadow-sm hover:border-sky-300 transition-all dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-                    LinkedIn
-                </a>
-                
-                <a href="https://github.com/ClerZ03-wq" target="_blank" class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-full text-sm text-slate-600 font-bold border border-sky-100 shadow-sm hover:border-sky-300 transition-all dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                    GitHub
-                </a>
-                
-                <a href="https://facebook.com/clerz.pogi.meow/" target="_blank" class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-full text-sm text-slate-600 font-bold border border-sky-100 shadow-sm hover:border-sky-300 transition-all dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-                    Facebook
-                </a>
-            </div>
-        </div>
+    <!-- HERO SECTION -->
+    <section id="hero-container" class="relative max-w-6xl mx-auto px-6 py-20 md:py-32 flex flex-col justify-center min-h-[70vh] border-b border-sky-100 dark:border-slate-800 reveal overflow-hidden">
+        <!-- Rendered dynamically by JS -->
     </section>
 
+    <!-- MAIN CONTENT -->
     <main class="max-w-6xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
 
+        <!-- LEFT COLUMN: ABOUT & PROJECTS -->
         <div class="lg:col-span-7 space-y-24">
             
-            <section id="about" class="reveal scroll-mt-24">
-                <h2 class="text-2xl font-heading font-black mb-6 text-slate-800 dark:text-slate-100 flex items-center gap-3">
-                    <span class="w-8 h-[2px] bg-sky-400 inline-block"></span> About Me
-                </h2>
-                <p class="text-lg text-slate-600 leading-relaxed dark:text-slate-300">
-                    I am currently a third year IT student aspiring to become a full stack developer, with a strong passion for building dynamic, scalable, and secure applications. Beyond writing code, I continuously explore new tech stacks and emerging technologies to stay up to date with current industry trends.                
-                </p>
+            <!-- ABOUT SECTION -->
+            <section id="about" class="reveal scroll-mt-24 admin-editable-section">
+                <!-- Rendered dynamically by JS -->
             </section>
 
-            <section id="projects" class="scroll-mt-24">
-                <h2 class="text-2xl font-heading font-black mb-10 text-slate-800 dark:text-slate-100 flex items-center gap-3 reveal">
-                    <span class="w-8 h-[2px] bg-sky-400 inline-block"></span> Featured Projects
-                </h2>
-                
-                <div class="relative border-l-2 border-sky-200 dark:border-slate-800 ml-3">
-                    
-                    <div class="ml-8 reveal" style="transition-delay: 100ms;">
-                        <div class="absolute w-4 h-4 bg-sky-500 rounded-full -left-[9px] border-4 border-sky-50 dark:border-slate-950 shadow-sm animate-pulse"></div>
-                        <span class="ml-2 text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-widest block mb-3">March 2026 — Present</span>
-                        
-                        <div class="bg-white rounded-2xl p-8 border border-sky-100 shadow-sm card-hover dark:bg-slate-900 dark:border-slate-800 transition-all">
-                            
-                            <div class="flex justify-between items-start mb-4">
-                                <div>
-                                    <span class="text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-sky-50 dark:bg-sky-900/30 text-sky-600 dark:text-sky-300 rounded-md mb-3 inline-block">Lead Developer</span>
-                                    <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100">FIL-TRACK</h3>
-                                </div>
-                                <img src="img/logo.svg" alt="FIL-TRACK Logo" class="w-14 h-14 object-contain rounded-xl bg-slate-50 dark:bg-slate-800 p-2 border border-slate-100 dark:border-slate-700 shadow-sm">
-                            </div>
-                            <p class="text-slate-600 dark:text-slate-400 mb-6 text-sm leading-relaxed">
-                                An IT asset inventory management system for Filoil Logistics. Features include role-based access control and comprehensive hardware lifecycle monitoring.
-                            </p>
-                            <div class="flex flex-wrap gap-2 mb-6">
-                                <span class="text-[10px] font-bold text-slate-500 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded">Django</span>
-                                <span class="text-[10px] font-bold text-slate-500 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded">PostgreSQL</span>
-                                <span class="text-[10px] font-bold text-slate-500 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded">Tailwind</span>
-                            </div>
-                            <a href="#" class="text-sm text-sky-600 font-bold hover:text-sky-800 dark:text-sky-300 transition-colors pb-1 border-b border-sky-200">View Project &rarr;</a>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="mb-12 ml-8 reveal">
-                        <div class="absolute w-4 h-4 bg-sky-400 rounded-full -left-[9px] border-4 border-sky-50 dark:border-slate-950 shadow-sm"></div>
-                        <span class="ml-2 text-[10px] font-bold text-sky-500 uppercase tracking-widest block mb-3">Oct 2025 — Jan 2026</span>
-                        
-                        <div class="bg-white rounded-2xl p-8 border border-sky-100 shadow-sm card-hover dark:bg-slate-900 dark:border-slate-800 transition-all">
-                            
-                            <div class="flex justify-between items-start mb-4">
-                                <div>
-                                    <span class="text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-sky-50 dark:bg-sky-900/30 text-sky-600 dark:text-sky-300 rounded-md mb-3 inline-block">Project Manager & Lead Dev</span>
-                                    <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100">ServeLink</h3>
-                                </div>
-                                <img src="img/servelink-logo.png" alt="ServeLink Logo" class="w-14 h-14 object-contain rounded-xl bg-slate-50 dark:bg-slate-800 p-2 border border-slate-100 dark:border-slate-700 shadow-sm">
-                            </div>
-                            <p class="text-slate-600 dark:text-slate-400 mb-6 text-sm leading-relaxed">
-                                A web-based reporting platform for technical troubleshooting and repair solutions within academic networks.
-                            </p>
-                            <div class="flex flex-wrap gap-2 mb-6">
-                                <span class="text-[10px] font-bold text-slate-500 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded">Docker</span>
-                                <span class="text-[10px] font-bold text-slate-500 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded">PHP</span>
-                                <span class="text-[10px] font-bold text-slate-500 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded">MySQL</span>
-                            </div>
-                            <a href="#" class="text-sm text-sky-600 font-bold hover:text-sky-800 dark:text-sky-300 transition-colors pb-1 border-b border-sky-200">View Platform &rarr;</a>
-                        </div>
-                    </div>
-
-                </div>
+            <!-- PROJECTS SECTION -->
+            <section id="projects" class="scroll-mt-24 admin-editable-section">
+                <!-- Rendered dynamically by JS -->
             </section>
         </div>
 
+        <!-- RIGHT COLUMN: SKILLS & ACHIEVEMENTS -->
         <div class="lg:col-span-5 space-y-24">
             
-            <section id="skills" class="reveal scroll-mt-24">
-                <h2 class="text-2xl font-heading font-black mb-6 text-slate-800 dark:text-slate-100 flex items-center gap-3">
-                    <span class="w-8 h-[2px] bg-sky-400 inline-block"></span> Technical Arsenal
-                </h2>
-                
-                <div class="space-y-6">
-                    <div class="bg-white rounded-2xl border border-sky-100 p-6 card-hover shadow-sm dark:bg-slate-900 dark:border-slate-800 transition-all">
-                        <h3 class="text-sm font-black uppercase tracking-wider mb-4 text-sky-600 dark:text-sky-400">Full-Stack Development</h3>
-                        <div class="flex flex-wrap gap-2 text-sm font-medium text-slate-600 dark:text-slate-300">
-                            <span class="bg-sky-50 dark:bg-slate-800 px-3 py-1 rounded-md">Django (Python)</span>
-                            <span class="bg-sky-50 dark:bg-slate-800 px-3 py-1 rounded-md">PHP</span>
-                            <span class="bg-sky-50 dark:bg-slate-800 px-3 py-1 rounded-md">C++</span>
-                            <span class="bg-sky-50 dark:bg-slate-800 px-3 py-1 rounded-md">JavaScript</span>
-                            <span class="bg-sky-50 dark:bg-slate-800 px-3 py-1 rounded-md">PostgreSQL</span>
-                            <span class="bg-sky-50 dark:bg-slate-800 px-3 py-1 rounded-md">MySQL</span>
-                            <span class="bg-sky-50 dark:bg-slate-800 px-3 py-1 rounded-md">Git</span>
-                            <span class="bg-sky-50 dark:bg-slate-800 px-3 py-1 rounded-md">Tailwind CSS</span>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl border border-sky-100 p-6 card-hover shadow-sm dark:bg-slate-900 dark:border-slate-800 transition-all">
-                        <h3 class="text-sm font-black uppercase tracking-wider mb-4 text-sky-600 dark:text-sky-400">Networking & Security</h3>
-                        <div class="flex flex-wrap gap-2 text-sm font-medium text-slate-600 dark:text-slate-300">
-                            <span class="bg-sky-50 dark:bg-slate-800 px-3 py-1 rounded-md">Windows Server (AD DS)</span>
-                            <span class="bg-sky-50 dark:bg-slate-800 px-3 py-1 rounded-md">Cisco Routing</span>
-                            <span class="bg-sky-50 dark:bg-slate-800 px-3 py-1 rounded-md">VPN Config</span>
-                            <span class="bg-sky-50 dark:bg-slate-800 px-3 py-1 rounded-md">Vulnerability Assessment</span>
-                        </div>
-                    </div>
-                </div>
+            <!-- TECHNICAL ARSENAL SECTION -->
+            <section id="skills" class="reveal scroll-mt-24 admin-editable-section">
+                <!-- Rendered dynamically by JS -->
             </section>
 
-            <section id="certs" class="reveal scroll-mt-24">
-                <h2 class="text-2xl font-heading font-black mb-6 text-slate-800 dark:text-slate-100 flex items-center gap-3">
-                    <span class="w-8 h-[2px] bg-sky-400 inline-block"></span> Achievements
-                </h2>
+            <!-- ACHIEVEMENTS SECTION -->
+            <section id="certs" class="reveal scroll-mt-24 admin-editable-section">
+                <!-- Rendered dynamically by JS -->
+            </section>
+        </div>
+
+    </main>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="border-t border-sky-100 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 py-20 reveal scroll-mt-24 admin-editable-section">
+        <!-- Rendered dynamically by JS -->
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="footer-container" class="bg-white/80 py-8 text-center text-xs text-slate-400 font-medium dark:bg-slate-950 transition-colors">
+        <!-- Rendered dynamically by JS -->
+    </footer>
+
+
+    <!-- ========================================== -->
+    <!-- MODALS & ADMIN DIALOGS                     -->
+    <!-- ========================================== -->
+
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="modal-admin-login" class="hidden fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-md w-full p-8 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4">
+                <button onclick="closeModal('modal-admin-login')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center border border-sky-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white">Admin Login</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">GitHub Storage Provider Authentication</p>
+                </div>
+            </div>
+
+            <form id="form-admin-login" onsubmit="handleLoginSubmit(event)" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">GitHub Personal Access Token (PAT)</label>
+                    <input type="password" id="input-pat-token" required placeholder="github_pat_11A..." 
+                        class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500 font-mono text-sm transition-all shadow-sm">
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="check-remember-token" class="rounded text-sky-500 focus:ring-sky-400">
+                    <label for="check-remember-token" class="text-xs text-slate-600 dark:text-slate-400 font-medium cursor-pointer">Remember token on this device</label>
+                </div>
+
+                <div id="login-error-msg" class="hidden text-xs text-rose-500 bg-rose-50 dark:bg-rose-950/40 p-3 rounded-xl border border-rose-200 dark:border-rose-900/50"></div>
+
+                <button type="submit" id="btn-login-submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    Authenticate & Connect to GitHub
+                </button>
+
+                <details class="text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-800">
+                    <summary class="font-bold text-sky-600 dark:text-sky-400 cursor-pointer hover:underline">How to generate a Personal Access Token?</summary>
+                    <ol class="list-decimal list-inside space-y-1 mt-2 pl-1 leading-relaxed text-[11px]">
+                        <li>Go to GitHub → Settings → Developer Settings → Personal Access Tokens.</li>
+                        <li>Generate a token with <strong>repo</strong> or <strong>contents: read & write</strong> scope for <code class="bg-slate-100 dark:bg-slate-800 px-1 rounded">ClerZ03-wq/cler-portfolio</code>.</li>
+                        <li>Paste your token above to gain admin editing rights.</li>
+                    </ol>
+                </details>
+            </form>
+        </div>
+    </div>
+
+    <!-- HERO EDIT MODAL -->
+    <div id="modal-edit-hero" class="hidden fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-xl w-full p-8 shadow-2xl my-8 relative">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white">Edit Hero Section</h3>
+                <button onclick="closeModal('modal-edit-hero')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <form onsubmit="saveHeroData(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+                    <input type="text" id="edit-hero-name" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-bold">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Roles (comma-separated)</label>
+                    <input type="text" id="edit-hero-roles" required placeholder="Web Developer, Backend Programmer, Database Administrator" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Profile Avatar Image</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="edit-hero-avatar" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                        <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center justify-center cursor-pointer shrink-0">
+                            Upload File
+                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'edit-hero-avatar')">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">CTA Button Text</label>
+                        <input type="text" id="edit-hero-cta-text" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">CTA Button Link</label>
+                        <input type="text" id="edit-hero-cta-link" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                    </div>
+                </div>
+
+                <hr class="border-sky-100 dark:border-slate-800 my-2">
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">LinkedIn URL</label>
+                    <input type="url" id="edit-hero-linkedin" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">GitHub URL</label>
+                    <input type="url" id="edit-hero-github" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Facebook URL</label>
+                    <input type="url" id="edit-hero-facebook" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal('modal-edit-hero')" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl shadow-md">Apply Edits</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ABOUT EDIT MODAL -->
+    <div id="modal-edit-about" class="hidden fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-lg w-full p-8 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white">Edit About Me</h3>
+                <button onclick="closeModal('modal-edit-about')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <form onsubmit="saveAboutData(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Section Title</label>
+                    <input type="text" id="edit-about-title" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-bold">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Bio / About Paragraph</label>
+                    <textarea id="edit-about-content" rows="6" required class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 leading-relaxed"></textarea>
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal('modal-edit-about')" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl shadow-md">Apply Edits</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PROJECT ITEM EDIT / CREATE MODAL -->
+    <div id="modal-edit-project-item" class="hidden fixed inset-0 z-[105] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-xl w-full p-8 shadow-2xl my-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="project-modal-heading" class="text-2xl font-heading font-black text-slate-800 dark:text-white">Edit Project</h3>
+                <button onclick="closeModal('modal-edit-project-item')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <form onsubmit="saveProjectItem(event)" class="space-y-4">
+                <input type="hidden" id="edit-proj-id">
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Project Title</label>
+                    <input type="text" id="edit-proj-title" required placeholder="e.g. FIL-TRACK" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-bold">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Role / Badge</label>
+                        <input type="text" id="edit-proj-role" required placeholder="Lead Developer" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Period / Date</label>
+                        <input type="text" id="edit-proj-period" required placeholder="March 2026 — Present" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Project Logo Image Path / URL</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="edit-proj-logo" required placeholder="img/logo.svg" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                        <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center justify-center cursor-pointer shrink-0">
+                            Upload Logo
+                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'edit-proj-logo')">
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Description</label>
+                    <textarea id="edit-proj-description" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Tech Stack Tags (comma separated)</label>
+                    <input type="text" id="edit-proj-tags" required placeholder="Django, PostgreSQL, Tailwind" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Project Link URL</label>
+                    <input type="text" id="edit-proj-link" required placeholder="#" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal('modal-edit-project-item')" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl shadow-md">Save Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SKILLS EDIT MODAL -->
+    <div id="modal-edit-skills" class="hidden fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-xl w-full p-8 shadow-2xl my-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white">Edit Technical Arsenal</h3>
+                <button onclick="closeModal('modal-edit-skills')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <form onsubmit="saveSkillsData(event)" class="space-y-6">
+                <div id="skills-editor-groups" class="space-y-4">
+                    <!-- Populated dynamically by JS -->
+                </div>
+
+                <button type="button" onclick="addSkillGroupEditor()" class="w-full border-2 border-dashed border-sky-300 dark:border-slate-700 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-slate-800 font-bold py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                    + Add New Skill Category
+                </button>
+
+                <div class="pt-4 flex justify-end gap-3 border-t border-sky-100 dark:border-slate-800">
+                    <button type="button" onclick="closeModal('modal-edit-skills')" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl shadow-md">Apply Edits</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ACHIEVEMENTS EDIT MODAL -->
+    <div id="modal-edit-achievements" class="hidden fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-2xl w-full p-8 shadow-2xl my-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white">Edit Achievements & Certifications</h3>
+                <button onclick="closeModal('modal-edit-achievements')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <form onsubmit="saveAchievementsData(event)" class="space-y-6">
+                <div>
+                    <h4 class="text-sm font-black uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-3">1. Peel Notepad Cards</h4>
+                    <div id="achieve-cards-editor" class="space-y-4">
+                        <!-- Dynamic cards list -->
+                    </div>
+                    <button type="button" onclick="addCardEditorItem()" class="mt-3 text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1">
+                        + Add Peel Card
+                    </button>
+                </div>
+
+                <hr class="border-sky-100 dark:border-slate-800">
+
+                <div>
+                    <h4 class="text-sm font-black uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-3">2. Marquee Scroller Badges</h4>
+                    <div id="achieve-badges-editor" class="space-y-3">
+                        <!-- Dynamic badges list -->
+                    </div>
+                    <button type="button" onclick="addBadgeEditorItem()" class="mt-3 text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1">
+                        + Add Badge Scroller Item
+                    </button>
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3 border-t border-sky-100 dark:border-slate-800">
+                    <button type="button" onclick="closeModal('modal-edit-achievements')" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl shadow-md">Apply Edits</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CONTACT EDIT MODAL -->
+    <div id="modal-edit-contact" class="hidden fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-lg w-full p-8 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white">Edit Contact & Footer</h3>
+                <button onclick="closeModal('modal-edit-contact')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <form onsubmit="saveContactData(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Section Title</label>
+                    <input type="text" id="edit-contact-title" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-bold">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Subtitle / Message</label>
+                    <textarea id="edit-contact-subtitle" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Formspree Endpoint URL</label>
+                    <input type="url" id="edit-contact-formspree" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-mono text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Footer Copyright Text</label>
+                    <input type="text" id="edit-footer-copyright" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal('modal-edit-contact')" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl shadow-md">Apply Edits</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-2 pointer-events-none"></div>
+
+
+    <!-- ========================================== -->
+    <!-- MAIN JAVASCRIPT & ENGINE LOGIC             -->
+    <!-- ========================================== -->
+    <script>
+        // --- DEFAULT EMBEDDED DATA FALLBACK ---
+        const DEFAULT_DATA = {
+          "hero": {
+            "avatar": "img/503561419_2735814616619356_9132110206694480000_n.jpg",
+            "name": "John Clerwin N. Dela Cruz",
+            "roles": ["Web Developer", "Backend Programmer", "Database Administrator"],
+            "ctaText": "Let's Connect",
+            "ctaLink": "#contact",
+            "socials": {
+              "linkedin": "https://linkedin.com/in/clerz",
+              "github": "https://github.com/ClerZ03-wq",
+              "facebook": "https://facebook.com/clerz.pogi.meow/"
+            }
+          },
+          "about": {
+            "title": "About Me",
+            "content": "I am currently a third year IT student aspiring to become a full stack developer, with a strong passion for building dynamic, scalable, and secure applications. Beyond writing code, I continuously explore new tech stacks and emerging technologies to stay up to date with current industry trends."
+          },
+          "projects": [
+            {
+              "id": "proj-1",
+              "title": "FIL-TRACK",
+              "role": "Lead Developer",
+              "period": "March 2026 — Present",
+              "logo": "img/logo.svg",
+              "description": "An IT asset inventory management system for Filoil Logistics. Features include role-based access control and comprehensive hardware lifecycle monitoring.",
+              "tags": ["Django", "PostgreSQL", "Tailwind"],
+              "link": "#"
+            },
+            {
+              "id": "proj-2",
+              "title": "ServeLink",
+              "role": "Project Manager & Lead Dev",
+              "period": "Oct 2025 — Jan 2026",
+              "logo": "img/servelink-logo.png",
+              "description": "A web-based reporting platform for technical troubleshooting and repair solutions within academic networks.",
+              "tags": ["Docker", "PHP", "MySQL"],
+              "link": "#"
+            }
+          ],
+          "skills": [
+            {
+              "id": "skill-1",
+              "category": "Full-Stack Development",
+              "items": ["Django (Python)", "PHP", "C++", "JavaScript", "PostgreSQL", "MySQL", "Git", "Tailwind CSS"]
+            },
+            {
+              "id": "skill-2",
+              "category": "Networking & Security",
+              "items": ["Windows Server (AD DS)", "Cisco Routing", "VPN Config", "Vulnerability Assessment"]
+            }
+          ],
+          "achievements": {
+            "cards": [
+              {
+                "id": "card-1",
+                "badge": "Academic Excellence",
+                "title": "Dean's Lister",
+                "subtitle": "1st to 3rd Year",
+                "detail": "University of Makati",
+                "theme": "emerald"
+              },
+              {
+                "id": "card-2",
+                "badge": "2nd Runner Up",
+                "title": "Infotechnolympics",
+                "subtitle": "Web Design (2024-2025)",
+                "detail": "2024 – 2025",
+                "theme": "cyan"
+              },
+              {
+                "id": "card-3",
+                "badge": "National Certificate II",
+                "title": "Computer System Servicing (NCII)",
+                "subtitle": "Professional Certification",
+                "detail": "Philippines",
+                "theme": "blue"
+              }
+            ],
+            "badges": [
+              { "id": "badge-1", "title": "C++ Essentials 1", "provider": "Cisco Academy", "icon": "img/c-essentials-1.png" },
+              { "id": "badge-2", "title": "Hardware Basics", "provider": "Cisco Academy", "icon": "img/computer-hardware-basics.png" },
+              { "id": "badge-3", "title": "Cyber Threat Mgt.", "provider": "Cisco Academy", "icon": "img/cyber-threat-management.png" },
+              { "id": "badge-4", "title": "Intro to Cyber", "provider": "Cisco Academy", "icon": "img/introduction-to-cybersecurity.png" },
+              { "id": "badge-5", "title": "Intro to IoT", "provider": "Cisco Academy", "icon": "img/introduction-to-iot.png" },
+              { "id": "badge-6", "title": "ISC2 Candidate", "provider": "ISC2", "icon": "img/isc2-candidate.png" },
+              { "id": "badge-7", "title": "Networking Basics", "provider": "Cisco Academy", "icon": "img/networking-basics.png" }
+            ]
+          },
+          "contact": {
+            "title": "Let's Connect",
+            "subtitle": "I'm currently open for opportunities in web development, backend programming, and network administration. Fill out the form below and I'll get back to you!",
+            "formspreeUrl": "https://formspree.io/f/xkoypkaa"
+          },
+          "footer": {
+            "copyright": "© 2026 John Clerwin N. Dela Cruz. All rights reserved."
+          },
+          "githubConfig": {
+            "owner": "ClerZ03-wq",
+            "repo": "cler-portfolio",
+            "branch": "main",
+            "dataPath": "data/portfolio-data.json"
+          }
+        };
+
+        // --- GLOBAL APP STATE ---
+        let portfolioData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        let adminState = {
+            isLoggedIn: false,
+            token: '',
+            user: null,
+            mode: 'edit', // 'edit' or 'preview'
+            unsavedChanges: false,
+            fileSha: null
+        };
+
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            loadPortfolioData();
+            checkStoredAdminSession();
+            setupKeyboardShortcuts();
+        });
+
+        async function loadPortfolioData() {
+            try {
+                const res = await fetch('data/portfolio-data.json?t=' + Date.now());
+                if (res.ok) {
+                    const fetchedData = await res.json();
+                    portfolioData = Object.assign({}, DEFAULT_DATA, fetchedData);
+                }
+            } catch (err) {
+                console.log('Using default portfolio data fallback:', err);
+            }
+            renderAllSections();
+        }
+
+        // --- RENDER ENGINE FOR PORTFOLIO SECTIONS ---
+        function renderAllSections() {
+            renderHero();
+            renderAbout();
+            renderProjects();
+            renderSkills();
+            renderAchievements();
+            renderContact();
+            renderFooter();
+            setTimeout(reveal, 100);
+        }
+
+        // 1. Hero Section Render
+        function renderHero() {
+            const h = portfolioData.hero;
+            const container = document.getElementById('hero-container');
+            const showEdit = adminState.isLoggedIn && adminState.mode === 'edit';
+
+            const rolesHtml = h.roles.map((r, i) => `${r}${i < h.roles.length - 1 ? ' <span class="text-sky-300 mx-1">|</span> ' : ''}`).join('');
+
+            container.innerHTML = `
+                <div class="absolute inset-0 z-0 pointer-events-none">
+                    <div class="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] dark:bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:24px_24px] opacity-40"></div>
+                    <div class="absolute top-0 left-1/4 w-64 h-64 md:w-96 md:h-96 bg-sky-400/20 dark:bg-sky-600/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-70 animate-blob"></div>
+                    <div class="absolute top-10 right-1/4 w-64 h-64 md:w-96 md:h-96 bg-indigo-400/20 dark:bg-indigo-600/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+                    <div class="absolute -bottom-8 left-1/3 w-64 h-64 md:w-96 md:h-96 bg-blue-400/20 dark:bg-blue-600/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
+                </div>
+
+                ${showEdit ? `
+                    <div class="absolute top-4 right-4 z-20">
+                        <button onclick="openEditHeroModal()" class="admin-edit-btn bg-sky-500 hover:bg-sky-600 text-white font-bold px-3.5 py-1.5 rounded-full text-xs shadow-lg flex items-center gap-1.5 cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            Edit Hero
+                        </button>
+                    </div>
+                ` : ''}
+
+                <div class="relative z-10 w-full">
+                    <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 mb-4">
+                        <img src="${h.avatar}" alt="${h.name}" class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white object-cover shadow-lg shadow-sky-200/50 dark:border-slate-800 transition-all duration-500">
+                        <h1 class="text-5xl md:text-7xl font-heading font-black tracking-tight text-slate-800 dark:text-slate-100">${h.name}</h1>
+                    </div>
+                    <p class="text-xl md:text-2xl text-slate-500 mb-8 font-medium mt-2 dark:text-slate-400">
+                        ${rolesHtml}
+                    </p>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <a href="${h.ctaLink}" class="bg-sky-400 text-white px-6 py-2.5 rounded-full font-bold shadow-md hover:bg-sky-500 transition-all">${h.ctaText}</a>
+                        
+                        ${h.socials.linkedin ? `
+                            <a href="${h.socials.linkedin}" target="_blank" class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-full text-sm text-slate-600 font-bold border border-sky-100 shadow-sm hover:border-sky-300 transition-all dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                                LinkedIn
+                            </a>
+                        ` : ''}
+
+                        ${h.socials.github ? `
+                            <a href="${h.socials.github}" target="_blank" class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-full text-sm text-slate-600 font-bold border border-sky-100 shadow-sm hover:border-sky-300 transition-all dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                                GitHub
+                            </a>
+                        ` : ''}
+
+                        ${h.socials.facebook ? `
+                            <a href="${h.socials.facebook}" target="_blank" class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-full text-sm text-slate-600 font-bold border border-sky-100 shadow-sm hover:border-sky-300 transition-all dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                                Facebook
+                            </a>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 2. About Section Render
+        function renderAbout() {
+            const ab = portfolioData.about;
+            const container = document.getElementById('about');
+            const showEdit = adminState.isLoggedIn && adminState.mode === 'edit';
+
+            container.innerHTML = `
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-heading font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
+                        <span class="w-8 h-[2px] bg-sky-400 inline-block"></span> ${ab.title}
+                    </h2>
+                    ${showEdit ? `
+                        <button onclick="openEditAboutModal()" class="admin-edit-btn bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1 rounded-full text-xs shadow flex items-center gap-1 cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            Edit
+                        </button>
+                    ` : ''}
+                </div>
+                <p class="text-lg text-slate-600 leading-relaxed dark:text-slate-300">
+                    ${ab.content}
+                </p>
+            `;
+        }
+
+        // 3. Projects Section Render
+        function renderProjects() {
+            const projects = portfolioData.projects || [];
+            const container = document.getElementById('projects');
+            const showEdit = adminState.isLoggedIn && adminState.mode === 'edit';
+
+            let itemsHtml = '';
+
+            projects.forEach((p, index) => {
+                const isFirst = index === 0;
+                const tagsHtml = p.tags.map(t => `<span class="text-[10px] font-bold text-slate-500 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded">${t}</span>`).join(' ');
+
+                itemsHtml += `
+                    <div class="relative mb-12 ml-8 reveal">
+                        <div class="absolute w-4 h-4 ${isFirst ? 'bg-sky-500 animate-pulse' : 'bg-sky-400'} rounded-full -left-[9px] border-4 border-sky-50 dark:border-slate-950 shadow-sm"></div>
+                        <span class="ml-2 text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-widest block mb-3">${p.period}</span>
+                        
+                        <div class="bg-white rounded-2xl p-8 border border-sky-100 shadow-sm card-hover dark:bg-slate-900 dark:border-slate-800 transition-all relative">
+                            ${showEdit ? `
+                                <div class="absolute top-4 right-4 flex gap-1.5 z-10">
+                                    <button onclick="openEditProjectModal('${p.id}')" class="admin-edit-btn bg-sky-500 hover:bg-sky-600 text-white font-bold p-1.5 rounded-lg text-xs shadow cursor-pointer" title="Edit Project">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    </button>
+                                    <button onclick="deleteProjectItem('${p.id}')" class="admin-edit-btn bg-rose-500 hover:bg-rose-600 text-white font-bold p-1.5 rounded-lg text-xs shadow cursor-pointer" title="Delete Project">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                    </button>
+                                </div>
+                            ` : ''}
+
+                            <div class="flex justify-between items-start mb-4 pr-12">
+                                <div>
+                                    <span class="text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-sky-50 dark:bg-sky-900/30 text-sky-600 dark:text-sky-300 rounded-md mb-3 inline-block">${p.role}</span>
+                                    <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100">${p.title}</h3>
+                                </div>
+                                <img src="${p.logo}" alt="${p.title} Logo" class="w-14 h-14 object-contain rounded-xl bg-slate-50 dark:bg-slate-800 p-2 border border-slate-100 dark:border-slate-700 shadow-sm">
+                            </div>
+                            <p class="text-slate-600 dark:text-slate-400 mb-6 text-sm leading-relaxed">
+                                ${p.description}
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                ${tagsHtml}
+                            </div>
+                            <a href="${p.link}" class="text-sm text-sky-600 font-bold hover:text-sky-800 dark:text-sky-300 transition-colors pb-1 border-b border-sky-200">View Project &rarr;</a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = `
+                <div class="flex justify-between items-center mb-10">
+                    <h2 class="text-2xl font-heading font-black text-slate-800 dark:text-slate-100 flex items-center gap-3 reveal">
+                        <span class="w-8 h-[2px] bg-sky-400 inline-block"></span> Featured Projects
+                    </h2>
+                    ${showEdit ? `
+                        <button onclick="openCreateProjectModal()" class="admin-edit-btn bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-3 py-1.5 rounded-full text-xs shadow flex items-center gap-1 cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                            Add New Project
+                        </button>
+                    ` : ''}
+                </div>
+                
+                <div class="relative border-l-2 border-sky-200 dark:border-slate-800 ml-3">
+                    ${itemsHtml}
+                </div>
+            `;
+        }
+
+        // 4. Skills Section Render
+        function renderSkills() {
+            const skills = portfolioData.skills || [];
+            const container = document.getElementById('skills');
+            const showEdit = adminState.isLoggedIn && adminState.mode === 'edit';
+
+            let groupsHtml = '';
+            skills.forEach(g => {
+                const itemsHtml = g.items.map(item => `<span class="bg-sky-50 dark:bg-slate-800 px-3 py-1 rounded-md">${item}</span>`).join(' ');
+                groupsHtml += `
+                    <div class="bg-white rounded-2xl border border-sky-100 p-6 card-hover shadow-sm dark:bg-slate-900 dark:border-slate-800 transition-all">
+                        <h3 class="text-sm font-black uppercase tracking-wider mb-4 text-sky-600 dark:text-sky-400">${g.category}</h3>
+                        <div class="flex flex-wrap gap-2 text-sm font-medium text-slate-600 dark:text-slate-300">
+                            ${itemsHtml}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = `
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-heading font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
+                        <span class="w-8 h-[2px] bg-sky-400 inline-block"></span> Technical Arsenal
+                    </h2>
+                    ${showEdit ? `
+                        <button onclick="openEditSkillsModal()" class="admin-edit-btn bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1 rounded-full text-xs shadow flex items-center gap-1 cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            Edit Arsenal
+                        </button>
+                    ` : ''}
+                </div>
+                
+                <div class="space-y-6">
+                    ${groupsHtml}
+                </div>
+            `;
+        }
+
+        // 5. Achievements Section Render
+        function renderAchievements() {
+            const ach = portfolioData.achievements || { cards: [], badges: [] };
+            const container = document.getElementById('certs');
+            const showEdit = adminState.isLoggedIn && adminState.mode === 'edit';
+
+            let cardsHtml = '';
+            ach.cards.forEach(c => {
+                let badgeStyle = 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800/50 text-emerald-600 dark:text-emerald-400';
+                if (c.theme === 'cyan') badgeStyle = 'bg-cyan-50 dark:bg-cyan-900/20 border-cyan-200 dark:border-cyan-800/50 text-cyan-600 dark:text-cyan-400';
+                if (c.theme === 'blue') badgeStyle = 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800/50 text-blue-600 dark:text-blue-400';
+                if (c.theme === 'purple') badgeStyle = 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800/50 text-purple-600 dark:text-purple-400';
+                if (c.theme === 'rose') badgeStyle = 'bg-rose-50 dark:bg-rose-900/20 border-rose-200 dark:border-rose-800/50 text-rose-600 dark:text-rose-400';
+
+                cardsHtml += `
+                    <div class="notepad-page p-6 flex flex-col justify-center">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border text-[10px] font-bold tracking-widest uppercase mb-4 self-start ${badgeStyle}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            ${c.badge}
+                        </div>
+                        <h3 class="text-slate-900 dark:text-white text-2xl font-black font-heading tracking-tight mb-1">${c.title}</h3>
+                        <h4 class="text-sky-600 dark:text-sky-400 text-sm font-bold mb-6">${c.subtitle}</h4>
+                        
+                        <div class="mt-auto flex items-center gap-2 text-xs text-slate-500 font-medium pt-4 border-t border-slate-100 dark:border-slate-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            <span>${c.detail}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            let badgesHtml = '';
+            ach.badges.forEach(b => {
+                badgesHtml += `
+                    <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
+                        <img src="${b.icon}" alt="${b.title}" class="w-10 h-10 mb-3 object-contain">
+                        <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">${b.title}</h4>
+                        <p class="text-[9px] uppercase tracking-wider text-slate-400">${b.provider}</p>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = `
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-heading font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
+                        <span class="w-8 h-[2px] bg-sky-400 inline-block"></span> Achievements
+                    </h2>
+                    ${showEdit ? `
+                        <button onclick="openEditAchievementsModal()" class="admin-edit-btn bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1 rounded-full text-xs shadow flex items-center gap-1 cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            Edit Achievements
+                        </button>
+                    ` : ''}
+                </div>
 
                 <div class="mb-4 max-w-sm mx-auto relative mt-8">
-                    
                     <div class="absolute inset-0 bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 translate-y-3 translate-x-1.5 opacity-60"></div>
                     <div class="absolute inset-0 bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 translate-y-1.5 translate-x-0.5 opacity-80"></div>
                     
                     <div class="relative bg-slate-50 dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700">
-                        
                         <div class="calendar-binder">
-                            <div class="calendar-ring"></div>
-                            <div class="calendar-ring"></div>
-                            <div class="calendar-ring"></div>
-                            <div class="calendar-ring"></div>
-                            <div class="calendar-ring"></div>
-                            <div class="calendar-ring"></div>
-                            <div class="calendar-ring"></div>
+                            <div class="calendar-ring"></div><div class="calendar-ring"></div><div class="calendar-ring"></div><div class="calendar-ring"></div><div class="calendar-ring"></div><div class="calendar-ring"></div><div class="calendar-ring"></div>
                         </div>
 
                         <div class="notepad-stack" id="notepad-peel-container">
-                            
-                            <div class="notepad-page p-6 flex flex-col justify-center">
-                                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold tracking-widest uppercase mb-4 self-start">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path d="M12 14l9-5-9-5-9 5 9 5z" />
-                                        <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                                    </svg>
-                                    Academic Excellence
-                                </div>
-                                <h3 class="text-slate-900 dark:text-white text-2xl font-black font-heading tracking-tight mb-1">Dean's Lister</h3>
-                                <h4 class="text-sky-600 dark:text-sky-400 text-sm font-bold mb-6">1st to 3rd Year</h4>
-                                
-                                <div class="mt-auto flex items-center gap-2 text-xs text-slate-500 font-medium pt-4 border-t border-slate-100 dark:border-slate-800">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                    </svg>
-                                    <span>University of Makati</span>
-                                </div>
-                            </div>
-                            <div class="notepad-page p-6 flex flex-col justify-center">
-                                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800/50 text-cyan-600 dark:text-cyan-400 text-[10px] font-bold tracking-widest uppercase mb-4 self-start">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                                    </svg>
-                                    2nd Runner Up
-                                </div>
-                                <h3 class="text-slate-900 dark:text-white text-2xl font-black font-heading tracking-tight mb-1">Infotechnolympics</h3>
-                                <h4 class="text-sky-600 dark:text-sky-400 text-sm font-bold mb-6">Web Design (2024-2025)</h4>
-                                
-                                <div class="mt-auto flex items-center gap-2 text-xs text-slate-500 font-medium pt-4 border-t border-slate-100 dark:border-slate-800">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    <span>2024 – 2025</span>
-                                </div>
-                            </div>
-
-                            <div class="notepad-page p-6 flex flex-col justify-center">
-                                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 text-[10px] font-bold tracking-widest uppercase mb-4 self-start">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    National Certificate II
-                                </div>
-                                <h3 class="text-slate-900 dark:text-white text-2xl font-black font-heading tracking-tight mb-1">Computer System Servicing (NCII)</h3>
-                                <h4 class="text-sky-600 dark:text-sky-400 text-sm font-bold mb-6">Professional Certification</h4>
-                                
-                                <div class="mt-auto flex items-center gap-2 text-xs text-slate-500 font-medium pt-4 border-t border-slate-100 dark:border-slate-800">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                    <span>Philippines</span>
-                                </div>
-                            </div>
-                         
+                            ${cardsHtml}
                         </div>
                     </div>
                 </div>
                 <br>
                 <div class="badge-scroller mt-8">
                     <div class="badge-scroller__inner cursor-pointer" id="badge-track">
+                        ${badgesHtml}
+                    </div>
+                </div>
+            `;
+
+            setTimeout(initializeNotepadPeel, 200);
+            setTimeout(initializeBadgeScroller, 200);
+        }
+
+        // 6. Contact Section Render
+        function renderContact() {
+            const ct = portfolioData.contact;
+            const container = document.getElementById('contact');
+            const showEdit = adminState.isLoggedIn && adminState.mode === 'edit';
+
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto px-6 relative">
+                    ${showEdit ? `
+                        <div class="absolute top-0 right-6">
+                            <button onclick="openEditContactModal()" class="admin-edit-btn bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1 rounded-full text-xs shadow flex items-center gap-1 cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                Edit Contact
+                            </button>
+                        </div>
+                    ` : ''}
+
+                    <div class="text-center mb-12">
+                        <h2 class="text-3xl font-heading font-black mb-4 text-slate-800 dark:text-slate-100">${ct.title}</h2>
+                        <p class="text-sm text-slate-600 max-w-xl mx-auto dark:text-slate-400">
+                            ${ct.subtitle}
+                        </p>
+                    </div>
+
+                    <form action="${ct.formspreeUrl}" method="POST" class="max-w-2xl mx-auto space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="name" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Name</label>
+                                <input type="text" id="name" name="name" required placeholder="John Doe" 
+                                    class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all placeholder-slate-400 dark:placeholder-slate-500 shadow-sm">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email</label>
+                                <input type="email" id="email" name="email" required placeholder="john@example.com" 
+                                    class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all placeholder-slate-400 dark:placeholder-slate-500 shadow-sm">
+                            </div>
+                        </div>
                         
-                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
-                            <img src="img/c-essentials-1.png" alt="C++ Essentials" class="w-10 h-10 mb-3 object-contain">
-                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">C++ Essentials 1</h4>
-                            <p class="text-[9px] uppercase tracking-wider text-slate-400">Cisco Academy</p>
+                        <div>
+                            <label for="message" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Message</label>
+                            <textarea id="message" name="message" rows="5" required placeholder="Hi Clerwin, I'd like to talk about..." 
+                                class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all resize-none placeholder-slate-400 dark:placeholder-slate-500 shadow-sm"></textarea>
                         </div>
-
-                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
-                            <img src="img/computer-hardware-basics.png" alt="Hardware Basics" class="w-10 h-10 mb-3 object-contain">
-                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">Hardware Basics</h4>
-                            <p class="text-[9px] uppercase tracking-wider text-slate-400">Cisco Academy</p>
+                        
+                        <div class="text-center pt-4">
+                            <button type="submit" class="inline-block bg-sky-500 text-white px-10 py-3.5 rounded-full font-bold shadow-md hover:bg-sky-600 hover:-translate-y-1 transition-all cursor-pointer">
+                                Send Message &rarr;
+                            </button>
                         </div>
-
-                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
-                            <img src="img/cyber-threat-management.png" alt="Cyber Threat Mgt" class="w-10 h-10 mb-3 object-contain">
-                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">Cyber Threat Mgt.</h4>
-                            <p class="text-[9px] uppercase tracking-wider text-slate-400">Cisco Academy</p>
-                        </div>
-
-                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
-                            <img src="img/introduction-to-cybersecurity.png" alt="Intro to Cyber" class="w-10 h-10 mb-3 object-contain">
-                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">Intro to Cyber</h4>
-                            <p class="text-[9px] uppercase tracking-wider text-slate-400">Cisco Academy</p>
-                        </div>
-
-                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
-                            <img src="img/introduction-to-iot.png" alt="Intro to IoT" class="w-10 h-10 mb-3 object-contain">
-                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">Intro to IoT</h4>
-                            <p class="text-[9px] uppercase tracking-wider text-slate-400">Cisco Academy</p>
-                        </div>
-
-                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
-                            <img src="img/isc2-candidate.png" alt="ISC2 Candidate" class="w-10 h-10 mb-3 object-contain">
-                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">ISC2 Candidate</h4>
-                            <p class="text-[9px] uppercase tracking-wider text-slate-400">ISC2</p>
-                        </div>
-
-                        <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
-                            <img src="img/networking-basics.png" alt="Networking Basics" class="w-10 h-10 mb-3 object-contain">
-                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">Networking Basics</h4>
-                            <p class="text-[9px] uppercase tracking-wider text-slate-400">Cisco Academy</p>
-                        </div>
-
-                    </div>
+                    </form>
                 </div>
+            `;
+        }
 
-            </section>
-        </div>
-
-    </main>
-
-    <section id="contact" class="border-t border-sky-100 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 py-20 reveal scroll-mt-24">
-        <div class="max-w-4xl mx-auto px-6">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-heading font-black mb-4 text-slate-800 dark:text-slate-100">Let's Connect</h2>
-                <p class="text-sm text-slate-600 max-w-xl mx-auto dark:text-slate-400">
-                    I'm currently open for opportunities in web development, backend programming, and network administration. Fill out the form below and I'll get back to you!
-                </p>
-            </div>
-
-            <form action="https://formspree.io/f/xkoypkaa" method="POST" class="max-w-2xl mx-auto space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="name" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Name</label>
-                        <input type="text" id="name" name="name" required placeholder="John Doe" 
-                            class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all placeholder-slate-400 dark:placeholder-slate-500 shadow-sm">
-                    </div>
-                    <div>
-                        <label for="email" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email</label>
-                        <input type="email" id="email" name="email" required placeholder="john@example.com" 
-                            class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all placeholder-slate-400 dark:placeholder-slate-500 shadow-sm">
-                    </div>
-                </div>
-                
-                <div>
-                    <label for="message" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Message</label>
-                    <textarea id="message" name="message" rows="5" required placeholder="Hi Clerwin, I'd like to talk about..." 
-                        class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all resize-none placeholder-slate-400 dark:placeholder-slate-500 shadow-sm"></textarea>
-                </div>
-                
-                <div class="text-center pt-4">
-                    <button type="submit" class="inline-block bg-sky-500 text-white px-10 py-3.5 rounded-full font-bold shadow-md hover:bg-sky-600 hover:-translate-y-1 transition-all cursor-pointer">
-                        Send Message &rarr;
+        // 7. Footer Render
+        function renderFooter() {
+            const ft = portfolioData.footer;
+            const container = document.getElementById('footer-container');
+            container.innerHTML = `
+                <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p>${ft.copyright}</p>
+                    <button onclick="openLoginModal()" class="text-slate-400 hover:text-sky-500 font-bold transition-colors flex items-center gap-1 text-[11px] cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Admin Area
                     </button>
                 </div>
-            </form>
-            
-        </div>
-    </section>
+            `;
+        }
 
-    <footer class="bg-white/80 py-8 text-center text-xs text-slate-400 font-medium dark:bg-slate-950 transition-colors">
-        <p>&copy; 2026 John Clerwin N. Dela Cruz. All rights reserved.</p>
-    </footer>
 
+        // ==========================================
+        // AUTHENTICATION & GITHUB REST API ENGINE  
+        // ==========================================
+
+        function checkStoredAdminSession() {
+            const savedToken = sessionStorage.getItem('admin_github_pat') || localStorage.getItem('admin_github_pat');
+            if (savedToken) {
+                verifyAndApplyToken(savedToken, false);
+            }
+        }
+
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+                    e.preventDefault();
+                    if (!adminState.isLoggedIn) openLoginModal();
+                    else toggleAdminViewMode();
+                }
+            });
+        }
+
+        function openLoginModal() {
+            if (adminState.isLoggedIn) {
+                showToast('Already logged in as Admin', 'info');
+                return;
+            }
+            openModal('modal-admin-login');
+        }
+
+        async function handleLoginSubmit(e) {
+            e.preventDefault();
+            const token = document.getElementById('input-pat-token').value.trim();
+            const remember = document.getElementById('check-remember-token').checked;
+            const errBox = document.getElementById('login-error-msg');
+            const submitBtn = document.getElementById('btn-login-submit');
+
+            errBox.classList.add('hidden');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `Verifying GitHub Token...`;
+
+            const success = await verifyAndApplyToken(token, remember);
+
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `Authenticate & Connect to GitHub`;
+
+            if (success) {
+                closeModal('modal-admin-login');
+                showToast('Administrator logged in successfully!', 'success');
+            } else {
+                errBox.textContent = 'Invalid Personal Access Token or repository access denied. Ensure token has write scope.';
+                errBox.classList.remove('hidden');
+            }
+        }
+
+        async function verifyAndApplyToken(token, remember) {
+            try {
+                // Verify token with GitHub user API
+                const userRes = await fetch('https://api.github.com/user', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (!userRes.ok) return false;
+
+                const userData = await userRes.json();
+                
+                adminState.isLoggedIn = true;
+                adminState.token = token;
+                adminState.user = userData;
+                adminState.mode = 'edit';
+
+                if (remember) {
+                    localStorage.setItem('admin_github_pat', token);
+                } else {
+                    sessionStorage.setItem('admin_github_pat', token);
+                }
+
+                // Update UI elements
+                document.getElementById('admin-top-bar').classList.remove('hidden');
+                document.getElementById('admin-user-info').innerHTML = `Logged in as <strong>@${userData.login}</strong>`;
+                
+                // Fetch file SHA from repository
+                fetchRepoSha();
+
+                renderAllSections();
+                return true;
+
+            } catch (err) {
+                console.error('Token verification error:', err);
+                return false;
+            }
+        }
+
+        async function fetchRepoSha() {
+            if (!adminState.token) return;
+            const cfg = portfolioData.githubConfig || DEFAULT_DATA.githubConfig;
+            try {
+                const res = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.dataPath}`, {
+                    headers: { 'Authorization': `Bearer ${adminState.token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    adminState.fileSha = data.sha;
+                }
+            } catch (err) {
+                console.log('Error fetching SHA:', err);
+            }
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem('admin_github_pat');
+            localStorage.removeItem('admin_github_pat');
+            adminState.isLoggedIn = false;
+            adminState.token = '';
+            adminState.user = null;
+            adminState.unsavedChanges = false;
+
+            document.getElementById('admin-top-bar').classList.add('hidden');
+            renderAllSections();
+            showToast('Logged out of Admin Mode', 'info');
+        }
+
+        function toggleAdminViewMode() {
+            adminState.mode = adminState.mode === 'edit' ? 'preview' : 'edit';
+            const btnText = document.getElementById('admin-mode-text');
+            btnText.textContent = adminState.mode === 'edit' ? 'Editing Controls On' : 'Preview Mode (Controls Hidden)';
+            renderAllSections();
+        }
+
+        function markUnsaved() {
+            adminState.unsavedChanges = true;
+            document.getElementById('unsaved-badge').classList.remove('hidden');
+        }
+
+        // --- COMMIT DATA DIRECTLY TO GITHUB REPOSITORY ---
+        async function saveToGitHub() {
+            if (!adminState.isLoggedIn || !adminState.token) {
+                openLoginModal();
+                return;
+            }
+
+            const cfg = portfolioData.githubConfig || DEFAULT_DATA.githubConfig;
+            const saveBtn = document.getElementById('btn-save-github');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = `<svg class="animate-spin w-4 h-4 mr-1 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Committing to GitHub...`;
+
+            try {
+                // 1. Fetch latest SHA if not already fetched
+                if (!adminState.fileSha) {
+                    await fetchRepoSha();
+                }
+
+                // 2. Encode UTF-8 content to Base64
+                const jsonString = JSON.stringify(portfolioData, null, 2);
+                const utf8Bytes = new TextEncoder().encode(jsonString);
+                let binaryStr = '';
+                utf8Bytes.forEach(b => binaryStr += String.fromCharCode(b));
+                const base64Content = btoa(binaryStr);
+
+                // 3. Send PUT request to GitHub API
+                const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.dataPath}`;
+                const payload = {
+                    message: `Update portfolio content via Admin Panel [${new Date().toLocaleString()}]`,
+                    content: base64Content,
+                    branch: cfg.branch || 'main'
+                };
+                if (adminState.fileSha) payload.sha = adminState.fileSha;
+
+                const res = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${adminState.token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const responseData = await res.json();
+
+                if (res.ok) {
+                    adminState.fileSha = responseData.content.sha;
+                    adminState.unsavedChanges = false;
+                    document.getElementById('unsaved-badge').classList.add('hidden');
+                    showToast('Successfully committed to GitHub repository! Page updates will be live shortly.', 'success');
+                } else {
+                    console.error('GitHub API error:', responseData);
+                    showToast(`GitHub Save Error: ${responseData.message || 'Permission denied'}`, 'error');
+                }
+
+            } catch (err) {
+                console.error('Failed to commit to GitHub:', err);
+                showToast('Network error while saving to GitHub.', 'error');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg> Save Changes to GitHub`;
+            }
+        }
+
+        // --- IMAGE UPLOAD HELPER TO GITHUB ---
+        async function handleImageUpload(event, targetInputId) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!adminState.isLoggedIn) {
+                showToast('Please login as Admin to upload images', 'error');
+                return;
+            }
+
+            const inputElem = document.getElementById(targetInputId);
+            const originalVal = inputElem.value;
+            inputElem.value = 'Uploading image...';
+
+            const cfg = portfolioData.githubConfig || DEFAULT_DATA.githubConfig;
+            const filename = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+            const targetPath = `img/${filename}`;
+
+            try {
+                const reader = new FileReader();
+                reader.readAsArrayBuffer(file);
+                reader.onload = async () => {
+                    const arrayBuffer = reader.result;
+                    const bytes = new Uint8Array(arrayBuffer);
+                    let binary = '';
+                    bytes.forEach(b => binary += String.fromCharCode(b));
+                    const base64 = btoa(binary);
+
+                    const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${targetPath}`;
+                    const res = await fetch(url, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${adminState.token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: `Upload image ${filename} via Admin Panel`,
+                            content: base64,
+                            branch: cfg.branch || 'main'
+                        })
+                    });
+
+                    if (res.ok) {
+                        inputElem.value = targetPath;
+                        showToast(`Uploaded ${filename} successfully!`, 'success');
+                    } else {
+                        inputElem.value = originalVal;
+                        showToast('Failed to upload image to GitHub repository.', 'error');
+                    }
+                };
+            } catch (err) {
+                inputElem.value = originalVal;
+                showToast('Error uploading image file.', 'error');
+            }
+        }
+
+
+        // ==========================================
+        // MODAL DATA FORM HANDLERS                  
+        // ==========================================
+
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        // Hero Modal
+        function openEditHeroModal() {
+            const h = portfolioData.hero;
+            document.getElementById('edit-hero-name').value = h.name;
+            document.getElementById('edit-hero-roles').value = h.roles.join(', ');
+            document.getElementById('edit-hero-avatar').value = h.avatar;
+            document.getElementById('edit-hero-cta-text').value = h.ctaText;
+            document.getElementById('edit-hero-cta-link').value = h.ctaLink;
+            document.getElementById('edit-hero-linkedin').value = h.socials.linkedin || '';
+            document.getElementById('edit-hero-github').value = h.socials.github || '';
+            document.getElementById('edit-hero-facebook').value = h.socials.facebook || '';
+            openModal('modal-edit-hero');
+        }
+
+        function saveHeroData(e) {
+            e.preventDefault();
+            const h = portfolioData.hero;
+            h.name = document.getElementById('edit-hero-name').value.trim();
+            h.roles = document.getElementById('edit-hero-roles').value.split(',').map(s => s.trim()).filter(Boolean);
+            h.avatar = document.getElementById('edit-hero-avatar').value.trim();
+            h.ctaText = document.getElementById('edit-hero-cta-text').value.trim();
+            h.ctaLink = document.getElementById('edit-hero-cta-link').value.trim();
+            h.socials.linkedin = document.getElementById('edit-hero-linkedin').value.trim();
+            h.socials.github = document.getElementById('edit-hero-github').value.trim();
+            h.socials.facebook = document.getElementById('edit-hero-facebook').value.trim();
+
+            renderHero();
+            closeModal('modal-edit-hero');
+            markUnsaved();
+            showToast('Hero section updated locally!', 'info');
+        }
+
+        // About Modal
+        function openEditAboutModal() {
+            document.getElementById('edit-about-title').value = portfolioData.about.title;
+            document.getElementById('edit-about-content').value = portfolioData.about.content;
+            openModal('modal-edit-about');
+        }
+
+        function saveAboutData(e) {
+            e.preventDefault();
+            portfolioData.about.title = document.getElementById('edit-about-title').value.trim();
+            portfolioData.about.content = document.getElementById('edit-about-content').value.trim();
+
+            renderAbout();
+            closeModal('modal-edit-about');
+            markUnsaved();
+            showToast('About section updated locally!', 'info');
+        }
+
+        // Project Modal
+        function openCreateProjectModal() {
+            document.getElementById('project-modal-heading').textContent = 'Add New Project';
+            document.getElementById('edit-proj-id').value = '';
+            document.getElementById('edit-proj-title').value = '';
+            document.getElementById('edit-proj-role').value = '';
+            document.getElementById('edit-proj-period').value = '';
+            document.getElementById('edit-proj-logo').value = 'img/logo.svg';
+            document.getElementById('edit-proj-description').value = '';
+            document.getElementById('edit-proj-tags').value = '';
+            document.getElementById('edit-proj-link').value = '#';
+            openModal('modal-edit-project-item');
+        }
+
+        function openEditProjectModal(id) {
+            const proj = portfolioData.projects.find(p => p.id === id);
+            if (!proj) return;
+            document.getElementById('project-modal-heading').textContent = 'Edit Project';
+            document.getElementById('edit-proj-id').value = proj.id;
+            document.getElementById('edit-proj-title').value = proj.title;
+            document.getElementById('edit-proj-role').value = proj.role;
+            document.getElementById('edit-proj-period').value = proj.period;
+            document.getElementById('edit-proj-logo').value = proj.logo;
+            document.getElementById('edit-proj-description').value = proj.description;
+            document.getElementById('edit-proj-tags').value = proj.tags.join(', ');
+            document.getElementById('edit-proj-link').value = proj.link;
+            openModal('modal-edit-project-item');
+        }
+
+        function saveProjectItem(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-proj-id').value;
+            const newItem = {
+                id: id || `proj-${Date.now()}`,
+                title: document.getElementById('edit-proj-title').value.trim(),
+                role: document.getElementById('edit-proj-role').value.trim(),
+                period: document.getElementById('edit-proj-period').value.trim(),
+                logo: document.getElementById('edit-proj-logo').value.trim(),
+                description: document.getElementById('edit-proj-description').value.trim(),
+                tags: document.getElementById('edit-proj-tags').value.split(',').map(s => s.trim()).filter(Boolean),
+                link: document.getElementById('edit-proj-link').value.trim()
+            };
+
+            if (id) {
+                const idx = portfolioData.projects.findIndex(p => p.id === id);
+                if (idx !== -1) portfolioData.projects[idx] = newItem;
+            } else {
+                portfolioData.projects.push(newItem);
+            }
+
+            renderProjects();
+            closeModal('modal-edit-project-item');
+            markUnsaved();
+            showToast('Projects updated locally!', 'info');
+        }
+
+        function deleteProjectItem(id) {
+            if (confirm('Are you sure you want to delete this project?')) {
+                portfolioData.projects = portfolioData.projects.filter(p => p.id !== id);
+                renderProjects();
+                markUnsaved();
+                showToast('Project deleted!', 'info');
+            }
+        }
+
+        // Skills Modal
+        function openEditSkillsModal() {
+            const container = document.getElementById('skills-editor-groups');
+            container.innerHTML = '';
+
+            portfolioData.skills.forEach((g, idx) => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-sky-100 dark:border-slate-700 relative';
+                groupDiv.innerHTML = `
+                    <button type="button" onclick="this.parentElement.remove()" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 text-xs font-bold">Remove Group</button>
+                    <div class="mb-3">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Category Title</label>
+                        <input type="text" value="${g.category}" class="skill-cat-title w-full px-3 py-2 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Skill Items (comma separated)</label>
+                        <input type="text" value="${g.items.join(', ')}" class="skill-cat-items w-full px-3 py-2 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-xs">
+                    </div>
+                `;
+                container.appendChild(groupDiv);
+            });
+
+            openModal('modal-edit-skills');
+        }
+
+        function addSkillGroupEditor() {
+            const container = document.getElementById('skills-editor-groups');
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-sky-100 dark:border-slate-700 relative';
+            groupDiv.innerHTML = `
+                <button type="button" onclick="this.parentElement.remove()" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 text-xs font-bold">Remove Group</button>
+                <div class="mb-3">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Category Title</label>
+                    <input type="text" placeholder="e.g. Cloud & DevOps" class="skill-cat-title w-full px-3 py-2 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Skill Items (comma separated)</label>
+                    <input type="text" placeholder="Docker, AWS, Kubernetes" class="skill-cat-items w-full px-3 py-2 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-xs">
+                </div>
+            `;
+            container.appendChild(groupDiv);
+        }
+
+        function saveSkillsData(e) {
+            e.preventDefault();
+            const groupDivs = document.querySelectorAll('#skills-editor-groups > div');
+            const newSkills = [];
+
+            groupDivs.forEach((div, idx) => {
+                const cat = div.querySelector('.skill-cat-title').value.trim();
+                const items = div.querySelector('.skill-cat-items').value.split(',').map(s => s.trim()).filter(Boolean);
+                if (cat && items.length) {
+                    newSkills.push({
+                        id: `skill-${idx + 1}`,
+                        category: cat,
+                        items: items
+                    });
+                }
+            });
+
+            portfolioData.skills = newSkills;
+            renderSkills();
+            closeModal('modal-edit-skills');
+            markUnsaved();
+            showToast('Technical Arsenal updated locally!', 'info');
+        }
+
+        // Achievements Modal
+        function openEditAchievementsModal() {
+            const cardsContainer = document.getElementById('achieve-cards-editor');
+            const badgesContainer = document.getElementById('achieve-badges-editor');
+            cardsContainer.innerHTML = '';
+            badgesContainer.innerHTML = '';
+
+            portfolioData.achievements.cards.forEach(c => {
+                addCardEditorItem(c);
+            });
+
+            portfolioData.achievements.badges.forEach(b => {
+                addBadgeEditorItem(b);
+            });
+
+            openModal('modal-edit-achievements');
+        }
+
+        function addCardEditorItem(c = { badge: '', title: '', subtitle: '', detail: '', theme: 'emerald' }) {
+            const container = document.getElementById('achieve-cards-editor');
+            const div = document.createElement('div');
+            div.className = 'p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-sky-100 dark:border-slate-700 relative text-xs space-y-2';
+            div.innerHTML = `
+                <button type="button" onclick="this.parentElement.remove()" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 font-bold">Remove</button>
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" placeholder="Badge Category (e.g. Dean's List)" value="${c.badge}" class="card-badge px-3 py-1.5 rounded-lg border dark:bg-slate-900 font-bold">
+                    <select class="card-theme px-3 py-1.5 rounded-lg border dark:bg-slate-900 font-bold">
+                        <option value="emerald" ${c.theme === 'emerald' ? 'selected' : ''}>Theme: Emerald</option>
+                        <option value="cyan" ${c.theme === 'cyan' ? 'selected' : ''}>Theme: Cyan</option>
+                        <option value="blue" ${c.theme === 'blue' ? 'selected' : ''}>Theme: Blue</option>
+                        <option value="purple" ${c.theme === 'purple' ? 'selected' : ''}>Theme: Purple</option>
+                        <option value="rose" ${c.theme === 'rose' ? 'selected' : ''}>Theme: Rose</option>
+                    </select>
+                </div>
+                <input type="text" placeholder="Achievement Title" value="${c.title}" class="card-title w-full px-3 py-1.5 rounded-lg border dark:bg-slate-900 font-bold text-sm">
+                <input type="text" placeholder="Subtitle" value="${c.subtitle}" class="card-subtitle w-full px-3 py-1.5 rounded-lg border dark:bg-slate-900">
+                <input type="text" placeholder="Institution / Detail" value="${c.detail}" class="card-detail w-full px-3 py-1.5 rounded-lg border dark:bg-slate-900">
+            `;
+            container.appendChild(div);
+        }
+
+        function addBadgeEditorItem(b = { title: '', provider: '', icon: 'img/c-essentials-1.png' }) {
+            const container = document.getElementById('achieve-badges-editor');
+            const div = document.createElement('div');
+            div.className = 'p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-sky-100 dark:border-slate-700 relative text-xs flex flex-wrap gap-2 items-center';
+            div.innerHTML = `
+                <input type="text" placeholder="Badge Title" value="${b.title}" class="badge-title flex-1 min-w-[120px] px-3 py-1.5 rounded-lg border dark:bg-slate-900 font-bold">
+                <input type="text" placeholder="Provider" value="${b.provider}" class="badge-provider w-28 px-3 py-1.5 rounded-lg border dark:bg-slate-900">
+                <input type="text" placeholder="Icon Path" value="${b.icon}" class="badge-icon flex-1 min-w-[140px] px-3 py-1.5 rounded-lg border dark:bg-slate-900">
+                <button type="button" onclick="this.parentElement.remove()" class="text-rose-500 hover:text-rose-700 font-bold px-2">X</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function saveAchievementsData(e) {
+            e.preventDefault();
+            const cardDivs = document.querySelectorAll('#achieve-cards-editor > div');
+            const newCards = [];
+            cardDivs.forEach((div, idx) => {
+                newCards.push({
+                    id: `card-${idx + 1}`,
+                    badge: div.querySelector('.card-badge').value.trim(),
+                    title: div.querySelector('.card-title').value.trim(),
+                    subtitle: div.querySelector('.card-subtitle').value.trim(),
+                    detail: div.querySelector('.card-detail').value.trim(),
+                    theme: div.querySelector('.card-theme').value
+                });
+            });
+
+            const badgeDivs = document.querySelectorAll('#achieve-badges-editor > div');
+            const newBadges = [];
+            badgeDivs.forEach((div, idx) => {
+                newBadges.push({
+                    id: `badge-${idx + 1}`,
+                    title: div.querySelector('.badge-title').value.trim(),
+                    provider: div.querySelector('.badge-provider').value.trim(),
+                    icon: div.querySelector('.badge-icon').value.trim()
+                });
+            });
+
+            portfolioData.achievements.cards = newCards;
+            portfolioData.achievements.badges = newBadges;
+            renderAchievements();
+            closeModal('modal-edit-achievements');
+            markUnsaved();
+            showToast('Achievements updated locally!', 'info');
+        }
+
+        // Contact Modal
+        function openEditContactModal() {
+            document.getElementById('edit-contact-title').value = portfolioData.contact.title;
+            document.getElementById('edit-contact-subtitle').value = portfolioData.contact.subtitle;
+            document.getElementById('edit-contact-formspree').value = portfolioData.contact.formspreeUrl;
+            document.getElementById('edit-footer-copyright').value = portfolioData.footer.copyright;
+            openModal('modal-edit-contact');
+        }
+
+        function saveContactData(e) {
+            e.preventDefault();
+            portfolioData.contact.title = document.getElementById('edit-contact-title').value.trim();
+            portfolioData.contact.subtitle = document.getElementById('edit-contact-subtitle').value.trim();
+            portfolioData.contact.formspreeUrl = document.getElementById('edit-contact-formspree').value.trim();
+            portfolioData.footer.copyright = document.getElementById('edit-footer-copyright').value.trim();
+
+            renderContact();
+            renderFooter();
+            closeModal('modal-edit-contact');
+            markUnsaved();
+            showToast('Contact & Footer updated locally!', 'info');
+        }
+
+        // TOAST NOTIFICATIONS
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            let colors = 'bg-slate-900 text-white border-slate-700';
+            if (type === 'success') colors = 'bg-emerald-600 text-white border-emerald-500 shadow-emerald-900/30';
+            if (type === 'error') colors = 'bg-rose-600 text-white border-rose-500 shadow-rose-900/30';
+
+            toast.className = `px-5 py-3 rounded-2xl border text-xs md:text-sm font-bold shadow-xl transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-auto ${colors}`;
+            toast.textContent = msg;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-4', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+    </script>
+
+    <!-- ORIGINAL UTILITY SCRIPTS -->
     <script>
         // --- View Transition Shockwave Dark Mode Logic ---
         const darkToggle = document.getElementById('dark-mode-toggle');
@@ -697,7 +1886,9 @@
                 }, 1200); 
             }
 
-            setInterval(peelNextPage, 5500); 
+            if (!window.notepadPeelInterval) {
+                window.notepadPeelInterval = setInterval(peelNextPage, 5500); 
+            }
         }
 
         // --- Infinite Badge Marquee Logic ---
@@ -706,6 +1897,9 @@
             if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
                 badgeScrollers.forEach((scroller) => {
                     const scrollerInner = scroller.querySelector(".badge-scroller__inner");
+                    if (!scrollerInner || scrollerInner.dataset.cloned) return;
+                    scrollerInner.dataset.cloned = "true";
+                    
                     const scrollerContent = Array.from(scrollerInner.children);
                     
                     scrollerContent.forEach((item) => {
