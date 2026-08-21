@@ -24,7 +24,7 @@
       "id": "proj-1",
       "title": "FIL-TRACK",
       "role": "Lead Developer",
-      "period": "March 2026 — Present",
+      "period": "February — May 2026",
       "logo": "img/logo.svg",
       "description": "An IT asset inventory management system for Filoil Logistics. Features include role-based access control and comprehensive hardware lifecycle monitoring.",
       "tags": [
@@ -45,6 +45,21 @@
         "Docker",
         "PHP",
         "MySQL"
+      ],
+      "link": "#"
+    },
+    {
+      "id": "proj-1787304675615",
+      "title": "FIL-NODE",
+      "role": "Lead Programmer",
+      "period": "August 2026 - Present",
+      "logo": "img/logo.svg",
+      "description": "Endpoint Security Checker",
+      "tags": [
+        "Django",
+        "Postgres",
+        "Html",
+        "Css"
       ],
       "link": "#"
     }
