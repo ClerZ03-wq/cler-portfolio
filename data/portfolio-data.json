@@ -21,10 +21,25 @@
   },
   "projects": [
     {
+      "id": "proj-1787304675615",
+      "title": "FIL-NODE",
+      "role": "Lead Programmer",
+      "period": "Aug 2026 - Present",
+      "logo": "img/logo.svg",
+      "description": "Endpoint Security Checker",
+      "tags": [
+        "Django",
+        "Postgres",
+        "Html",
+        "Css"
+      ],
+      "link": "#"
+    },
+    {
       "id": "proj-1",
       "title": "FIL-TRACK",
       "role": "Lead Developer",
-      "period": "February — May 2026",
+      "period": "Feb — May 2026",
       "logo": "img/logo.svg",
       "description": "An IT asset inventory management system for Filoil Logistics. Features include role-based access control and comprehensive hardware lifecycle monitoring.",
       "tags": [
@@ -45,21 +60,6 @@
         "Docker",
         "PHP",
         "MySQL"
-      ],
-      "link": "#"
-    },
-    {
-      "id": "proj-1787304675615",
-      "title": "FIL-NODE",
-      "role": "Lead Programmer",
-      "period": "August 2026 - Present",
-      "logo": "img/logo.svg",
-      "description": "Endpoint Security Checker",
-      "tags": [
-        "Django",
-        "Postgres",
-        "Html",
-        "Css"
       ],
       "link": "#"
     }
@@ -132,13 +132,13 @@
       },
       {
         "id": "badge-3",
-        "title": "Cyber Threat Mgt.",
+        "title": "Cyber Threat Mitigation",
         "provider": "Cisco Academy",
         "icon": "img/cyber-threat-management.png"
       },
       {
         "id": "badge-4",
-        "title": "Intro to Cyber",
+        "title": "Intro to Cybersecurity",
         "provider": "Cisco Academy",
         "icon": "img/introduction-to-cybersecurity.png"
       },
@@ -159,6 +159,18 @@
         "title": "Networking Basics",
         "provider": "Cisco Academy",
         "icon": "img/networking-basics.png"
+      },
+      {
+        "id": "badge-8",
+        "title": "Governance, Risk, Compliance, and Data Privacy",
+        "provider": "IBM",
+        "icon": "img/1787598076783_image__2_.png"
+      },
+      {
+        "id": "badge-9",
+        "title": "Introduction to AI Azure",
+        "provider": "BlackStride",
+        "icon": "img/1787598183623_ebed8b84-d7a5-4a3e-b210-49f83c79a103.png"
       }
     ]
   },
