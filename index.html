@@ -43,130 +43,50 @@
         ::view-transition-old(root) { z-index: 1; }
         ::view-transition-new(root) { z-index: 2; }
 
-        /* ===== CINEMATIC LOADER — STAGE SYSTEM ===== */
+        /* ===== MINIMAL LOADER ===== */
         #loader {
-            background: #030712;
-            overflow: hidden;
+            background: #fff;
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        :is(.dark) #loader { background: #020617; }
 
-        /* Particle canvas sits full-screen behind everything */
-        #loader-canvas {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
+        /* Name: staggered letter slide-up from mask */
+        .ld-word { display: flex; gap: 0.02em; }
+        .ld-char-wrap { overflow: hidden; display: inline-block; }
+        .ld-char {
+            display: inline-block;
+            transform: translateY(110%);
             opacity: 0;
-            animation: fadeInCanvas 1.2s ease forwards 0.2s;
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.4s ease;
         }
-        @keyframes fadeInCanvas {
-            to { opacity: 1; }
-        }
+        .ld-char.up { transform: translateY(0); opacity: 1; }
 
-        /* Center stage wrapper */
-        #loader-stage {
-            position: relative;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        /* SVG logo letter path stroke animation */
-        #loader-svg-text {
-            overflow: visible;
-            opacity: 0;
-        }
-        #loader-svg-text.active {
-            opacity: 1;
-        }
-        .svg-letter-path {
-            stroke-dasharray: 2000;
-            stroke-dashoffset: 2000;
-            fill: transparent;
-        }
-        .svg-letter-path.draw {
-            animation: strokeDraw 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
-        }
-        .svg-letter-path.fill-in {
-            animation: strokeDraw 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards,
-                       fillColor 0.6s ease forwards 1.0s;
-        }
-        @keyframes strokeDraw {
-            to { stroke-dashoffset: 0; }
-        }
-        @keyframes fillColor {
-            to { fill: currentColor; stroke-dashoffset: 0; }
-        }
-
-        /* Shimmering line below the text */
-        #loader-line {
+        /* Thin sky-blue accent line */
+        #ld-line {
             width: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #38bdf8, #818cf8, #38bdf8, transparent);
+            height: 1.5px;
+            background: #38bdf8;
             border-radius: 9999px;
-            transition: width 1.0s cubic-bezier(0.76, 0, 0.24, 1);
-            box-shadow: 0 0 12px rgba(56,189,248,0.7);
+            transition: width 0.9s cubic-bezier(0.76, 0, 0.24, 1);
         }
-        #loader-line.active { width: 220px; }
+        #ld-line.grow { width: 48px; }
 
-        /* Counter text */
-        #loader-counter {
-            font-family: 'Nunito', monospace;
-            font-size: 11px;
-            letter-spacing: 0.25em;
-            color: #475569;
-            opacity: 0;
-            transform: translateY(8px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-        #loader-counter.active { opacity: 1; transform: translateY(0); }
-
-        /* Tag line */
-        #loader-tagline {
-            font-size: 11px;
-            letter-spacing: 0.3em;
-            color: #334155;
-            text-transform: uppercase;
-            opacity: 0;
-            transform: translateY(6px);
-            transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
-        }
-        #loader-tagline.active { opacity: 1; transform: translateY(0); }
-
-        /* Split-panel curtain exit */
-        #loader-panel-top,
-        #loader-panel-bottom {
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 50%;
-            background: #030712;
-            z-index: 20;
-            transition: transform 1.1s cubic-bezier(0.76, 0, 0.24, 1);
-        }
-        #loader-panel-top    { top: 0; transform-origin: top; }
-        #loader-panel-bottom { bottom: 0; transform-origin: bottom; }
-
-        #loader-panel-top.open    { transform: translateY(-100%); }
-        #loader-panel-bottom.open { transform: translateY(100%); }
-
-        /* Loading bar */
+        /* Progress bar */
         #loading-bar-container {
-            width: 200px;
+            width: 160px;
             height: 1px;
-            background: rgba(255,255,255,0.08);
+            background: #e2e8f0;
             border-radius: 9999px;
             overflow: hidden;
-            position: relative;
         }
+        :is(.dark) #loading-bar-container { background: #1e293b; }
         #loading-bar {
             width: 0%;
             height: 100%;
-            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            background: #38bdf8;
             border-radius: 9999px;
             transition: width 1.4s cubic-bezier(0.76, 0, 0.24, 1);
-            box-shadow: 0 0 8px rgba(56,189,248,0.5);
             will-change: width;
         }
 
@@ -425,59 +345,27 @@
     </div>
 
     <!-- PRELOADER -->
-    <div id="loader" class="fixed inset-0 z-[9999] flex items-center justify-center">
-        <!-- Split exit panels -->
-        <div id="loader-panel-top"></div>
-        <div id="loader-panel-bottom"></div>
+    <div id="loader" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6">
 
-        <!-- Particle field -->
-        <canvas id="loader-canvas"></canvas>
-
-        <!-- Center stage -->
-        <div id="loader-stage">
-
-            <!-- SVG drawn logo -->
-            <svg id="loader-svg-text" viewBox="0 0 520 110" width="340" height="80" aria-label="ClerDev">
-                <!-- "Cler" in white -->
-                <text
-                    x="10" y="90"
-                    font-family="Nunito, sans-serif"
-                    font-weight="900"
-                    font-size="100"
-                    fill="white"
-                    stroke="white"
-                    stroke-width="1.5"
-                    class="svg-letter-path"
-                    id="svg-word-cler"
-                >Cler</text>
-                <!-- "Dev" in sky-400 -->
-                <text
-                    x="268" y="90"
-                    font-family="Nunito, sans-serif"
-                    font-weight="900"
-                    font-size="100"
-                    fill="#38bdf8"
-                    stroke="#38bdf8"
-                    stroke-width="1.5"
-                    class="svg-letter-path"
-                    id="svg-word-dev"
-                >Dev</text>
-            </svg>
-
-            <!-- Shimmer underline -->
-            <div id="loader-line"></div>
-
-            <!-- Loading bar + counter row -->
-            <div style="display:flex;flex-direction:column;align-items:center;gap:0.75rem;">
-                <div id="loading-bar-container">
-                    <div id="loading-bar"></div>
-                </div>
-                <div id="loader-counter">LOADING — 0%</div>
-            </div>
-
-            <!-- Tagline -->
-            <div id="loader-tagline">Full Stack Developer &amp; IT Professional</div>
+        <!-- Logo: Cler + Dev staggered slide-up -->
+        <div class="ld-word" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(2.5rem,8vw,4.5rem);letter-spacing:-0.03em;line-height:1;">
+            <div class="ld-char-wrap"><span class="ld-char text-slate-800 dark:text-white">C</span></div>
+            <div class="ld-char-wrap"><span class="ld-char text-slate-800 dark:text-white">l</span></div>
+            <div class="ld-char-wrap"><span class="ld-char text-slate-800 dark:text-white">e</span></div>
+            <div class="ld-char-wrap"><span class="ld-char text-slate-800 dark:text-white">r</span></div>
+            <div class="ld-char-wrap"><span class="ld-char text-sky-500">D</span></div>
+            <div class="ld-char-wrap"><span class="ld-char text-sky-500">e</span></div>
+            <div class="ld-char-wrap"><span class="ld-char text-sky-500">v</span></div>
         </div>
+
+        <!-- Accent line -->
+        <div id="ld-line"></div>
+
+        <!-- Thin progress bar -->
+        <div id="loading-bar-container">
+            <div id="loading-bar"></div>
+        </div>
+
     </div>
 
     <!-- NAVIGATION BAR -->
@@ -3240,144 +3128,44 @@
 
         }
 
-        // ===== CINEMATIC LOADER ENGINE =====
+        // ===== MINIMAL LOADER =====
         window.addEventListener('DOMContentLoaded', () => {
-            const loader     = document.getElementById('loader');
-            const canvas     = document.getElementById('loader-canvas');
-            const bar        = document.getElementById('loading-bar');
-            const counter    = document.getElementById('loader-counter');
-            const svgText    = document.getElementById('loader-svg-text');
-            const loaderLine = document.getElementById('loader-line');
-            const tagline    = document.getElementById('loader-tagline');
-            const panelTop   = document.getElementById('loader-panel-top');
-            const panelBot   = document.getElementById('loader-panel-bottom');
-            const clerPath   = document.getElementById('svg-word-cler');
-            const devPath    = document.getElementById('svg-word-dev');
+            const loader = document.getElementById('loader');
+            const bar    = document.getElementById('loading-bar');
+            const line   = document.getElementById('ld-line');
+            const chars  = document.querySelectorAll('.ld-char');
 
-            // --- Stage 1: Particle field ---
-            const ctx = canvas.getContext('2d');
-            function resizeCanvas() {
-                canvas.width  = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
+            // Start progress bar immediately
+            setTimeout(() => { bar.style.width = '85%'; }, 80);
 
-            const PARTICLE_COUNT = 90;
-            const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                r: Math.random() * 1.4 + 0.3,
-                vx: (Math.random() - 0.5) * 0.4,
-                vy: (Math.random() - 0.5) * 0.4,
-                alpha: Math.random() * 0.5 + 0.1,
-                color: Math.random() > 0.6 ? '#38bdf8' : '#818cf8',
-            }));
-
-            let animating = true;
-            function drawParticles() {
-                if (!animating) return;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                // Connection lines between nearby particles
-                for (let i = 0; i < particles.length; i++) {
-                    for (let j = i + 1; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x;
-                        const dy = particles[i].y - particles[j].y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist < 110) {
-                            ctx.beginPath();
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.strokeStyle = `rgba(56,189,248,${0.06 * (1 - dist / 110)})`;
-                            ctx.lineWidth = 0.5;
-                            ctx.stroke();
-                        }
-                    }
-                }
-
-                // Particles
-                particles.forEach(p => {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    if (p.x < 0) p.x = canvas.width;
-                    if (p.x > canvas.width) p.x = 0;
-                    if (p.y < 0) p.y = canvas.height;
-                    if (p.y > canvas.height) p.y = 0;
-
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                    ctx.fillStyle = p.color;
-                    ctx.globalAlpha = p.alpha;
-                    ctx.fill();
-                    ctx.globalAlpha = 1;
-                });
-
-                requestAnimationFrame(drawParticles);
-            }
-            drawParticles();
-
-            // --- Stage 2: Progress bar with live counter ---
-            let progress = 0;
-            const counterInterval = setInterval(() => {
-                progress = Math.min(progress + Math.random() * 4 + 1, 95);
-                bar.style.width = progress + '%';
-                counter.textContent = `LOADING — ${Math.floor(progress)}%`;
-            }, 60);
-
-            // --- Stage 3: On load — run the cinematic sequence ---
             window.addEventListener('load', () => {
-                // Snap to 100
-                clearInterval(counterInterval);
+                // Fill bar to 100%
                 bar.style.width = '100%';
-                counter.textContent = 'LOADING — 100%';
 
                 setTimeout(() => {
-                    // Show SVG logo
-                    svgText.classList.add('active');
+                    // Stagger letter reveal
+                    chars.forEach((ch, i) => {
+                        setTimeout(() => ch.classList.add('up'), i * 55);
+                    });
 
-                    // Staggered stroke draw for "Cler"
+                    // Expand accent line after letters
+                    setTimeout(() => line.classList.add('grow'), chars.length * 55 + 100);
+
+                    // Fade out the whole loader
                     setTimeout(() => {
-                        clerPath.classList.add('draw');
-                    }, 100);
-
-                    // Then "Dev" with slight delay
-                    setTimeout(() => {
-                        devPath.classList.add('draw');
-                    }, 350);
-
-                    // Shimmer line expands
-                    setTimeout(() => {
-                        loaderLine.classList.add('active');
-                    }, 600);
-
-                    // Tagline fades in
-                    setTimeout(() => {
-                        tagline.classList.add('active');
-                    }, 800);
-
-                    // Counter fades in
-                    setTimeout(() => {
-                        counter.classList.add('active');
-                    }, 300);
-
-                    // Stage 4: Split-panel curtain exit
-                    setTimeout(() => {
-                        animating = false;
-                        panelTop.classList.add('open');
-                        panelBot.classList.add('open');
-
+                        loader.style.opacity = '0';
+                        loader.style.pointerEvents = 'none';
                         setTimeout(() => {
-                            loader.style.pointerEvents = 'none';
                             loader.remove();
                             handleScroll();
                             initializeInteractiveBadges();
-                        }, 1200);
-                    }, 2400);
+                        }, 700);
+                    }, chars.length * 55 + 600);
 
-                }, 400);
+                }, 300);
             });
         });
+
 
 
         // --- Scroll Reveal Logic ---
