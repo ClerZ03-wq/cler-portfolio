@@ -1863,10 +1863,17 @@
         // AUTHENTICATION & GITHUB REST API ENGINE  
         // ==========================================
 
-        function checkStoredAdminSession() {
+        async function checkStoredAdminSession() {
             const savedToken = sessionStorage.getItem('admin_github_pat') || localStorage.getItem('admin_github_pat');
             if (savedToken) {
-                verifyAndApplyToken(savedToken, false);
+                const res = await testAndValidateToken(savedToken);
+                if (res.success) {
+                    applyAdminLogin(savedToken, false, res.user, res.fileSha);
+                } else {
+                    console.warn('Stored token is invalid or expired, clearing session.');
+                    sessionStorage.removeItem('admin_github_pat');
+                    localStorage.removeItem('admin_github_pat');
+                }
             }
         }
 
@@ -1890,38 +1897,133 @@
                 errBox.classList.add('hidden');
                 errBox.textContent = '';
             }
+            const input = document.getElementById('input-pat-token');
+            if (input) input.value = '';
             openModal('modal-admin-login');
+        }
+
+        async function testAndValidateToken(token) {
+            const cfg = (portfolioData && portfolioData.githubConfig) || (DEFAULT_DATA && DEFAULT_DATA.githubConfig) || { owner: 'ClerZ03-wq', repo: 'cler-portfolio', dataPath: 'data/portfolio-data.json' };
+
+            // 1. Verify User Identity with GitHub
+            const userRes = await fetch('https://api.github.com/user', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+
+            if (!userRes.ok) {
+                if (userRes.status === 401) {
+                    return { success: false, error: 'Invalid Personal Access Token. GitHub returned: 401 Unauthorized (Bad credentials). Please generate a new token and try again.' };
+                }
+                const errData = await userRes.json().catch(() => ({}));
+                return { success: false, error: `GitHub Authentication Error (${userRes.status}): ${errData.message || 'Unable to authenticate with GitHub.'}` };
+            }
+
+            const userData = await userRes.json();
+
+            // 2. Verify Repository Contents Access & Fetch current file SHA
+            let fileSha = null;
+            try {
+                const repoRes = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.dataPath}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (repoRes.ok) {
+                    const repoData = await repoRes.json();
+                    fileSha = repoData.sha;
+                } else if (repoRes.status === 403 || repoRes.status === 404) {
+                    const repoErr = await repoRes.json().catch(() => ({}));
+                    return { 
+                        success: false, 
+                        error: `Token authenticated as @${userData.login}, but lacks permissions for repository ${cfg.owner}/${cfg.repo}. Please ensure 'repo' (Classic) or 'Contents: Read and write' (Fine-grained) scope is enabled.` 
+                    };
+                }
+            } catch (repoErr) {
+                console.warn('Could not pre-fetch repo contents SHA:', repoErr);
+            }
+
+            return {
+                success: true,
+                user: userData,
+                fileSha: fileSha
+            };
         }
 
         async function handleLoginSubmit(e) {
             e.preventDefault();
-            const token = document.getElementById('input-pat-token').value.trim();
-            const remember = document.getElementById('check-remember-token').checked;
+            const tokenInput = document.getElementById('input-pat-token');
+            const token = tokenInput ? tokenInput.value.trim() : '';
+            const remember = document.getElementById('check-remember-token') ? document.getElementById('check-remember-token').checked : false;
             const errBox = document.getElementById('login-error-msg');
+            const submitBtn = document.getElementById('btn-login-submit');
 
             if (!token) {
-                errBox.textContent = 'Please enter a valid Personal Access Token.';
-                errBox.classList.remove('hidden');
+                if (errBox) {
+                    errBox.textContent = 'Please enter a valid Personal Access Token.';
+                    errBox.classList.remove('hidden');
+                }
                 return;
             }
 
-            errBox.classList.add('hidden');
-            errBox.textContent = '';
+            if (errBox) {
+                errBox.classList.add('hidden');
+                errBox.textContent = '';
+            }
 
-            await verifyAndApplyToken(token, remember);
+            const originalBtnHtml = submitBtn ? submitBtn.innerHTML : 'Authenticate & Connect to GitHub';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<svg class="animate-spin w-4 h-4 mr-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Validating with GitHub...`;
+            }
 
-            closeModal('modal-admin-login');
-            showToast('Administrator logged in successfully! Edit controls are now active.', 'success');
+            try {
+                const validation = await testAndValidateToken(token);
+
+                if (!validation.success) {
+                    if (errBox) {
+                        errBox.textContent = validation.error;
+                        errBox.classList.remove('hidden');
+                    }
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnHtml;
+                    }
+                    return;
+                }
+
+                applyAdminLogin(token, remember, validation.user, validation.fileSha);
+
+                closeModal('modal-admin-login');
+                showToast(`Welcome @${validation.user.login}! Administrator logged in successfully. Edit controls are now active.`, 'success');
+            } catch (err) {
+                console.error('Login error:', err);
+                if (errBox) {
+                    errBox.textContent = 'Network error while validating with GitHub. Please check your connection.';
+                    errBox.classList.remove('hidden');
+                }
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnHtml;
+                }
+            }
         }
 
-        async function verifyAndApplyToken(token, remember) {
-            if (!token) return false;
+        function applyAdminLogin(token, remember, user, fileSha) {
             const cfg = (portfolioData && portfolioData.githubConfig) || (DEFAULT_DATA && DEFAULT_DATA.githubConfig) || { owner: 'ClerZ03-wq', repo: 'cler-portfolio', dataPath: 'data/portfolio-data.json' };
 
             adminState.isLoggedIn = true;
             adminState.token = token;
             adminState.mode = 'edit';
-            adminState.user = { login: cfg.owner };
+            adminState.user = user || { login: cfg.owner };
+            if (fileSha) {
+                adminState.fileSha = fileSha;
+            }
 
             if (remember) {
                 localStorage.setItem('admin_github_pat', token);
@@ -1933,38 +2035,10 @@
             const adminBar = document.getElementById('admin-top-bar');
             if (adminBar) adminBar.classList.remove('hidden');
             const userInfo = document.getElementById('admin-user-info');
-            if (userInfo) userInfo.innerHTML = `Logged in as <strong>@${cfg.owner}</strong>`;
-
-            // Fetch user handle and repository file SHA in background
-            fetchUserInfoAndSha(token, cfg);
+            if (userInfo) userInfo.innerHTML = `Logged in as <strong>@${adminState.user.login}</strong>`;
 
             // Re-render page sections with edit controls
             renderAllSections();
-            return true;
-        }
-
-        async function fetchUserInfoAndSha(token, cfg) {
-            try {
-                const userRes = await fetch('https://api.github.com/user', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (userRes.ok) {
-                    const userData = await userRes.json();
-                    adminState.user = userData;
-                    const userInfo = document.getElementById('admin-user-info');
-                    if (userInfo) userInfo.innerHTML = `Logged in as <strong>@${userData.login}</strong>`;
-                }
-            } catch (e) {}
-
-            try {
-                const repoRes = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.dataPath}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (repoRes.ok) {
-                    const data = await repoRes.json();
-                    adminState.fileSha = data.sha;
-                }
-            } catch (e) {}
         }
 
         async function fetchRepoSha() {
