@@ -824,6 +824,33 @@
         </div>
     </div>
 
+    <!-- CREDLY BADGES MODAL -->
+    <div id="modal-credly" class="hidden fixed inset-0 z-[120] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 rounded-3xl max-w-3xl w-full p-6 md:p-8 shadow-2xl relative overflow-hidden transform scale-95 transition-transform duration-500" id="modal-credly-content">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">
+                <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15l8.5-8.5-1.4-1.4L12 12.2l-3.1-3.1-1.4 1.4L12 15z"></path><path d="M4 10.5V20h16v-9.5"></path></svg>
+                    My Badges & Certifications
+                </h3>
+                <button onclick="closeCredlyModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 overflow-y-auto max-h-[50vh] pr-2 custom-scrollbar" id="credly-badges-grid">
+                <!-- Badges populated by JS -->
+            </div>
+            
+            <div class="text-center pt-4 border-t border-slate-100 dark:border-slate-800">
+                <a href="https://www.credly.com" target="_blank" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-sky-500 dark:hover:bg-sky-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all hover:scale-105">
+                    View My Credly Profile
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                </a>
+                <p class="text-[10px] text-slate-500 mt-3 font-mono">Verify all credentials instantly on Credly.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- DIGITAL ID BADGE MODAL -->
     <div id="modal-digital-id" class="hidden fixed inset-0 z-[150] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="closeDigitalIdModal(event)">
         <!-- Futuristic ID Card -->
@@ -1442,11 +1469,11 @@
             let badgesHtml = '';
             ach.badges.forEach(b => {
                 badgesHtml += `
-                    <div class="interactive-badge relative w-[140px] h-[140px] md:w-[160px] md:h-[160px] shrink-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur p-5 rounded-3xl border border-sky-100 dark:border-slate-800 shadow-lg hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:border-sky-300 dark:hover:border-sky-500 transition-all duration-300 flex flex-col justify-center items-center text-center cursor-pointer overflow-hidden group">
+                    <div class="interactive-badge relative w-[100px] h-[100px] md:w-[120px] md:h-[120px] shrink-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur p-4 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-lg hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:border-sky-300 dark:hover:border-sky-500 transition-all duration-300 flex flex-col justify-center items-center text-center cursor-pointer overflow-hidden group">
                         <div class="badge-glare absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0,transparent_50%)] opacity-0 pointer-events-none mix-blend-overlay transition-opacity duration-300"></div>
-                        <img src="${getImageUrl(b.icon)}" onerror="handleImgError(this, '${b.icon}')" alt="${b.title}" class="w-12 h-12 md:w-16 md:h-16 mb-3 object-contain group-hover:scale-110 transition-transform duration-500 z-10">
-                        <h4 class="text-xs md:text-sm font-bold text-slate-800 dark:text-slate-100 mb-1 z-10">${b.title}</h4>
-                        <p class="text-[9px] uppercase tracking-wider text-sky-500 font-bold z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">${b.provider}</p>
+                        <img src="${getImageUrl(b.icon)}" onerror="handleImgError(this, '${b.icon}')" alt="${b.title}" class="w-10 h-10 md:w-12 md:h-12 mb-2 object-contain group-hover:scale-110 transition-transform duration-500 z-10">
+                        <h4 class="text-[10px] md:text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5 z-10 leading-tight">${b.title}</h4>
+                        <p class="text-[8px] uppercase tracking-wider text-sky-500 font-bold z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">${b.provider}</p>
                     </div>
                 `;
             });
@@ -1499,7 +1526,12 @@
                 </div>
 
                 <!-- CERTIFICATIONS & BADGES MARQUEE -->
-                <h3 class="text-center font-heading font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-xs mb-4">Certifications & Badges</h3>
+                <div class="flex items-center justify-between mb-4 px-2">
+                    <h3 class="font-heading font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-xs">Certifications & Badges</h3>
+                    <button onclick="openCredlyModal()" class="text-[10px] font-bold text-sky-500 hover:text-sky-600 dark:hover:text-sky-400 flex items-center gap-1 transition-colors">
+                        View All <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </button>
+                </div>
                 <div class="badge-scroller">
                     <div class="badge-scroller__inner cursor-pointer" id="badge-track">
                         ${badgesHtml}
@@ -2603,7 +2635,40 @@
         closeMenuBtn.addEventListener('click', toggleMenu);
         mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
 
+        // --- Credly Modal Logic ---
+        function openCredlyModal() {
+            const modal = document.getElementById('modal-credly');
+            const content = document.getElementById('modal-credly-content');
+            const grid = document.getElementById('credly-badges-grid');
+            const badges = portfolioData.achievements?.badges || [];
+            
+            grid.innerHTML = badges.map(b => `
+                <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 flex flex-col items-center justify-center text-center border border-slate-200 dark:border-slate-700 hover:border-sky-300 dark:hover:border-sky-500 transition-colors">
+                    <img src="${getImageUrl(b.icon)}" alt="${b.title}" class="w-12 h-12 md:w-16 md:h-16 mb-3 object-contain">
+                    <h5 class="text-[10px] md:text-xs font-bold text-slate-800 dark:text-slate-100 mb-1 leading-tight">${b.title}</h5>
+                    <p class="text-[9px] uppercase tracking-wider text-sky-500 font-bold">${b.provider}</p>
+                </div>
+            `).join('');
 
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeCredlyModal(e) {
+            if (e && e.target.closest('#modal-credly-content') && !e.target.closest('button')) return;
+            const modal = document.getElementById('modal-credly');
+            const content = document.getElementById('modal-credly-content');
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
 
         // --- Digital ID Modal Logic ---
         function openDigitalIdModal() {
@@ -2753,13 +2818,14 @@
             }, 300);
         }
 
-        // --- Interactive Badges 3D Tilt ---
+        // --- Interactive Badges 3D Tilt & Mobile Gyroscope Gyro Tilt ---
         function initializeInteractiveBadges() {
             const badges = document.querySelectorAll('.interactive-badge');
             
             function handleBadgeTilt(e) {
                 const badge = e.currentTarget;
                 const rect = badge.getBoundingClientRect();
+                badge.dataset.touching = "true";
                 
                 let clientX, clientY;
                 if (e.type.startsWith('touch')) {
@@ -2785,6 +2851,7 @@
             
             function resetBadgeTilt(e) {
                 const badge = e.currentTarget;
+                delete badge.dataset.touching;
                 badge.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
                 const glare = badge.querySelector('.badge-glare');
                 if (glare) {
@@ -2799,6 +2866,63 @@
                 badge.addEventListener('touchstart', handleBadgeTilt, {passive: true});
                 badge.addEventListener('touchend', resetBadgeTilt);
             });
+
+            // Mobile Gyroscope / Device Orientation Phone Tilt
+            setupDeviceOrientationTilt();
+        }
+
+        let isGyroListening = false;
+        function setupDeviceOrientationTilt() {
+            if (isGyroListening) return;
+            isGyroListening = true;
+
+            function handleOrientation(e) {
+                // gamma: left-to-right tilt in degrees [-90, 90]
+                // beta: front-to-back tilt in degrees [-180, 180]
+                if (e.gamma === null || e.beta === null) return;
+
+                // Clamp values for smooth 3D tilt effect
+                const gammaClamped = Math.max(-30, Math.min(30, e.gamma));
+                const betaAdjusted = Math.max(-30, Math.min(30, e.beta - 45)); // 45 deg baseline for natural phone holding
+
+                const rotateY = (gammaClamped / 30) * 18; // Max 18 deg Y tilt
+                const rotateX = -(betaAdjusted / 30) * 18; // Max 18 deg X tilt
+
+                const badges = document.querySelectorAll('.interactive-badge');
+                badges.forEach(badge => {
+                    // Only apply gyro tilt if touch/mouse isn't actively overriding
+                    if (!badge.matches(':hover') && !badge.dataset.touching) {
+                        badge.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.03, 1.03, 1.03)`;
+                        const glare = badge.querySelector('.badge-glare');
+                        if (glare) {
+                            glare.style.opacity = '0.7';
+                            glare.style.transform = `translate(${rotateY * 2}%, ${-rotateX * 2}%)`;
+                        }
+                    }
+                });
+
+                // Also tilt Digital ID card modal if open!
+                const digitalIdCard = document.getElementById('digital-id-card');
+                const digitalIdModal = document.getElementById('modal-digital-id');
+                if (digitalIdCard && digitalIdModal && !digitalIdModal.classList.contains('hidden')) {
+                    digitalIdCard.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale(1)`;
+                }
+            }
+
+            // Check if iOS 13+ permission request is required
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                const requestGyro = () => {
+                    DeviceOrientationEvent.requestPermission().then(response => {
+                        if (response === 'granted') {
+                            window.addEventListener('deviceorientation', handleOrientation, true);
+                        }
+                    }).catch(console.error);
+                    window.removeEventListener('touchstart', requestGyro);
+                };
+                window.addEventListener('touchstart', requestGyro, { once: true });
+            } else if (window.DeviceOrientationEvent) {
+                window.addEventListener('deviceorientation', handleOrientation, true);
+            }
         }
 
         // --- Custom Professional Loader ---
