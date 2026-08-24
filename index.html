@@ -442,6 +442,11 @@
                 </div>
 
                 <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Location</label>
+                    <input type="text" id="edit-hero-location" placeholder="e.g. Manila, Philippines" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                </div>
+
+                <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Roles (comma-separated)</label>
                     <input type="text" id="edit-hero-roles" required placeholder="Web Developer, Backend Programmer, Database Administrator" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
                 </div>
@@ -760,6 +765,66 @@
         </div>
     </div>
 
+    <!-- DIGITAL ID BADGE MODAL -->
+    <div id="modal-digital-id" class="hidden fixed inset-0 z-[150] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="closeDigitalIdModal(event)">
+        <!-- Futuristic ID Card -->
+        <div class="relative bg-slate-900 border border-sky-500/30 rounded-2xl w-full max-w-sm overflow-hidden shadow-[0_0_50px_rgba(14,165,233,0.2)] transform scale-95 transition-transform duration-500 hover:shadow-[0_0_60px_rgba(14,165,233,0.3)]" style="transform-style: preserve-3d; perspective: 1000px;" id="digital-id-card">
+            
+            <!-- Scanline / Glitch Overlay -->
+            <div class="absolute inset-0 pointer-events-none opacity-20 z-20" style="background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, #0ea5e9 2px, #0ea5e9 4px); mix-blend-mode: overlay;"></div>
+            
+            <!-- Header Tape / Lanyard -->
+            <div class="h-10 bg-slate-950 flex items-center justify-center relative overflow-hidden border-b border-sky-500/20">
+                <div class="w-16 h-2 bg-slate-800 rounded-full"></div>
+                <div class="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.05)_25%,rgba(255,255,255,0.05)_50%,transparent_50%,transparent_75%,rgba(255,255,255,0.05)_75%,rgba(255,255,255,0.05)_100%)] bg-[length:20px_20px]"></div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="p-6 relative z-10 flex flex-col items-center">
+                
+                <!-- Glowing Profile Pic -->
+                <div class="relative mb-4 group cursor-pointer" title="Flip Card">
+                    <div class="absolute inset-0 bg-sky-500 rounded-full blur-md opacity-40 animate-pulse"></div>
+                    <img id="digital-id-avatar" src="" alt="Profile" class="relative w-28 h-28 rounded-full border-2 border-sky-400 object-cover z-10">
+                    <svg class="absolute -right-2 -bottom-2 w-8 h-8 text-sky-400 bg-slate-900 rounded-full border border-sky-500/50 p-1.5 z-20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                
+                <!-- ID Info -->
+                <div class="text-center w-full mb-6">
+                    <h3 id="digital-id-name" class="text-2xl font-black text-white tracking-wide uppercase mb-1"></h3>
+                    <p id="digital-id-role" class="text-sky-400 font-mono text-xs font-bold uppercase tracking-widest bg-sky-950/50 inline-block px-3 py-1 rounded-md border border-sky-500/30"></p>
+                    <p id="digital-id-location" class="text-slate-400 text-xs mt-3 flex items-center justify-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <span></span>
+                    </p>
+                </div>
+
+                <!-- Fake QR / Connect Button -->
+                <div class="w-full flex justify-between items-end border-t border-slate-700/50 pt-4 mt-2">
+                    <div class="w-16 h-16 bg-white p-1 rounded-sm shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+                        <!-- CSS Generated fake QR pattern -->
+                        <div class="w-full h-full bg-[repeating-conic-gradient(#0f172a_0_90deg,#fff_0_180deg)] [background-size:4px_4px] opacity-90"></div>
+                    </div>
+                    <div class="text-right flex flex-col gap-2">
+                        <p class="font-mono text-[9px] text-slate-500 uppercase">Access Level: Admin</p>
+                        <button onclick="shareProfileUrl()" class="bg-sky-500/20 hover:bg-sky-500 text-sky-300 hover:text-white border border-sky-500/50 px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-[0_0_10px_rgba(14,165,233,0.1)]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                            Share Profile
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Close X -->
+                <button onclick="closeDigitalIdModal()" class="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors z-30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <!-- Holographic shine effect (animates on hover in JS) -->
+            <div id="digital-id-glare" class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 pointer-events-none transform -translate-x-full"></div>
+        </div>
+    </div>
+
     <!-- TOAST NOTIFICATION CONTAINER -->
     <div id="toast-container" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-2 pointer-events-none"></div>
 
@@ -773,6 +838,7 @@
           "hero": {
             "avatar": "img/503561419_2735814616619356_9132110206694480000_n.jpg",
             "name": "John Clerwin N. Dela Cruz",
+            "location": "Philippines",
             "roles": ["Web Developer", "Backend Programmer", "Database Administrator"],
             "ctaText": "Let's Connect",
             "ctaLink": "#contact",
@@ -971,7 +1037,7 @@
             const container = document.getElementById('hero-container');
             const showEdit = adminState.isLoggedIn && adminState.mode === 'edit';
 
-            const rolesHtml = h.roles.map((r, i) => `${r}${i < h.roles.length - 1 ? ' <span class="text-sky-300 mx-1">|</span> ' : ''}`).join('');
+            const rolesHtml = h.roles.map((r, i) => `<span class="font-mono text-sky-500 font-bold opacity-80">&lt;</span>${r}<span class="font-mono text-sky-500 font-bold opacity-80">/&gt;</span>${i < h.roles.length - 1 ? ' <span class="text-slate-300 dark:text-slate-600 mx-2">|</span> ' : ''}`).join('');
 
             // Dynamic Social Links (with fallback to legacy hero.socials)
             let socialLinks = h.socialLinks;
@@ -987,7 +1053,7 @@
             const socialsHtml = socialLinks.map(s => {
                 if (!s.url) return '';
                 return `
-                    <a href="${s.url}" target="_blank" class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-full text-sm text-slate-600 font-bold border border-sky-100 shadow-sm hover:border-sky-300 transition-all dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400">
+                    <a href="${s.url}" target="_blank" class="flex items-center gap-2 bg-white/80 backdrop-blur px-4 py-2.5 rounded-full text-sm text-slate-700 font-bold border border-sky-200/50 shadow-sm hover:shadow-[0_0_15px_rgba(56,189,248,0.4)] hover:border-sky-400 transition-all dark:bg-slate-900/80 dark:border-slate-700 dark:text-slate-200 hover:text-sky-500 dark:hover:text-sky-400">
                         ${getSocialIcon(s.icon, s.customIcon)}
                         ${s.name || 'Link'}
                     </a>
@@ -995,8 +1061,9 @@
             }).join('');
 
             container.innerHTML = `
-                <div class="absolute inset-0 z-0 pointer-events-none">
-                    <div class="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] dark:bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:24px_24px] opacity-40"></div>
+                <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                    <!-- Techy Grid Background -->
+                    <div class="absolute inset-0 bg-[linear-gradient(to_right,#cbd5e1_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e1_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#334155_1px,transparent_1px),linear-gradient(to_bottom,#334155_1px,transparent_1px)] [background-size:40px_40px] opacity-20 dark:opacity-40" style="mask-image: linear-gradient(to bottom, black 40%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);"></div>
                     <div class="absolute top-0 left-1/4 w-64 h-64 md:w-96 md:h-96 bg-sky-400/20 dark:bg-sky-600/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-70 animate-blob"></div>
                     <div class="absolute top-10 right-1/4 w-64 h-64 md:w-96 md:h-96 bg-indigo-400/20 dark:bg-indigo-600/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
                     <div class="absolute -bottom-8 left-1/3 w-64 h-64 md:w-96 md:h-96 bg-blue-400/20 dark:bg-blue-600/20 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
@@ -1011,17 +1078,35 @@
                     </div>
                 ` : ''}
 
-                <div class="relative z-10 w-full">
-                    <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 mb-4">
-                        <img src="${getImageUrl(h.avatar)}" onerror="handleImgError(this, '${h.avatar}')" alt="${h.name}" class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white object-cover shadow-lg shadow-sky-200/50 dark:border-slate-800 transition-all duration-500">
-                        <h1 class="text-5xl md:text-7xl font-heading font-black tracking-tight text-slate-800 dark:text-slate-100">${h.name}</h1>
-                    </div>
-                    <p class="text-xl md:text-2xl text-slate-500 mb-8 font-medium mt-2 dark:text-slate-400">
-                        ${rolesHtml}
-                    </p>
-                    <div class="flex flex-wrap items-center gap-4">
-                        <a href="${h.ctaLink}" class="bg-sky-400 text-white px-6 py-2.5 rounded-full font-bold shadow-md hover:bg-sky-500 transition-all">${h.ctaText}</a>
+                <div class="relative z-10 w-full flex flex-col justify-center min-h-[50vh]">
+                    <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 mb-6">
+                        <!-- Clickable Avatar for Digital ID -->
+                        <div class="relative group cursor-pointer" onclick="openDigitalIdModal()">
+                            <div class="absolute inset-0 bg-sky-400 rounded-full blur opacity-20 group-hover:opacity-60 transition-opacity duration-500 animate-pulse"></div>
+                            <img src="${getImageUrl(h.avatar)}" onerror="handleImgError(this, '${h.avatar}')" alt="${h.name}" class="relative w-28 h-28 md:w-36 md:h-36 rounded-full border-2 border-sky-300 dark:border-sky-500/50 object-cover shadow-[0_0_20px_rgba(56,189,248,0.3)] transition-all duration-500 group-hover:scale-105 z-10">
+                            <!-- Techy Scanner Line -->
+                            <div class="absolute top-0 left-0 right-0 h-1 bg-sky-300/80 blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-20 overflow-hidden" style="animation: scan 2s linear infinite;"></div>
+                        </div>
                         
+                        <div class="flex flex-col gap-2">
+                            <h1 class="text-5xl md:text-7xl font-heading font-black tracking-tight text-slate-800 dark:text-slate-100">${h.name}</h1>
+                            ${h.location ? `
+                            <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-medium text-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                ${h.location}
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="text-xl md:text-2xl text-slate-600 mb-8 font-medium dark:text-slate-300 flex flex-wrap items-center">
+                        ${rolesHtml}
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center gap-4">
+                        <a href="${h.ctaLink}" class="bg-sky-500 text-white px-7 py-3 rounded-full font-bold shadow-[0_0_15px_rgba(56,189,248,0.4)] hover:shadow-[0_0_25px_rgba(56,189,248,0.6)] hover:bg-sky-400 hover:scale-105 transition-all duration-300 border border-sky-400/50">
+                            ${h.ctaText}
+                        </a>
                         ${socialsHtml}
                     </div>
                 </div>
@@ -1240,10 +1325,13 @@
             let badgesHtml = '';
             ach.badges.forEach(b => {
                 badgesHtml += `
-                    <div class="w-[170px] shrink-0 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-sm card-hover transition-all flex flex-col justify-center items-center text-center">
-                        <img src="${getImageUrl(b.icon)}" onerror="handleImgError(this, '${b.icon}')" alt="${b.title}" class="w-10 h-10 mb-3 object-contain">
-                        <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1">${b.title}</h4>
-                        <p class="text-[9px] uppercase tracking-wider text-slate-400">${b.provider}</p>
+                    <div class="interactive-badge relative w-[140px] h-[140px] md:w-[160px] md:h-[160px] shrink-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur p-5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-lg hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:border-sky-300 dark:hover:border-sky-500 transition-all duration-300 flex flex-col justify-center items-center text-center cursor-pointer overflow-hidden group">
+                        <!-- 3D Glare overlay -->
+                        <div class="badge-glare absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0,transparent_50%)] opacity-0 pointer-events-none mix-blend-overlay transition-opacity duration-300"></div>
+                        
+                        <img src="${getImageUrl(b.icon)}" onerror="handleImgError(this, '${b.icon}')" alt="${b.title}" class="w-12 h-12 mb-3 object-contain group-hover:scale-110 transition-transform duration-500 z-10">
+                        <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-1 z-10">${b.title}</h4>
+                        <p class="text-[9px] uppercase tracking-wider text-sky-500 font-bold z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">${b.provider}</p>
                     </div>
                 `;
             });
@@ -1275,16 +1363,15 @@
                         </div>
                     </div>
                 </div>
-                <br>
-                <div class="badge-scroller mt-8">
-                    <div class="badge-scroller__inner cursor-pointer" id="badge-track">
-                        ${badgesHtml}
-                    </div>
+                
+                <h3 class="text-center font-heading font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-sm mt-12 mb-6">Certifications & Badges</h3>
+                <div class="flex flex-wrap justify-center gap-4 mt-4" style="perspective: 1000px;">
+                    ${badgesHtml}
                 </div>
             `;
 
             setTimeout(initializeNotepadPeel, 200);
-            setTimeout(initializeBadgeScroller, 200);
+            setTimeout(initializeInteractiveBadges, 200);
         }
 
         // 6. Contact Section Render
@@ -1685,7 +1772,8 @@
         // Hero Modal
         function openEditHeroModal() {
             const h = portfolioData.hero;
-            document.getElementById('edit-hero-name').value = h.name;
+            document.getElementById('edit-hero-name').value = h.name || '';
+            document.getElementById('edit-hero-location').value = h.location || '';
             document.getElementById('edit-hero-roles').value = h.roles.join(', ');
             document.getElementById('edit-hero-avatar').value = h.avatar;
             const prev = document.getElementById('edit-hero-avatar-preview');
@@ -1790,6 +1878,7 @@
             e.preventDefault();
             const h = portfolioData.hero;
             h.name = document.getElementById('edit-hero-name').value.trim();
+            h.location = document.getElementById('edit-hero-location').value.trim();
             h.roles = document.getElementById('edit-hero-roles').value.split(',').map(s => s.trim()).filter(Boolean);
             h.avatar = document.getElementById('edit-hero-avatar').value.trim();
             h.ctaText = document.getElementById('edit-hero-cta-text').value.trim();
@@ -2323,24 +2412,115 @@
             }
         }
 
-        // --- Infinite Badge Marquee Logic ---
-        function initializeBadgeScroller() {
-            const badgeScrollers = document.querySelectorAll(".badge-scroller");
-            if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-                badgeScrollers.forEach((scroller) => {
-                    const scrollerInner = scroller.querySelector(".badge-scroller__inner");
-                    if (!scrollerInner || scrollerInner.dataset.cloned) return;
-                    scrollerInner.dataset.cloned = "true";
-                    
-                    const scrollerContent = Array.from(scrollerInner.children);
-                    
-                    scrollerContent.forEach((item) => {
-                        const duplicatedItem = item.cloneNode(true);
-                        duplicatedItem.setAttribute("aria-hidden", true);
-                        scrollerInner.appendChild(duplicatedItem);
-                    });
-                });
+        // --- Digital ID Modal Logic ---
+        function openDigitalIdModal() {
+            const modal = document.getElementById('modal-digital-id');
+            const card = document.getElementById('digital-id-card');
+            const h = portfolioData.hero;
+            
+            // Populate Data
+            document.getElementById('digital-id-avatar').src = getImageUrl(h.avatar);
+            document.getElementById('digital-id-name').textContent = h.name;
+            document.getElementById('digital-id-role').textContent = h.roles[0] || 'Developer';
+            
+            const locEl = document.getElementById('digital-id-location');
+            if (h.location) {
+                locEl.style.display = 'flex';
+                locEl.querySelector('span').textContent = h.location;
+            } else {
+                locEl.style.display = 'none';
             }
+
+            modal.classList.remove('hidden');
+            // Trigger animation
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-95');
+                card.classList.add('scale-100');
+            }, 10);
+            
+            // Add 3D Tilt Effect to Card
+            card.addEventListener('mousemove', handleCardTilt);
+            card.addEventListener('mouseleave', resetCardTilt);
+        }
+
+        function closeDigitalIdModal(e) {
+            if (e && e.target.closest('#digital-id-card') && !e.target.closest('button')) return; // Clicked inside card
+            
+            const modal = document.getElementById('modal-digital-id');
+            const card = document.getElementById('digital-id-card');
+            
+            modal.classList.add('opacity-0');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-95');
+            
+            card.removeEventListener('mousemove', handleCardTilt);
+            card.removeEventListener('mouseleave', resetCardTilt);
+            resetCardTilt({currentTarget: card});
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function handleCardTilt(e) {
+            const card = e.currentTarget;
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -15; // Max 15deg
+            const rotateY = ((x - centerX) / centerX) * 15;
+            
+            card.style.transform = \`scale(1) rotateX(\${rotateX}deg) rotateY(\${rotateY}deg)\`;
+            
+            const glare = document.getElementById('digital-id-glare');
+            glare.style.opacity = '1';
+            glare.style.transform = \`translateX(\${(x / rect.width) * 200 - 100}%)\`;
+        }
+        
+        function resetCardTilt(e) {
+            const card = e.currentTarget;
+            card.style.transform = 'scale(1) rotateX(0) rotateY(0)';
+            document.getElementById('digital-id-glare').style.opacity = '0';
+        }
+
+        function shareProfileUrl() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                showToast("Profile URL copied to clipboard!", "success");
+            }).catch(err => {
+                showToast("Failed to copy URL", "error");
+            });
+        }
+
+        // --- Interactive Badges 3D Tilt ---
+        function initializeInteractiveBadges() {
+            const badges = document.querySelectorAll('.interactive-badge');
+            badges.forEach(badge => {
+                badge.addEventListener('mousemove', (e) => {
+                    const rect = badge.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -20;
+                    const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 20;
+                    badge.style.transform = \`perspective(1000px) rotateX(\${rotateX}deg) rotateY(\${rotateY}deg) scale3d(1.05, 1.05, 1.05)\`;
+                    const glare = badge.querySelector('.badge-glare');
+                    if (glare) {
+                        glare.style.opacity = '1';
+                        glare.style.transform = \`translate(\${(x / rect.width) * 100 - 50}%, \${(y / rect.height) * 100 - 50}%)\`;
+                    }
+                });
+                badge.addEventListener('mouseleave', () => {
+                    badge.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                    const glare = badge.querySelector('.badge-glare');
+                    if (glare) {
+                        glare.style.opacity = '0';
+                    }
+                });
+            });
         }
 
         // --- Custom Professional Loader ---
