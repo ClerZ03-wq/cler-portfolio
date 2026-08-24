@@ -1792,43 +1792,24 @@
             errBox.classList.add('hidden');
             errBox.textContent = '';
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `Verifying GitHub Token & Permissions...`;
+            submitBtn.innerHTML = `Connecting to GitHub...`;
 
-            const res = await verifyAndApplyToken(token, remember);
+            const success = await verifyAndApplyToken(token, remember);
 
             submitBtn.disabled = false;
             submitBtn.innerHTML = `Authenticate & Connect to GitHub`;
 
-            if (res.success) {
-                errBox.classList.add('hidden');
-                errBox.textContent = '';
+            if (success) {
                 closeModal('modal-admin-login');
-                showToast('Administrator logged in successfully!', 'success');
+                showToast('Administrator logged in successfully! Edit controls are now active.', 'success');
             } else {
-                if (res.reason === 'repo_forbidden') {
-                    closeModal('modal-admin-login');
-                    setTimeout(() => openModal('modal-token-permission-error'), 300);
-                } else {
-                    errBox.textContent = 'Invalid Personal Access Token or repository access denied. Ensure token has write scope.';
-                    errBox.classList.remove('hidden');
-                }
+                errBox.textContent = 'Invalid Personal Access Token. Please verify your token and try again.';
+                errBox.classList.remove('hidden');
             }
         }
 
-        function logoutAdminStateOnly() {
-            sessionStorage.removeItem('admin_github_pat');
-            localStorage.removeItem('admin_github_pat');
-            adminState.isLoggedIn = false;
-            adminState.token = '';
-            adminState.user = null;
-            const adminBar = document.getElementById('admin-top-bar');
-            if (adminBar) adminBar.classList.add('hidden');
-        }
-
         async function verifyAndApplyToken(token, remember) {
-            if (!token) return { success: false, reason: 'empty' };
-            const cfg = portfolioData.githubConfig || DEFAULT_DATA.githubConfig;
-
+            if (!token) return false;
             try {
                 // 1. Verify token user with GitHub API
                 const userRes = await fetch('https://api.github.com/user', {
@@ -1839,31 +1820,11 @@
                 });
 
                 if (!userRes.ok) {
-                    logoutAdminStateOnly();
-                    return { success: false, reason: 'invalid_token' };
+                    return false;
                 }
 
                 const userData = await userRes.json();
 
-                // 2. Verify repository access for ClerZ03-wq/cler-portfolio
-                const repoRes = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.dataPath}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-
-                if (repoRes.status === 403 || repoRes.status === 404) {
-                    // Valid GitHub user, but missing write permissions for repository
-                    logoutAdminStateOnly();
-                    return { success: false, reason: 'repo_forbidden', user: userData };
-                }
-
-                if (repoRes.ok) {
-                    const repoData = await repoRes.json();
-                    adminState.fileSha = repoData.sha;
-                }
-                
                 adminState.isLoggedIn = true;
                 adminState.token = token;
                 adminState.user = userData;
@@ -1875,19 +1836,22 @@
                     sessionStorage.setItem('admin_github_pat', token);
                 }
 
-                // Update UI elements
+                // Show top admin header bar & user info
                 const adminBar = document.getElementById('admin-top-bar');
                 if (adminBar) adminBar.classList.remove('hidden');
                 const userInfo = document.getElementById('admin-user-info');
                 if (userInfo) userInfo.innerHTML = `Logged in as <strong>@${userData.login}</strong>`;
 
+                // Fetch latest file SHA asynchronously
+                fetchRepoSha();
+
+                // Re-render page sections with edit controls
                 renderAllSections();
-                return { success: true };
+                return true;
 
             } catch (err) {
                 console.error('Token verification error:', err);
-                logoutAdminStateOnly();
-                return { success: false, reason: 'network' };
+                return false;
             }
         }
 
