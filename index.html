@@ -43,40 +43,32 @@
         ::view-transition-old(root) { z-index: 1; }
         ::view-transition-new(root) { z-index: 2; }
 
-        /* ===== MINIMAL LOADER ===== */
+        /* ===== LOADER ===== */
         #loader {
             background: #fff;
-            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.6s ease;
         }
         :is(.dark) #loader { background: #020617; }
 
-        /* Name: staggered letter slide-up from mask */
-        .ld-word { display: flex; gap: 0.02em; }
-        .ld-char-wrap { overflow: hidden; display: inline-block; }
-        .ld-char {
-            display: inline-block;
-            transform: translateY(110%);
+        /* The whole content block fades in + lifts up, then holds */
+        #loader-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
             opacity: 0;
-            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-                        opacity 0.4s ease;
+            transform: translateY(12px);
+            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .ld-char.up { transform: translateY(0); opacity: 1; }
-
-        /* Thin sky-blue accent line */
-        #ld-line {
-            width: 0;
-            height: 1.5px;
-            background: #38bdf8;
-            border-radius: 9999px;
-            opacity: 0;
-            transition: width 0.9s cubic-bezier(0.76, 0, 0.24, 1),
-                        opacity 0.4s ease;
+        #loader-content.show {
+            opacity: 1;
+            transform: translateY(0);
         }
-        #ld-line.grow { width: 48px; opacity: 1; }
 
         /* Progress bar */
         #loading-bar-container {
-            width: 160px;
+            width: 140px;
             height: 1px;
             background: #e2e8f0;
             border-radius: 9999px;
@@ -88,9 +80,10 @@
             height: 100%;
             background: #38bdf8;
             border-radius: 9999px;
-            transition: width 1.4s cubic-bezier(0.76, 0, 0.24, 1);
+            transition: width 1.2s cubic-bezier(0.76, 0, 0.24, 1);
             will-change: width;
         }
+
 
         
         /* --- REALISTIC CALENDAR PEEL & NOTEPAD STACK EFFECTS --- */
@@ -347,27 +340,17 @@
     </div>
 
     <!-- PRELOADER -->
-    <div id="loader" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6">
-
-        <!-- Logo: Cler + Dev staggered slide-up -->
-        <div class="ld-word" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(2.5rem,8vw,4.5rem);letter-spacing:-0.03em;line-height:1;">
-            <div class="ld-char-wrap"><span class="ld-char text-slate-800 dark:text-white">C</span></div>
-            <div class="ld-char-wrap"><span class="ld-char text-slate-800 dark:text-white">l</span></div>
-            <div class="ld-char-wrap"><span class="ld-char text-slate-800 dark:text-white">e</span></div>
-            <div class="ld-char-wrap"><span class="ld-char text-slate-800 dark:text-white">r</span></div>
-            <div class="ld-char-wrap"><span class="ld-char text-sky-500">D</span></div>
-            <div class="ld-char-wrap"><span class="ld-char text-sky-500">e</span></div>
-            <div class="ld-char-wrap"><span class="ld-char text-sky-500">v</span></div>
+    <div id="loader" class="fixed inset-0 z-[9999] flex items-center justify-center">
+        <div id="loader-content">
+            <!-- Brand name -->
+            <p style="font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(2rem,7vw,3.5rem);letter-spacing:-0.03em;line-height:1;" class="text-slate-800 dark:text-white">
+                Cler<span class="text-sky-500">Dev</span>
+            </p>
+            <!-- Thin progress bar -->
+            <div id="loading-bar-container">
+                <div id="loading-bar"></div>
+            </div>
         </div>
-
-        <!-- Accent line -->
-        <div id="ld-line"></div>
-
-        <!-- Thin progress bar -->
-        <div id="loading-bar-container">
-            <div id="loading-bar"></div>
-        </div>
-
     </div>
 
     <!-- NAVIGATION BAR -->
@@ -3130,43 +3113,35 @@
 
         }
 
-        // ===== MINIMAL LOADER =====
+        // ===== LOADER =====
         window.addEventListener('DOMContentLoaded', () => {
-            const loader = document.getElementById('loader');
-            const bar    = document.getElementById('loading-bar');
-            const line   = document.getElementById('ld-line');
-            const chars  = document.querySelectorAll('.ld-char');
+            const loader  = document.getElementById('loader');
+            const bar     = document.getElementById('loading-bar');
+            const content = document.getElementById('loader-content');
 
-            // Start progress bar immediately
-            setTimeout(() => { bar.style.width = '85%'; }, 80);
+            // Start bar and fade content in immediately
+            setTimeout(() => {
+                bar.style.width = '70%';
+                content.classList.add('show');
+            }, 60);
 
             window.addEventListener('load', () => {
-                // Fill bar to 100%
+                // Complete bar
                 bar.style.width = '100%';
 
+                // Wait briefly, then fade the loader out
                 setTimeout(() => {
-                    // Stagger letter reveal
-                    chars.forEach((ch, i) => {
-                        setTimeout(() => ch.classList.add('up'), i * 55);
-                    });
-
-                    // Expand accent line after letters
-                    setTimeout(() => line.classList.add('grow'), chars.length * 55 + 100);
-
-                    // Fade out the whole loader
+                    loader.style.opacity = '0';
+                    loader.style.pointerEvents = 'none';
                     setTimeout(() => {
-                        loader.style.opacity = '0';
-                        loader.style.pointerEvents = 'none';
-                        setTimeout(() => {
-                            loader.remove();
-                            handleScroll();
-                            initializeInteractiveBadges();
-                        }, 700);
-                    }, chars.length * 55 + 600);
-
-                }, 300);
+                        loader.remove();
+                        handleScroll();
+                        initializeInteractiveBadges();
+                    }, 620);
+                }, 500);
             });
         });
+
 
 
 
