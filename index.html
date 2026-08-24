@@ -1170,7 +1170,13 @@
         };
 
         // --- INITIALIZATION ---
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
+
         window.addEventListener('DOMContentLoaded', () => {
+            window.scrollTo(0, 0);
             loadPortfolioData();
             checkStoredAdminSession();
             setupKeyboardShortcuts();
@@ -3214,6 +3220,7 @@
             setTimeout(() => { bar.style.width = '60%'; }, 200);
 
             window.addEventListener('load', () => {
+                window.scrollTo(0, 0);
                 // After load, crawl to 100%
                 bar.style.width = '100%';
 
