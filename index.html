@@ -917,8 +917,10 @@
 
     <!-- DIGITAL ID BADGE MODAL -->
     <div id="modal-digital-id" class="hidden fixed inset-0 z-[150] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="closeDigitalIdModal(event)">
+        <!-- Perspective wrapper for 3D gyro tilt -->
+        <div style="perspective: 900px; perspective-origin: center center;">
         <!-- Futuristic ID Card -->
-        <div class="relative bg-white dark:bg-slate-900 border border-sky-300 dark:border-sky-500/30 rounded-2xl w-full max-w-sm overflow-hidden shadow-[0_0_50px_rgba(14,165,233,0.1)] dark:shadow-[0_0_50px_rgba(14,165,233,0.2)] transform scale-95 transition-transform duration-500 hover:shadow-[0_0_60px_rgba(14,165,233,0.2)] dark:hover:shadow-[0_0_60px_rgba(14,165,233,0.3)]" style="transform-style: preserve-3d; perspective: 1000px;" id="digital-id-card">
+        <div class="relative bg-white dark:bg-slate-900 border border-sky-300 dark:border-sky-500/30 rounded-2xl w-full max-w-sm overflow-hidden shadow-[0_0_50px_rgba(14,165,233,0.1)] dark:shadow-[0_0_50px_rgba(14,165,233,0.2)] transform scale-95 hover:shadow-[0_0_60px_rgba(14,165,233,0.2)] dark:hover:shadow-[0_0_60px_rgba(14,165,233,0.3)]" style="transform-style: preserve-3d; transition: transform 0.12s ease-out;" id="digital-id-card">
             
             <!-- Scanline / Glitch Overlay -->
             <div class="absolute inset-0 pointer-events-none opacity-10 dark:opacity-20 z-20" style="background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, #0ea5e9 2px, #0ea5e9 4px); mix-blend-mode: overlay;"></div>
@@ -981,6 +983,7 @@
             <!-- Holographic shine effect (animates on hover in JS) -->
             <div id="digital-id-glare" class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 pointer-events-none transform -translate-x-full"></div>
         </div>
+        </div><!-- end perspective wrapper -->
     </div>
 
     <!-- ALL PROJECTS MODAL -->
@@ -3142,30 +3145,72 @@
         }
 
         function handleOrientation(e) {
-            // gamma: left-to-right tilt in degrees [-90, 90]
-            // beta: front-to-back tilt in degrees [-180, 180]
-            if (e.gamma === null || e.beta === null) return;
+            if (e.gamma === null || e.beta === null || e.alpha === null) return;
 
-            // Clamp values for smooth 3D tilt effect
-            const gammaClamped = Math.max(-30, Math.min(30, e.gamma));
-            const betaAdjusted = Math.max(-30, Math.min(30, e.beta - 45)); // 45 deg baseline for natural phone holding
+            // --- Calibration: lock the neutral position on first good reading ---
+            if (!handleOrientation._baseGamma) {
+                handleOrientation._baseGamma = e.gamma;
+                handleOrientation._baseBeta  = e.beta;
+            }
 
-            const rotateY = (gammaClamped / 30) * 22; // Max 22 deg Y tilt
-            const rotateX = -(betaAdjusted / 30) * 22; // Max 22 deg X tilt
+            // Low-pass filter smoothing (alpha = 0.15 → heavy smoothing, feels natural)
+            const SMOOTH = 0.15;
+            handleOrientation._smoothGamma = handleOrientation._smoothGamma !== undefined
+                ? handleOrientation._smoothGamma + SMOOTH * (e.gamma - handleOrientation._smoothGamma)
+                : e.gamma;
+            handleOrientation._smoothBeta  = handleOrientation._smoothBeta !== undefined
+                ? handleOrientation._smoothBeta  + SMOOTH * (e.beta  - handleOrientation._smoothBeta)
+                : e.beta;
 
+            // Subtract calibration baseline
+            let rawX = handleOrientation._smoothGamma - handleOrientation._baseGamma;
+            let rawY = handleOrientation._smoothBeta  - handleOrientation._baseBeta;
+
+            // Handle screen orientation (landscape left / landscape right swaps axes)
+            const orient = (window.screen.orientation || {}).angle ?? window.orientation ?? 0;
+            if (orient === 90)  { const t = rawX; rawX =  rawY; rawY = -t; }
+            if (orient === -90 || orient === 270) { const t = rawX; rawX = -rawY; rawY =  t; }
+
+            // Clamp to ±30° range, map to ±18° visual tilt
+            const CLAMP = 30, MAX_TILT = 18;
+            const rotateY =  Math.max(-CLAMP, Math.min(CLAMP, rawX)) / CLAMP * MAX_TILT;
+            const rotateX = -Math.max(-CLAMP, Math.min(CLAMP, rawY)) / CLAMP * MAX_TILT;
+
+            // --- Apply to certification badges ---
             const badges = document.querySelectorAll('.interactive-badge');
             badges.forEach(badge => {
                 if (!badge.matches(':hover') && !badge.dataset.touching) {
-                    badge.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.03, 1.03, 1.03)`;
+                    badge.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.03,1.03,1.03)`;
                     const glare = badge.querySelector('.badge-glare');
                     if (glare) {
-                        glare.style.opacity = '0.75';
-                        glare.style.transform = `translate(${rotateY * 2}%, ${-rotateX * 2}%)`;
+                        glare.style.opacity = '0.6';
+                        glare.style.transform = `translate(${rotateY * 2.5}%, ${-rotateX * 2.5}%)`;
                     }
                 }
             });
 
+            // --- Apply to Digital ID card if modal is open ---
+            const card = document.getElementById('digital-id-card');
+            const modal = document.getElementById('modal-digital-id');
+            if (card && modal && !modal.classList.contains('hidden')) {
+                card.style.transform = `scale(1) perspective(900px) rotateX(${(rotateX * 0.7).toFixed(2)}deg) rotateY(${(rotateY * 0.7).toFixed(2)}deg)`;
+                const glare = document.getElementById('digital-id-glare');
+                if (glare) {
+                    glare.style.opacity = '0.5';
+                    glare.style.transform = `translateX(${rotateY * 3}%)`;
+                }
+            }
         }
+
+        // Recalibrate when the user taps/clicks (resets neutral point)
+        document.addEventListener('dblclick', () => {
+            handleOrientation._baseGamma  = undefined;
+            handleOrientation._baseBeta   = undefined;
+            handleOrientation._smoothGamma = undefined;
+            handleOrientation._smoothBeta  = undefined;
+            showToast('Gyro recalibrated! 🎯', 'success');
+        });
+
 
         // ===== LOADER =====
         window.addEventListener('DOMContentLoaded', () => {
