@@ -2762,9 +2762,6 @@
             // Add 3D Tilt Effect to Card
             card.addEventListener('mousemove', handleCardTilt);
             card.addEventListener('mouseleave', resetCardTilt);
-            card.addEventListener('touchmove', handleCardTilt, {passive: true});
-            card.addEventListener('touchstart', handleCardTilt, {passive: true});
-            card.addEventListener('touchend', resetCardTilt);
         }
 
         function closeDigitalIdModal(e) {
@@ -2779,9 +2776,6 @@
             
             card.removeEventListener('mousemove', handleCardTilt);
             card.removeEventListener('mouseleave', resetCardTilt);
-            card.removeEventListener('touchmove', handleCardTilt);
-            card.removeEventListener('touchstart', handleCardTilt);
-            card.removeEventListener('touchend', resetCardTilt);
             resetCardTilt({currentTarget: card});
             
             setTimeout(() => {
@@ -2793,18 +2787,8 @@
             const card = e.currentTarget;
             const rect = card.getBoundingClientRect();
             
-            let clientX, clientY;
-            if (e.type.startsWith('touch')) {
-                if (e.touches.length === 0) return;
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
-            }
-            
-            const x = clientX - rect.left;
-            const y = clientY - rect.top;
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
             
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
@@ -2987,12 +2971,6 @@
                 }
             });
 
-            // Also tilt Digital ID card modal if open!
-            const digitalIdCard = document.getElementById('digital-id-card');
-            const digitalIdModal = document.getElementById('modal-digital-id');
-            if (digitalIdCard && digitalIdModal && !digitalIdModal.classList.contains('hidden')) {
-                digitalIdCard.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale(1)`;
-            }
         }
 
         // --- Custom Professional Loader ---
