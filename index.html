@@ -992,6 +992,7 @@
 
         // --- RENDER ENGINE FOR PORTFOLIO SECTIONS ---
         function renderAllSections() {
+            updateFavicon();
             renderHero();
             renderAbout();
             renderProjects();
@@ -1000,6 +1001,16 @@
             renderContact();
             renderFooter();
             setTimeout(reveal, 100);
+        }
+
+        function updateFavicon() {
+            let link = document.querySelector("link[rel~='icon']");
+            if (!link) {
+                link = document.createElement('link');
+                link.rel = 'icon';
+                document.head.appendChild(link);
+            }
+            link.href = getImageUrl(portfolioData.hero.avatar);
         }
 
         function getSocialIcon(iconType, customIconUrl) {
@@ -2555,7 +2566,7 @@
                             
                             setTimeout(reveal, 100);
                             setTimeout(initializeNotepadPeel, 500); 
-                            initializeBadgeScroller(); 
+                            initializeInteractiveBadges(); 
                             
                             setTimeout(() => { loader.remove(); }, 1000);
 
