@@ -80,7 +80,7 @@
             height: 100%;
             background: #38bdf8;
             border-radius: 9999px;
-            transition: width 1.2s cubic-bezier(0.76, 0, 0.24, 1);
+            transition: width 2s cubic-bezier(0.76, 0, 0.24, 1);
             will-change: width;
         }
 
@@ -3148,17 +3148,19 @@
             const bar     = document.getElementById('loading-bar');
             const content = document.getElementById('loader-content');
 
-            // Start bar and fade content in immediately
+            // Fade content in immediately
             setTimeout(() => {
-                bar.style.width = '70%';
                 content.classList.add('show');
-            }, 60);
+            }, 100);
+
+            // Bar creeps to 60% slowly
+            setTimeout(() => { bar.style.width = '60%'; }, 200);
 
             window.addEventListener('load', () => {
-                // Complete bar
+                // After load, crawl to 100%
                 bar.style.width = '100%';
 
-                // Wait briefly, then fade the loader out
+                // Hold for 1.8s so user can read the name, then fade out
                 setTimeout(() => {
                     loader.style.opacity = '0';
                     loader.style.pointerEvents = 'none';
@@ -3166,10 +3168,11 @@
                         loader.remove();
                         handleScroll();
                         initializeInteractiveBadges();
-                    }, 620);
-                }, 500);
+                    }, 700);
+                }, 1800);
             });
         });
+
 
 
 
