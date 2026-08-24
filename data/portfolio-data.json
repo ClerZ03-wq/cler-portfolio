@@ -1,7 +1,7 @@
 {
   "hero": {
     "avatar": "img/1786438536257_5aa4138b-ab3a-474d-8f37-d5dbf403b983.jpg",
-    "name": "John Clerwin N. Dela Cruz",
+    "name": "John Clerwin Dela Cruz",
     "roles": [
       "Web Developer",
       "Backend Programmer",
@@ -17,25 +17,25 @@
     },
     "socialLinks": [
       {
-        "id": "soc-1787605671126-0",
+        "id": "soc-1787606122823-0",
         "name": "LinkedIn",
         "url": "https://linkedin.com/in/clerz",
         "icon": "linkedin"
       },
       {
-        "id": "soc-1787605671126-1",
+        "id": "soc-1787606122823-1",
         "name": "GitHub",
         "url": "https://github.com/ClerZ03-wq",
         "icon": "github"
       },
       {
-        "id": "soc-1787605671126-2",
+        "id": "soc-1787606122823-2",
         "name": "Facebook",
         "url": "https://facebook.com/clerz.pogi.meow/",
         "icon": "facebook"
       },
       {
-        "id": "soc-1787605671126-3",
+        "id": "soc-1787606122823-3",
         "name": "AWS Builder",
         "url": "https://builder.aws.com/community/@clerz?tab=badges",
         "icon": "custom",
