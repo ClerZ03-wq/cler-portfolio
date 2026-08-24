@@ -502,139 +502,186 @@
 
     <!-- HERO EDIT MODAL -->
     <div id="modal-edit-hero" class="hidden fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-xl w-full p-8 shadow-2xl my-8 relative">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white">Edit Hero Section</h3>
-                <button onclick="closeModal('modal-edit-hero')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-2xl w-full flex flex-col shadow-2xl my-6 max-h-[90vh] overflow-hidden relative">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center border border-sky-500/20 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-heading font-black text-slate-800 dark:text-white">Edit Hero Section</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Customize your header title, avatar, roles, and links</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('modal-edit-hero')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
             
-            <form onsubmit="saveHeroData(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
-                    <input type="text" id="edit-hero-name" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-bold">
-                </div>
+            <!-- Modal Body -->
+            <form onsubmit="saveHeroData(event)" class="flex flex-col flex-1 overflow-hidden">
+                <div class="p-6 overflow-y-auto custom-scrollbar space-y-6 flex-1">
+                    <!-- SECTION 1: PERSONAL & AVATAR -->
+                    <div class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 space-y-4">
+                        <h4 class="text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2">
+                            <span>👤</span> Personal Identity & Avatar
+                        </h4>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Location</label>
-                        <input type="text" id="edit-hero-location" placeholder="e.g. Taguig City, Philippines" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+                            <input type="text" id="edit-hero-name" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-bold">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Profile Avatar Image</label>
+                            <div class="flex items-center gap-3">
+                                <img id="edit-hero-avatar-preview" src="img/logo.svg" alt="Preview" class="w-12 h-12 rounded-full border border-sky-300 dark:border-slate-700 object-cover shrink-0 shadow-sm">
+                                <div class="flex gap-2 flex-1">
+                                    <input type="text" id="edit-hero-avatar" required oninput="document.getElementById('edit-hero-avatar-preview').src = getImageUrl(this.value)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-mono text-xs">
+                                    <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center justify-center cursor-pointer shrink-0 transition-all">
+                                        Upload File
+                                        <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'edit-hero-avatar')">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">University / Education</label>
-                        <input type="text" id="edit-hero-education" placeholder="e.g. University of Makati (4th Year IT)" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+
+                    <!-- SECTION 2: LOCATION & EDUCATION & WORK -->
+                    <div class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 space-y-4">
+                        <h4 class="text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2">
+                            <span>📍</span> Location, Education & Work Status
+                        </h4>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Location</label>
+                                <input type="text" id="edit-hero-location" placeholder="e.g. Taguig City, Philippines" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">University / Education</label>
+                                <input type="text" id="edit-hero-education" placeholder="e.g. University of Makati (4th Year IT)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Current Work / Company</label>
+                            <input type="text" id="edit-hero-work" placeholder="e.g. Filoil Logistics (Lead Developer)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                        </div>
                     </div>
-                </div>
 
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Current Work / Company</label>
-                    <input type="text" id="edit-hero-work" placeholder="e.g. Filoil Logistics (Lead Developer)" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                </div>
+                    <!-- SECTION 3: ROLES & CALL TO ACTION -->
+                    <div class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 space-y-4">
+                        <h4 class="text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2">
+                            <span>💻</span> Professional Roles & CTA Button
+                        </h4>
 
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Roles (comma-separated)</label>
-                    <input type="text" id="edit-hero-roles" required placeholder="Web Developer, Backend Programmer, Database Administrator" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Roles (comma-separated)</label>
+                            <input type="text" id="edit-hero-roles" required placeholder="Web Developer, Backend Programmer, Database Administrator" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                        </div>
 
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Profile Avatar Image</label>
-                    <div class="flex items-center gap-3">
-                        <img id="edit-hero-avatar-preview" src="img/logo.svg" alt="Preview" class="w-12 h-12 rounded-full border border-sky-200 dark:border-slate-700 object-cover shrink-0 shadow-sm">
-                        <div class="flex gap-2 flex-1">
-                            <input type="text" id="edit-hero-avatar" required oninput="document.getElementById('edit-hero-avatar-preview').src = getImageUrl(this.value)" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                            <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center justify-center cursor-pointer shrink-0">
-                                Upload File
-                                <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'edit-hero-avatar')">
-                            </label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">CTA Button Text</label>
+                                <input type="text" id="edit-hero-cta-text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">CTA Button Link</label>
+                                <input type="text" id="edit-hero-cta-link" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-mono text-xs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 4: SOCIAL LINKS -->
+                    <div class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2">
+                                <span>🌐</span> Social Profiles & Custom Links
+                            </h4>
+                            <button type="button" onclick="addSocialLinkEditorItem()" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1 rounded-xl text-xs flex items-center gap-1 shadow-sm transition-all">
+                                + Add Social Link
+                            </button>
+                        </div>
+                        <div id="hero-socials-editor" class="space-y-3 p-1">
+                            <!-- Populated dynamically by JS -->
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">CTA Button Text</label>
-                        <input type="text" id="edit-hero-cta-text" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">CTA Button Link</label>
-                        <input type="text" id="edit-hero-cta-link" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                    </div>
-                </div>
-
-                <hr class="border-sky-100 dark:border-slate-800 my-2">
-
-                <!-- CUSTOM SOCIAL LINKS EDITOR -->
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Social Links & Profiles</label>
-                        <button type="button" onclick="addSocialLinkEditorItem()" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1 rounded-lg text-xs flex items-center gap-1 shadow-sm">
-                            + Add Social Link
-                        </button>
-                    </div>
-                    <div id="hero-socials-editor" class="space-y-3 max-h-64 overflow-y-auto p-1">
-                        <!-- Populated dynamically by JS -->
-                    </div>
-                </div>
-
-                <div class="pt-4 flex justify-end gap-3">
-                    <button type="button" onclick="closeModal('modal-edit-hero')" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
-                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl shadow-md">Apply Edits</button>
+                <!-- Modal Footer -->
+                <div class="p-4 px-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50">
+                    <button type="button" onclick="closeModal('modal-edit-hero')" class="px-5 py-2.5 rounded-xl font-bold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">Cancel</button>
+                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs shadow-md transition-all">Apply Edits</button>
                 </div>
             </form>
-        </div>
         </div>
     </div>
 
     <!-- DIGITAL ID BADGE EDIT MODAL -->
     <div id="modal-edit-id-badge" class="hidden fixed inset-0 z-[200] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-sm w-full p-8 shadow-2xl">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-heading font-black text-slate-800 dark:text-white">Customize ID Badge</h3>
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100 dark:border-slate-800">
+                <h3 class="text-lg font-heading font-black text-slate-800 dark:text-white flex items-center gap-2">
+                    <span>🪪</span> Customize Digital ID
+                </h3>
                 <button onclick="closeModal('modal-edit-id-badge')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
             <form onsubmit="saveIdBadgeData(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">QR Code URL / Text (Optional)</label>
-                    <input type="text" id="edit-id-qr" placeholder="e.g. https://github.com/yourprofile" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-sky-500">
-                    <p class="text-[10px] text-slate-500 mt-1">A QR code will be generated automatically from this link.</p>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">QR Code Link / Target URL</label>
+                    <input type="text" id="edit-id-qr" placeholder="e.g. https://instagram.com/clrwnz/" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-800 dark:text-white focus:outline-none focus:border-sky-500 font-mono">
+                    <p class="text-[10px] text-slate-500 mt-1">A high-res QR code will be generated automatically for your ID card.</p>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">Access Level Text</label>
-                    <input type="text" id="edit-id-access" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-sky-500">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Access Level Badge Text</label>
+                    <input type="text" id="edit-id-access" placeholder="e.g. Admin / Lead Dev" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-800 dark:text-white focus:outline-none focus:border-sky-500 font-bold">
                 </div>
-                <div class="pt-4 flex justify-end gap-3">
-                    <button type="button" onclick="closeModal('modal-edit-id-badge')" class="px-5 py-2 rounded-xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
-                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2 rounded-xl shadow-md">Save</button>
+                <div class="pt-3 flex justify-end gap-3 border-t border-slate-100 dark:border-slate-800">
+                    <button type="button" onclick="closeModal('modal-edit-id-badge')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-5 py-2 rounded-xl text-xs shadow-md">Save ID Badge</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- ABOUT ME EDIT MODAL -->
     <div id="modal-edit-about" class="hidden fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-lg w-full p-8 shadow-2xl">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white">Edit About Me</h3>
-                <button onclick="closeModal('modal-edit-about')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-xl w-full flex flex-col shadow-2xl overflow-hidden max-h-[85vh]">
+            <div class="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center border border-sky-500/20 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-heading font-black text-slate-800 dark:text-white">Edit About Me</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Update your biography and introductory narrative</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('modal-edit-about')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
             
-            <form onsubmit="saveAboutData(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Section Title</label>
-                    <input type="text" id="edit-about-title" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-bold">
+            <form onsubmit="saveAboutData(event)" class="flex flex-col flex-1 overflow-hidden">
+                <div class="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Section Title</label>
+                        <input type="text" id="edit-about-title" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-bold">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Bio / About Paragraph</label>
+                        <textarea id="edit-about-content" rows="6" required class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 leading-relaxed text-sm"></textarea>
+                    </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Bio / About Paragraph</label>
-                    <textarea id="edit-about-content" rows="6" required class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 leading-relaxed"></textarea>
-                </div>
-
-                <div class="pt-4 flex justify-end gap-3">
-                    <button type="button" onclick="closeModal('modal-edit-about')" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
-                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl shadow-md">Apply Edits</button>
+                <div class="p-4 px-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50">
+                    <button type="button" onclick="closeModal('modal-edit-about')" class="px-5 py-2.5 rounded-xl font-bold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs shadow-md">Apply Edits</button>
                 </div>
             </form>
         </div>
@@ -642,76 +689,112 @@
 
     <!-- PROJECT ITEM EDIT / CREATE MODAL -->
     <div id="modal-edit-project-item" class="hidden fixed inset-0 z-[105] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-xl w-full p-8 shadow-2xl my-8">
-            <div class="flex justify-between items-center mb-6">
-                <h3 id="project-modal-heading" class="text-2xl font-heading font-black text-slate-800 dark:text-white">Edit Project</h3>
-                <button onclick="closeModal('modal-edit-project-item')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-2xl w-full flex flex-col shadow-2xl my-6 max-h-[90vh] overflow-hidden relative">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center border border-sky-500/20 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                    </div>
+                    <div>
+                        <h3 id="project-modal-heading" class="text-xl font-heading font-black text-slate-800 dark:text-white">Edit Project</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Specify project details, images, tags, and links</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('modal-edit-project-item')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
             
-            <form onsubmit="saveProjectItem(event)" class="space-y-4">
+            <!-- Modal Body -->
+            <form onsubmit="saveProjectItem(event)" class="flex flex-col flex-1 overflow-hidden">
                 <input type="hidden" id="edit-proj-id">
 
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Project Title</label>
-                    <input type="text" id="edit-proj-title" required placeholder="e.g. FIL-TRACK" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-bold">
-                </div>
+                <div class="p-6 overflow-y-auto custom-scrollbar space-y-6 flex-1">
+                    <!-- CARD 1: GENERAL INFO -->
+                    <div class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 space-y-4">
+                        <h4 class="text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2">
+                            <span>📌</span> Title, Role & Date
+                        </h4>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Role / Badge</label>
-                        <input type="text" id="edit-proj-role" required placeholder="Lead Developer" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Period / Date</label>
-                        <input type="text" id="edit-proj-period" required placeholder="March 2026 — Present" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                    </div>
-                </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Project Title</label>
+                            <input type="text" id="edit-proj-title" required placeholder="e.g. FIL-TRACK" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-bold">
+                        </div>
 
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Project Logo Image Path / URL</label>
-                    <div class="flex items-center gap-3">
-                        <img id="edit-proj-logo-preview" src="img/logo.svg" alt="Preview" class="w-10 h-10 rounded-lg border border-sky-200 dark:border-slate-700 object-contain p-1 bg-white shrink-0">
-                        <div class="flex gap-2 flex-1">
-                            <input type="text" id="edit-proj-logo" required placeholder="img/logo.svg" oninput="document.getElementById('edit-proj-logo-preview').src = getImageUrl(this.value)" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                            <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center justify-center cursor-pointer shrink-0">
-                                Upload Logo
-                                <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'edit-proj-logo')">
-                            </label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Role / Badge</label>
+                                <input type="text" id="edit-proj-role" required placeholder="e.g. Lead Developer" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Period / Timeline</label>
+                                <input type="text" id="edit-proj-period" required placeholder="e.g. March 2026 — Present" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD 2: MEDIA & LOGO -->
+                    <div class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 space-y-4">
+                        <h4 class="text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2">
+                            <span>🖼️</span> Project Logo & Screenshot
+                        </h4>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Project Logo Image</label>
+                            <div class="flex items-center gap-3">
+                                <img id="edit-proj-logo-preview" src="img/logo.svg" alt="Preview" class="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-700 object-contain p-1 bg-white dark:bg-slate-900 shrink-0">
+                                <div class="flex gap-2 flex-1">
+                                    <input type="text" id="edit-proj-logo" required placeholder="img/logo.svg" oninput="document.getElementById('edit-proj-logo-preview').src = getImageUrl(this.value)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-mono text-xs">
+                                    <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center justify-center cursor-pointer shrink-0">
+                                        Upload Logo
+                                        <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'edit-proj-logo')">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Project Screenshot Image (Optional for Lightbox)</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="edit-proj-image" placeholder="img/project-preview.png" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-mono text-xs">
+                                <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center justify-center cursor-pointer shrink-0">
+                                    Upload Image
+                                    <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'edit-proj-image')">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD 3: DESCRIPTION, TAGS & LINK -->
+                    <div class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 space-y-4">
+                        <h4 class="text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2">
+                            <span>📝</span> Description, Tags & Live Link
+                        </h4>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Description</label>
+                            <textarea id="edit-proj-description" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 text-sm leading-relaxed"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Tech Stack Tags (comma separated)</label>
+                                <input type="text" id="edit-proj-tags" required placeholder="Django, PostgreSQL, Tailwind" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Project Link URL</label>
+                                <input type="text" id="edit-proj-link" required placeholder="#" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-mono text-xs">
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Project Screenshot Image (Optional for Lightbox)</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="edit-proj-image" placeholder="https://..." class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                        <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center justify-center cursor-pointer shrink-0">
-                            Upload Image
-                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'edit-proj-image')">
-                        </label>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Description</label>
-                    <textarea id="edit-proj-description" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500"></textarea>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Tech Stack Tags (comma separated)</label>
-                    <input type="text" id="edit-proj-tags" required placeholder="Django, PostgreSQL, Tailwind" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Project Link URL</label>
-                    <input type="text" id="edit-proj-link" required placeholder="#" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                </div>
-
-                <div class="pt-4 flex justify-end gap-3">
-                    <button type="button" onclick="closeModal('modal-edit-project-item')" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
-                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl shadow-md">Save Project</button>
+                <!-- Modal Footer -->
+                <div class="p-4 px-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50">
+                    <button type="button" onclick="closeModal('modal-edit-project-item')" class="px-5 py-2.5 rounded-xl font-bold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs shadow-md">Save Project</button>
                 </div>
             </form>
         </div>
@@ -719,26 +802,36 @@
 
     <!-- SKILLS EDIT MODAL -->
     <div id="modal-edit-skills" class="hidden fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-xl w-full p-8 shadow-2xl my-8">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white">Edit Technical Arsenal</h3>
-                <button onclick="closeModal('modal-edit-skills')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-2xl w-full flex flex-col shadow-2xl my-6 max-h-[90vh] overflow-hidden relative">
+            <div class="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center border border-sky-500/20 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-heading font-black text-slate-800 dark:text-white">Technical Arsenal</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Organize skill categories and technologies</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('modal-edit-skills')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
             
-            <form onsubmit="saveSkillsData(event)" class="space-y-6">
-                <div id="skills-editor-groups" class="space-y-4">
-                    <!-- Populated dynamically by JS -->
+            <form onsubmit="saveSkillsData(event)" class="flex flex-col flex-1 overflow-hidden">
+                <div class="p-6 space-y-6 overflow-y-auto custom-scrollbar flex-1">
+                    <div id="skills-editor-groups" class="space-y-4">
+                        <!-- Populated dynamically by JS -->
+                    </div>
+
+                    <button type="button" onclick="addSkillGroupEditor()" class="w-full border-2 border-dashed border-sky-300 dark:border-slate-700 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-slate-800 font-bold py-3 rounded-2xl transition-all flex items-center justify-center gap-2 text-xs">
+                        + Add New Skill Category
+                    </button>
                 </div>
 
-                <button type="button" onclick="addSkillGroupEditor()" class="w-full border-2 border-dashed border-sky-300 dark:border-slate-700 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-slate-800 font-bold py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
-                    + Add New Skill Category
-                </button>
-
-                <div class="pt-4 flex justify-end gap-3 border-t border-sky-100 dark:border-slate-800">
-                    <button type="button" onclick="closeModal('modal-edit-skills')" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
-                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl shadow-md">Apply Edits</button>
+                <div class="p-4 px-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50">
+                    <button type="button" onclick="closeModal('modal-edit-skills')" class="px-5 py-2.5 rounded-xl font-bold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs shadow-md">Apply Edits</button>
                 </div>
             </form>
         </div>
@@ -746,11 +839,11 @@
 
     <!-- ACHIEVEMENTS EDIT MODAL -->
     <div id="modal-edit-achievements" class="hidden fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl my-8 relative">
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-2xl w-full flex flex-col shadow-2xl my-6 max-h-[90vh] overflow-hidden relative">
             <!-- Header -->
-            <div class="flex justify-between items-center mb-6 pb-4 border-b border-sky-100 dark:border-slate-800">
+            <div class="flex justify-between items-center p-6 border-b border-sky-100 dark:border-slate-800 shrink-0">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center border border-sky-500/20 shrink-0">
+                    <div class="w-10 h-10 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center border border-sky-500/20 shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
                     </div>
                     <div>
@@ -764,38 +857,40 @@
             </div>
 
             <!-- Navigation Tabs -->
-            <div class="flex border-b border-sky-100 dark:border-slate-800 mb-6 gap-2">
-                <button type="button" id="tab-btn-cards" onclick="switchAchievementTab('cards')" class="pb-3 px-4 text-xs font-bold transition-all border-b-2 border-sky-500 text-sky-600 dark:text-sky-400 flex items-center gap-2">
+            <div class="flex border-b border-sky-100 dark:border-slate-800 px-6 gap-2 shrink-0 bg-slate-50/50 dark:bg-slate-950/40">
+                <button type="button" id="tab-btn-cards" onclick="switchAchievementTab('cards')" class="py-3 px-4 text-xs font-bold transition-all border-b-2 border-sky-500 text-sky-600 dark:text-sky-400 flex items-center gap-2">
                     <span>📄 Peel Cards</span>
                     <span id="tab-count-cards" class="px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/40 text-[10px]">0</span>
                 </button>
-                <button type="button" id="tab-btn-badges" onclick="switchAchievementTab('badges')" class="pb-3 px-4 text-xs font-bold transition-all border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-2">
+                <button type="button" id="tab-btn-badges" onclick="switchAchievementTab('badges')" class="py-3 px-4 text-xs font-bold transition-all border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-2">
                     <span>🎖️ Scroller Badges</span>
                     <span id="tab-count-badges" class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px]">0</span>
                 </button>
             </div>
 
-            <form onsubmit="saveAchievementsData(event)" class="space-y-6">
-                <!-- TAB 1: PEEL CARDS -->
-                <div id="tab-content-cards" class="space-y-4">
-                    <div id="achieve-cards-editor" class="space-y-4 max-h-[420px] overflow-y-auto pr-1"></div>
-                    <button type="button" onclick="addCardEditorItem()" class="w-full py-3 border-2 border-dashed border-sky-200 dark:border-slate-700 hover:border-sky-400 text-sky-600 dark:text-sky-400 font-bold rounded-2xl text-xs transition-all flex items-center justify-center gap-2 hover:bg-sky-50 dark:hover:bg-slate-800">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                        Add New Peel Notepad Card
-                    </button>
-                </div>
+            <form onsubmit="saveAchievementsData(event)" class="flex flex-col flex-1 overflow-hidden">
+                <div class="p-6 overflow-y-auto custom-scrollbar flex-1">
+                    <!-- TAB 1: PEEL CARDS -->
+                    <div id="tab-content-cards" class="space-y-4">
+                        <div id="achieve-cards-editor" class="space-y-4"></div>
+                        <button type="button" onclick="addCardEditorItem()" class="w-full py-3 border-2 border-dashed border-sky-200 dark:border-slate-700 hover:border-sky-400 text-sky-600 dark:text-sky-400 font-bold rounded-2xl text-xs transition-all flex items-center justify-center gap-2 hover:bg-sky-50 dark:hover:bg-slate-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                            Add New Peel Notepad Card
+                        </button>
+                    </div>
 
-                <!-- TAB 2: MARQUEE BADGES -->
-                <div id="tab-content-badges" class="hidden space-y-4">
-                    <div id="achieve-badges-editor" class="space-y-3 max-h-[420px] overflow-y-auto pr-1"></div>
-                    <button type="button" onclick="addBadgeEditorItem()" class="w-full py-3 border-2 border-dashed border-sky-200 dark:border-slate-700 hover:border-sky-400 text-sky-600 dark:text-sky-400 font-bold rounded-2xl text-xs transition-all flex items-center justify-center gap-2 hover:bg-sky-50 dark:hover:bg-slate-800">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                        Add New Marquee Badge Item
-                    </button>
+                    <!-- TAB 2: MARQUEE BADGES -->
+                    <div id="tab-content-badges" class="hidden space-y-4">
+                        <div id="achieve-badges-editor" class="space-y-3"></div>
+                        <button type="button" onclick="addBadgeEditorItem()" class="w-full py-3 border-2 border-dashed border-sky-200 dark:border-slate-700 hover:border-sky-400 text-sky-600 dark:text-sky-400 font-bold rounded-2xl text-xs transition-all flex items-center justify-center gap-2 hover:bg-sky-50 dark:hover:bg-slate-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                            Add New Marquee Badge Item
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Modal Footer -->
-                <div class="pt-4 flex justify-end gap-3 border-t border-sky-100 dark:border-slate-800">
+                <div class="p-4 px-6 border-t border-sky-100 dark:border-slate-800 flex justify-end gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50">
                     <button type="button" onclick="closeModal('modal-edit-achievements')" class="px-5 py-2.5 rounded-xl font-bold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">Cancel</button>
                     <button type="submit" class="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-sky-500/25 text-xs transition-all flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
@@ -808,38 +903,48 @@
 
     <!-- CONTACT EDIT MODAL -->
     <div id="modal-edit-contact" class="hidden fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-lg w-full p-8 shadow-2xl">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white">Edit Contact & Footer</h3>
-                <button onclick="closeModal('modal-edit-contact')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-lg w-full flex flex-col shadow-2xl overflow-hidden max-h-[85vh]">
+            <div class="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center border border-sky-500/20 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-heading font-black text-slate-800 dark:text-white">Edit Contact & Footer</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Manage contact form settings and footer text</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('modal-edit-contact')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
             
-            <form onsubmit="saveContactData(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Section Title</label>
-                    <input type="text" id="edit-contact-title" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-bold">
+            <form onsubmit="saveContactData(event)" class="flex flex-col flex-1 overflow-hidden">
+                <div class="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Section Title</label>
+                        <input type="text" id="edit-contact-title" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-bold">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Subtitle / Message</label>
+                        <textarea id="edit-contact-subtitle" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 text-sm leading-relaxed"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Formspree Endpoint URL</label>
+                        <input type="url" id="edit-contact-formspree" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-mono text-xs">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Footer Copyright Text</label>
+                        <input type="text" id="edit-footer-copyright" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                    </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Subtitle / Message</label>
-                    <textarea id="edit-contact-subtitle" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500"></textarea>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Formspree Endpoint URL</label>
-                    <input type="url" id="edit-contact-formspree" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-mono text-sm">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Footer Copyright Text</label>
-                    <input type="text" id="edit-footer-copyright" required class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                </div>
-
-                <div class="pt-4 flex justify-end gap-3">
-                    <button type="button" onclick="closeModal('modal-edit-contact')" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
-                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl shadow-md">Apply Edits</button>
+                <div class="p-4 px-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50">
+                    <button type="button" onclick="closeModal('modal-edit-contact')" class="px-5 py-2.5 rounded-xl font-bold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs shadow-md">Apply Edits</button>
                 </div>
             </form>
         </div>
