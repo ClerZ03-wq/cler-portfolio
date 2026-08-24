@@ -1310,7 +1310,8 @@
             renderAchievements();
             renderContact();
             renderFooter();
-            setTimeout(reveal, 100);
+            setTimeout(handleScroll, 100);
+            setTimeout(initializeInteractiveBadges, 200);
         }
 
         function updateFavicon() {
@@ -1981,31 +1982,43 @@
                 submitBtn.innerHTML = `<svg class="animate-spin w-4 h-4 mr-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Validating with GitHub...`;
             }
 
+            let validation;
             try {
-                const validation = await testAndValidateToken(token);
-
-                if (!validation.success) {
-                    if (errBox) {
-                        errBox.textContent = validation.error;
-                        errBox.classList.remove('hidden');
-                    }
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = originalBtnHtml;
-                    }
-                    return;
-                }
-
-                applyAdminLogin(token, remember, validation.user, validation.fileSha);
-
-                closeModal('modal-admin-login');
-                showToast(`Welcome @${validation.user.login}! Administrator logged in successfully. Edit controls are now active.`, 'success');
-            } catch (err) {
-                console.error('Login error:', err);
+                validation = await testAndValidateToken(token);
+            } catch (networkErr) {
+                console.error('Validation network error:', networkErr);
                 if (errBox) {
-                    errBox.textContent = 'Network error while validating with GitHub. Please check your connection.';
+                    errBox.textContent = 'Network error while contacting GitHub. Please check your internet connection.';
                     errBox.classList.remove('hidden');
                 }
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnHtml;
+                }
+                return;
+            }
+
+            if (!validation || !validation.success) {
+                if (errBox) {
+                    errBox.textContent = (validation && validation.error) || 'Invalid Personal Access Token. Please verify your token and try again.';
+                    errBox.classList.remove('hidden');
+                }
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnHtml;
+                }
+                return;
+            }
+
+            // Close login modal and confirm success
+            closeModal('modal-admin-login');
+            showToast(`Welcome @${validation.user.login}! Administrator logged in successfully. Edit controls are now active.`, 'success');
+
+            // Apply login state and re-render sections
+            try {
+                applyAdminLogin(token, remember, validation.user, validation.fileSha);
+            } catch (renderErr) {
+                console.error('Render error after login:', renderErr);
             } finally {
                 if (submitBtn) {
                     submitBtn.disabled = false;
