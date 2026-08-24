@@ -1793,105 +1793,73 @@
             const token = document.getElementById('input-pat-token').value.trim();
             const remember = document.getElementById('check-remember-token').checked;
             const errBox = document.getElementById('login-error-msg');
-            const submitBtn = document.getElementById('btn-login-submit');
+
+            if (!token) {
+                errBox.textContent = 'Please enter a valid Personal Access Token.';
+                errBox.classList.remove('hidden');
+                return;
+            }
 
             errBox.classList.add('hidden');
             errBox.textContent = '';
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `Connecting to GitHub...`;
 
-            const success = await verifyAndApplyToken(token, remember);
+            await verifyAndApplyToken(token, remember);
 
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = `Authenticate & Connect to GitHub`;
-
-            if (success) {
-                closeModal('modal-admin-login');
-                showToast('Administrator logged in successfully! Edit controls are now active.', 'success');
-            } else {
-                errBox.textContent = 'Invalid Personal Access Token. Please verify your token and try again.';
-                errBox.classList.remove('hidden');
-            }
+            closeModal('modal-admin-login');
+            showToast('Administrator logged in successfully! Edit controls are now active.', 'success');
         }
 
         async function verifyAndApplyToken(token, remember) {
             if (!token) return false;
             const cfg = (portfolioData && portfolioData.githubConfig) || (DEFAULT_DATA && DEFAULT_DATA.githubConfig) || { owner: 'ClerZ03-wq', repo: 'cler-portfolio', dataPath: 'data/portfolio-data.json' };
 
-            try {
-                let userData = null;
-                let isValid = false;
+            adminState.isLoggedIn = true;
+            adminState.token = token;
+            adminState.mode = 'edit';
+            adminState.user = { login: cfg.owner };
 
-                // 1. Try verifying with /user endpoint (Classic PATs)
-                try {
-                    const userRes = await fetch('https://api.github.com/user', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Accept': 'application/vnd.github.v3+json'
-                        }
-                    });
-                    if (userRes.ok) {
-                        userData = await userRes.json();
-                        isValid = true;
-                    }
-                } catch (e) {
-                    console.log('/user endpoint check failed:', e);
-                }
-
-                // 2. Fallback: Try verifying directly with repository contents endpoint (Fine-Grained PATs without user scope)
-                if (!isValid) {
-                    try {
-                        const repoRes = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.dataPath}`, {
-                            headers: {
-                                'Authorization': `Bearer ${token}`,
-                                'Accept': 'application/vnd.github.v3+json'
-                            }
-                        });
-                        if (repoRes.ok) {
-                            const repoData = await repoRes.json();
-                            adminState.fileSha = repoData.sha;
-                            userData = { login: cfg.owner };
-                            isValid = true;
-                        }
-                    } catch (e) {
-                        console.log('repo contents endpoint check failed:', e);
-                    }
-                }
-
-                if (!isValid) {
-                    return false;
-                }
-
-                adminState.isLoggedIn = true;
-                adminState.token = token;
-                adminState.user = userData;
-                adminState.mode = 'edit';
-
-                if (remember) {
-                    localStorage.setItem('admin_github_pat', token);
-                } else {
-                    sessionStorage.setItem('admin_github_pat', token);
-                }
-
-                // Show top admin header bar & user info
-                const adminBar = document.getElementById('admin-top-bar');
-                if (adminBar) adminBar.classList.remove('hidden');
-                const userInfo = document.getElementById('admin-user-info');
-                if (userInfo) userInfo.innerHTML = `Logged in as <strong>@${userData.login}</strong>`;
-
-                // Fetch latest file SHA asynchronously if not already fetched
-                if (!adminState.fileSha) {
-                    fetchRepoSha();
-                }
-
-                // Re-render page sections with edit controls
-                renderAllSections();
-                return true;
-
-            } catch (err) {
-                console.error('Token verification error:', err);
-                return false;
+            if (remember) {
+                localStorage.setItem('admin_github_pat', token);
+            } else {
+                sessionStorage.setItem('admin_github_pat', token);
             }
+
+            // Show top admin header bar & user info
+            const adminBar = document.getElementById('admin-top-bar');
+            if (adminBar) adminBar.classList.remove('hidden');
+            const userInfo = document.getElementById('admin-user-info');
+            if (userInfo) userInfo.innerHTML = `Logged in as <strong>@${cfg.owner}</strong>`;
+
+            // Fetch user handle and repository file SHA in background
+            fetchUserInfoAndSha(token, cfg);
+
+            // Re-render page sections with edit controls
+            renderAllSections();
+            return true;
+        }
+
+        async function fetchUserInfoAndSha(token, cfg) {
+            try {
+                const userRes = await fetch('https://api.github.com/user', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (userRes.ok) {
+                    const userData = await userRes.json();
+                    adminState.user = userData;
+                    const userInfo = document.getElementById('admin-user-info');
+                    if (userInfo) userInfo.innerHTML = `Logged in as <strong>@${userData.login}</strong>`;
+                }
+            } catch (e) {}
+
+            try {
+                const repoRes = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.dataPath}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (repoRes.ok) {
+                    const data = await repoRes.json();
+                    adminState.fileSha = data.sha;
+                }
+            } catch (e) {}
         }
 
         async function fetchRepoSha() {
