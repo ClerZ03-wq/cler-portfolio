@@ -1792,21 +1792,26 @@
             errBox.classList.add('hidden');
             errBox.textContent = '';
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `Verifying GitHub Token...`;
+            submitBtn.innerHTML = `Verifying GitHub Token & Permissions...`;
 
-            const success = await verifyAndApplyToken(token, remember);
+            const res = await verifyAndApplyToken(token, remember);
 
             submitBtn.disabled = false;
             submitBtn.innerHTML = `Authenticate & Connect to GitHub`;
 
-            if (success) {
+            if (res.success) {
                 errBox.classList.add('hidden');
                 errBox.textContent = '';
                 closeModal('modal-admin-login');
                 showToast('Administrator logged in successfully!', 'success');
             } else {
-                errBox.textContent = 'Invalid Personal Access Token or repository access denied. Ensure token has write scope.';
-                errBox.classList.remove('hidden');
+                if (res.reason === 'repo_forbidden') {
+                    closeModal('modal-admin-login');
+                    setTimeout(() => openModal('modal-token-permission-error'), 300);
+                } else {
+                    errBox.textContent = 'Invalid Personal Access Token or repository access denied. Ensure token has write scope.';
+                    errBox.classList.remove('hidden');
+                }
             }
         }
 
@@ -1821,9 +1826,11 @@
         }
 
         async function verifyAndApplyToken(token, remember) {
-            if (!token) return false;
+            if (!token) return { success: false, reason: 'empty' };
+            const cfg = portfolioData.githubConfig || DEFAULT_DATA.githubConfig;
+
             try {
-                // Verify token with GitHub user API
+                // 1. Verify token user with GitHub API
                 const userRes = await fetch('https://api.github.com/user', {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1833,10 +1840,29 @@
 
                 if (!userRes.ok) {
                     logoutAdminStateOnly();
-                    return false;
+                    return { success: false, reason: 'invalid_token' };
                 }
 
                 const userData = await userRes.json();
+
+                // 2. Verify repository access for ClerZ03-wq/cler-portfolio
+                const repoRes = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.dataPath}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (repoRes.status === 403 || repoRes.status === 404) {
+                    // Valid GitHub user, but missing write permissions for repository
+                    logoutAdminStateOnly();
+                    return { success: false, reason: 'repo_forbidden', user: userData };
+                }
+
+                if (repoRes.ok) {
+                    const repoData = await repoRes.json();
+                    adminState.fileSha = repoData.sha;
+                }
                 
                 adminState.isLoggedIn = true;
                 adminState.token = token;
@@ -1854,17 +1880,14 @@
                 if (adminBar) adminBar.classList.remove('hidden');
                 const userInfo = document.getElementById('admin-user-info');
                 if (userInfo) userInfo.innerHTML = `Logged in as <strong>@${userData.login}</strong>`;
-                
-                // Fetch file SHA from repository
-                fetchRepoSha();
 
                 renderAllSections();
-                return true;
+                return { success: true };
 
             } catch (err) {
                 console.error('Token verification error:', err);
                 logoutAdminStateOnly();
-                return false;
+                return { success: false, reason: 'network' };
             }
         }
 
