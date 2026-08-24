@@ -1296,7 +1296,7 @@
                         </button>
                     ` : ''}
                 </div>
-                <p class="text-lg text-slate-600 leading-relaxed dark:text-slate-300">
+                <p class="text-lg text-slate-600 leading-relaxed dark:text-slate-300 text-justify">
                     ${ab.content}
                 </p>
             `;
@@ -1385,7 +1385,7 @@
                                 </div>
                                 <img src="${getImageUrl(p.logo)}" onerror="handleImgError(this, '${p.logo}')" alt="${p.title} Logo" class="w-14 h-14 shrink-0 object-contain rounded-xl bg-slate-50 dark:bg-slate-800 p-2 border border-slate-100 dark:border-slate-700 shadow-sm">
                             </div>
-                            <p class="text-slate-600 dark:text-slate-400 mb-6 text-sm leading-relaxed">
+                            <p class="text-slate-600 dark:text-slate-400 mb-6 text-sm leading-relaxed text-justify">
                                 ${p.description}
                             </p>
                             <div class="flex flex-wrap gap-2 mb-6">
@@ -1531,11 +1531,11 @@
             let badgesHtml = '';
             ach.badges.forEach(b => {
                 badgesHtml += `
-                    <div class="interactive-badge relative w-[100px] h-[100px] md:w-[120px] md:h-[120px] shrink-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur p-4 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-lg hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:border-sky-300 dark:hover:border-sky-500 transition-all duration-300 flex flex-col justify-center items-center text-center cursor-pointer overflow-hidden group">
+                    <div class="interactive-badge relative w-[110px] h-[120px] md:w-[130px] md:h-[140px] shrink-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur p-3 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-lg hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:border-sky-300 dark:hover:border-sky-500 transition-all duration-300 flex flex-col justify-center items-center text-center cursor-pointer overflow-hidden group">
                         <div class="badge-glare absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0,transparent_50%)] opacity-0 pointer-events-none mix-blend-overlay transition-opacity duration-300"></div>
-                        <img src="${getImageUrl(b.icon)}" onerror="handleImgError(this, '${b.icon}')" alt="${b.title}" class="w-10 h-10 md:w-12 md:h-12 mb-2 object-contain group-hover:scale-110 transition-transform duration-500 z-10">
-                        <h4 class="text-[10px] md:text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5 z-10 leading-tight">${b.title}</h4>
-                        <p class="text-[8px] uppercase tracking-wider text-sky-500 font-bold z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">${b.provider}</p>
+                        <img src="${getImageUrl(b.icon)}" onerror="handleImgError(this, '${b.icon}')" alt="${b.title}" class="w-10 h-10 md:w-12 md:h-12 mb-2 object-contain group-hover:scale-110 transition-transform duration-500 z-10 shrink-0">
+                        <h4 class="text-[9px] md:text-[10px] font-bold text-slate-800 dark:text-slate-100 mb-0.5 z-10 leading-tight line-clamp-3 px-1">${b.title}</h4>
+                        <p class="text-[7px] uppercase tracking-wider text-sky-500 font-bold z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute bottom-3 translate-y-4 group-hover:translate-y-0 px-1 w-full truncate">${b.provider}</p>
                     </div>
                 `;
             });
@@ -1588,7 +1588,7 @@
                 </div>
 
                 <!-- CERTIFICATIONS & BADGES MARQUEE -->
-                <div class="flex items-center justify-between mb-4 px-2">
+                <div class="flex items-center justify-between mb-8 px-2">
                     <h3 class="font-heading font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-xs">Certifications & Badges</h3>
                     <button onclick="openCredlyModal()" class="text-[10px] font-bold text-sky-500 hover:text-sky-600 dark:hover:text-sky-400 flex items-center gap-1 transition-colors">
                         View All <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
