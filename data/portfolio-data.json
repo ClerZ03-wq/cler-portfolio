@@ -5,7 +5,8 @@
     "roles": [
       "Web Developer",
       "Backend Programmer",
-      "Database Administrator"
+      "Database Administrator",
+      "Security Analyst"
     ],
     "ctaText": "Let's Connect",
     "ctaLink": "#contact",
@@ -16,25 +17,25 @@
     },
     "socialLinks": [
       {
-        "id": "soc-1787601929634-0",
+        "id": "soc-1787602974965-0",
         "name": "LinkedIn",
         "url": "https://linkedin.com/in/clerz",
         "icon": "linkedin"
       },
       {
-        "id": "soc-1787601929634-1",
+        "id": "soc-1787602974965-1",
         "name": "GitHub",
         "url": "https://github.com/ClerZ03-wq",
         "icon": "github"
       },
       {
-        "id": "soc-1787601929634-2",
+        "id": "soc-1787602974965-2",
         "name": "Facebook",
         "url": "https://facebook.com/clerz.pogi.meow/",
         "icon": "facebook"
       },
       {
-        "id": "soc-1787601929635-3",
+        "id": "soc-1787602974965-3",
         "name": "AWS Builder",
         "url": "https://builder.aws.com/community/@clerz?tab=badges",
         "icon": "custom",
@@ -43,7 +44,7 @@
     ],
     "location": "Taguig City, Philippines",
     "education": "University of Makati (4th Year IT)",
-    "work": "Filoil Logistics (Lead Developer)",
+    "work": "",
     "idBadge": {
       "qrCode": "https://www.instagram.com/clrwnz/",
       "accessLevel": "Admin"
@@ -72,9 +73,10 @@
     {
       "id": "proj-1",
       "title": "FIL-TRACK",
-      "role": "Lead Developer",
+      "role": "Lead Programmer | Security Specialist | System Administration Specialist",
       "period": "Feb — May 2026",
       "logo": "img/logo.svg",
+      "image": "",
       "description": "An IT asset inventory management system for Filoil Logistics. Features include role-based access control and comprehensive hardware lifecycle monitoring.",
       "tags": [
         "Django",
