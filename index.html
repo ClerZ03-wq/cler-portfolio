@@ -1386,6 +1386,10 @@
             projects[targetIdx] = temp;
 
             renderProjects();
+            const modalAll = document.getElementById('modal-all-projects');
+            if (modalAll && !modalAll.classList.contains('hidden')) {
+                openAllProjectsModal();
+            }
             markUnsaved();
             showToast('Project reordered! Click "Save Changes to GitHub" at top to publish live.', 'info');
         }
@@ -1413,7 +1417,7 @@
             const container = document.getElementById('projects');
             const showEdit = adminState.isLoggedIn && adminState.mode === 'edit';
 
-            const projectsToRender = projects.slice(0, 2);
+            const projectsToRender = showEdit ? projects : projects.slice(0, 2);
 
             let itemsHtml = '';
 
@@ -2398,6 +2402,10 @@
             }
 
             renderProjects();
+            const modalAll = document.getElementById('modal-all-projects');
+            if (modalAll && !modalAll.classList.contains('hidden')) {
+                openAllProjectsModal();
+            }
             closeModal('modal-edit-project-item');
             markUnsaved();
             showToast('Projects updated locally!', 'info');
@@ -2407,6 +2415,10 @@
             if (confirm('Are you sure you want to delete this project?')) {
                 portfolioData.projects = portfolioData.projects.filter(p => p.id !== id);
                 renderProjects();
+                const modalAll = document.getElementById('modal-all-projects');
+                if (modalAll && !modalAll.classList.contains('hidden')) {
+                    openAllProjectsModal();
+                }
                 markUnsaved();
                 showToast('Project deleted!', 'info');
             }
@@ -2773,12 +2785,29 @@
             const content = document.getElementById('modal-all-projects-content');
             const list = document.getElementById('all-projects-list');
             const projects = portfolioData.projects || [];
+            const showEdit = adminState.isLoggedIn && adminState.mode === 'edit';
             
-            list.innerHTML = projects.map(p => `
-                <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 mb-4 hover:border-sky-300 dark:hover:border-sky-500 transition-all flex flex-col md:flex-row gap-6">
+            list.innerHTML = projects.map((p, index) => `
+                <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 mb-4 hover:border-sky-300 dark:hover:border-sky-500 transition-all flex flex-col md:flex-row gap-6 relative group">
+                    ${showEdit ? `
+                        <div class="absolute top-3 right-3 flex items-center gap-1.5 z-20">
+                            <button onclick="moveProject('${p.id}', -1)" ${index === 0 ? 'disabled' : ''} class="admin-edit-btn bg-slate-700 hover:bg-sky-600 disabled:opacity-30 disabled:hover:bg-slate-700 text-white font-bold p-1.5 rounded-lg text-xs shadow-md cursor-pointer transition-colors" title="Move Project Up (▲)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+                            </button>
+                            <button onclick="moveProject('${p.id}', 1)" ${index === projects.length - 1 ? 'disabled' : ''} class="admin-edit-btn bg-slate-700 hover:bg-sky-600 disabled:opacity-30 disabled:hover:bg-slate-700 text-white font-bold p-1.5 rounded-lg text-xs shadow-md cursor-pointer transition-colors" title="Move Project Down (▼)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <button onclick="openEditProjectModal('${p.id}')" class="admin-edit-btn bg-sky-500 hover:bg-sky-600 text-white font-bold p-1.5 rounded-lg text-xs shadow-md cursor-pointer ml-1" title="Edit Project">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </button>
+                            <button onclick="deleteProjectItem('${p.id}')" class="admin-edit-btn bg-rose-500 hover:bg-rose-600 text-white font-bold p-1.5 rounded-lg text-xs shadow-md cursor-pointer" title="Delete Project">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                        </div>
+                    ` : ''}
                     <img src="${getImageUrl(p.logo)}" onerror="handleImgError(this, '${p.logo}')" alt="${p.title} Logo" class="w-16 h-16 shrink-0 object-contain rounded-xl bg-white dark:bg-slate-900 p-2 border border-slate-100 dark:border-slate-700 shadow-sm">
                     <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-start gap-4 mb-2">
+                        <div class="flex justify-between items-start gap-4 mb-2 ${showEdit ? 'pr-28' : ''}">
                             <div>
                                 <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100">${p.title}</h3>
                                 <span class="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-widest">${p.role} • ${p.period}</span>
