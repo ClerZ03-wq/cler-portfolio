@@ -371,11 +371,6 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="block dark:hidden"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
                 </button>
 
-                <!-- Admin Quick Trigger Button -->
-                <button id="nav-admin-btn" onclick="openLoginModal()" title="Admin Login (Ctrl+Shift+A)" class="p-2 rounded-full text-slate-500 hover:bg-sky-100 hover:text-sky-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-sky-300 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-2-2l2 2M11 11l9.5-9.5M11 11A5.5 5.5 0 1 1 5.5 0M11 11l-4 4m2 2l-2-2m-2 2l2 2"/></svg>
-                </button>
-
                 <button id="mobile-menu-btn" class="md:hidden p-2 rounded-full text-slate-500 hover:bg-sky-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                 </button>
@@ -392,10 +387,6 @@
         <a href="#projects" class="mobile-link text-slate-800 dark:text-slate-100 hover:text-sky-500 transition-colors">Projects</a>
         <a href="#certs" class="mobile-link text-slate-800 dark:text-slate-100 hover:text-sky-500 transition-colors">Achievements</a>
         <a href="#contact" class="mobile-link text-slate-800 dark:text-slate-100 hover:text-sky-500 transition-colors">Contact</a>
-        <button onclick="toggleMenu(); openLoginModal();" class="text-sky-600 dark:text-sky-400 hover:text-sky-500 text-xl font-bold flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Admin Panel Login
-        </button>
     </div>
 
     <!-- HERO SECTION -->
@@ -1849,12 +1840,8 @@
             const ft = portfolioData.footer;
             const container = document.getElementById('footer-container');
             container.innerHTML = `
-                <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="max-w-6xl mx-auto px-6 flex items-center justify-center text-center">
                     <p>${ft.copyright}</p>
-                    <button onclick="openLoginModal()" class="text-slate-400 hover:text-sky-500 font-bold transition-colors flex items-center gap-1 text-[11px] cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                        Admin Area
-                    </button>
                 </div>
             `;
         }
