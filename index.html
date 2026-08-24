@@ -1771,6 +1771,11 @@
                 showToast('Already logged in as Admin', 'info');
                 return;
             }
+            const errBox = document.getElementById('login-error-msg');
+            if (errBox) {
+                errBox.classList.add('hidden');
+                errBox.textContent = '';
+            }
             openModal('modal-admin-login');
         }
 
@@ -1782,6 +1787,7 @@
             const submitBtn = document.getElementById('btn-login-submit');
 
             errBox.classList.add('hidden');
+            errBox.textContent = '';
             submitBtn.disabled = true;
             submitBtn.innerHTML = `Verifying GitHub Token...`;
 
@@ -1791,6 +1797,8 @@
             submitBtn.innerHTML = `Authenticate & Connect to GitHub`;
 
             if (success) {
+                errBox.classList.add('hidden');
+                errBox.textContent = '';
                 closeModal('modal-admin-login');
                 showToast('Administrator logged in successfully!', 'success');
             } else {
@@ -1799,7 +1807,18 @@
             }
         }
 
+        function logoutAdminStateOnly() {
+            sessionStorage.removeItem('admin_github_pat');
+            localStorage.removeItem('admin_github_pat');
+            adminState.isLoggedIn = false;
+            adminState.token = '';
+            adminState.user = null;
+            const adminBar = document.getElementById('admin-top-bar');
+            if (adminBar) adminBar.classList.add('hidden');
+        }
+
         async function verifyAndApplyToken(token, remember) {
+            if (!token) return false;
             try {
                 // Verify token with GitHub user API
                 const userRes = await fetch('https://api.github.com/user', {
@@ -1809,7 +1828,10 @@
                     }
                 });
 
-                if (!userRes.ok) return false;
+                if (!userRes.ok) {
+                    logoutAdminStateOnly();
+                    return false;
+                }
 
                 const userData = await userRes.json();
                 
@@ -1825,8 +1847,10 @@
                 }
 
                 // Update UI elements
-                document.getElementById('admin-top-bar').classList.remove('hidden');
-                document.getElementById('admin-user-info').innerHTML = `Logged in as <strong>@${userData.login}</strong>`;
+                const adminBar = document.getElementById('admin-top-bar');
+                if (adminBar) adminBar.classList.remove('hidden');
+                const userInfo = document.getElementById('admin-user-info');
+                if (userInfo) userInfo.innerHTML = `Logged in as <strong>@${userData.login}</strong>`;
                 
                 // Fetch file SHA from repository
                 fetchRepoSha();
@@ -1836,6 +1860,7 @@
 
             } catch (err) {
                 console.error('Token verification error:', err);
+                logoutAdminStateOnly();
                 return false;
             }
         }
