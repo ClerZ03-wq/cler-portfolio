@@ -93,6 +93,105 @@
             animation: cinematicPop 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
         
+        /* --- REALISTIC CALENDAR PEEL & NOTEPAD STACK EFFECTS --- */
+        .notepad-stack-wrapper {
+            perspective: 2000px; 
+            position: relative;
+            width: 100%;
+            max-width: 26rem;
+            margin: 0 auto;
+        }
+
+        .notepad-stack {
+            perspective: 2000px; 
+            position: relative;
+            height: 18rem; 
+            width: 100%;
+        }
+
+        .notepad-page {
+            position: absolute;
+            top: 0; 
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0; 
+            transform-origin: top center; 
+            transform-style: preserve-3d;
+            
+            /* Lined paper texture background with red left margin line */
+            background-color: #ffffff;
+            background-image: 
+                linear-gradient(90deg, transparent 2.4rem, #f87171 2.4rem, #f87171 2.5rem, transparent 2.5rem),
+                repeating-linear-gradient(transparent, transparent 1.9rem, rgba(148, 163, 184, 0.18) 1.9rem, rgba(148, 163, 184, 0.18) 2rem);
+            
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        :is(.dark) .notepad-page {
+            background-color: #0f172a; 
+            background-image: 
+                linear-gradient(90deg, transparent 2.4rem, rgba(239, 68, 68, 0.5) 2.4rem, rgba(239, 68, 68, 0.5) 2.5rem, transparent 2.5rem),
+                repeating-linear-gradient(transparent, transparent 1.9rem, rgba(51, 65, 85, 0.45) 1.9rem, rgba(51, 65, 85, 0.45) 2rem);
+            border-color: #1e293b;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes stickyPeel {
+            0% {
+                transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateY(0);
+                opacity: 1;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            }
+            35% {
+                transform: rotateX(-35deg) rotateY(18deg) rotateZ(-4deg) translateY(-20px);
+                opacity: 0.9;
+                box-shadow: 20px 35px 25px rgba(0, 0, 0, 0.25);
+            }
+            100% {
+                transform: rotateX(-85deg) rotateY(45deg) rotateZ(-12deg) translateY(-280px) scale(0.85);
+                opacity: 0;
+                box-shadow: 40px 60px 35px rgba(0, 0, 0, 0);
+            }
+        }
+
+        .notepad-page.peeling {
+            animation: stickyPeel 1.2s cubic-bezier(0.5, 0, 0.2, 1) forwards;
+            pointer-events: none;
+        }
+
+        /* Calendar Top Metallic Hinge Rings */
+        .calendar-binder {
+            position: absolute;
+            top: -0.75rem;
+            left: 0;
+            right: 0;
+            height: 1.75rem;
+            z-index: 40;
+            display: flex;
+            justify-content: space-evenly;
+            padding: 0 2rem;
+            pointer-events: none;
+        }
+
+        .calendar-ring {
+            width: 0.45rem;
+            height: 1.5rem;
+            background: linear-gradient(to bottom, #94a3b8, #334155, #1e293b);
+            border-radius: 9999px;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.35), inset 1px 1px 1px rgba(255,255,255,0.4);
+        }
+
+        :is(.dark) .calendar-ring {
+            background: linear-gradient(to bottom, #cbd5e1, #64748b, #334155);
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.7), inset 1px 1px 1px rgba(255,255,255,0.5);
+        }
+
         /* --- AUTO SCROLLING BADGES (MARQUEE) --- */
         .badge-scroller {
             max-width: 100%;
@@ -247,7 +346,7 @@
     </div>
 
     <!-- HERO SECTION -->
-    <section id="hero-container" class="relative max-w-6xl mx-auto px-6 py-20 md:py-32 flex flex-col justify-center min-h-[70vh] border-b border-sky-100 dark:border-slate-800 reveal overflow-hidden">
+    <section id="hero-container" class="relative w-full px-6 md:px-12 lg:px-24 py-20 md:py-32 flex flex-col justify-center min-h-[70vh] border-b border-sky-100 dark:border-slate-800 reveal overflow-hidden">
         <!-- Rendered dynamically by JS -->
     </section>
 
@@ -1295,50 +1394,56 @@
             const showEdit = adminState.isLoggedIn && adminState.mode === 'edit';
 
             let cardsHtml = '';
-            ach.cards.forEach((c, index) => {
-                let badgeStyle = 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.2)]';
-                if (c.theme === 'cyan') badgeStyle = 'bg-cyan-500/10 border-cyan-500/30 text-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.2)]';
-                if (c.theme === 'blue') badgeStyle = 'bg-blue-500/10 border-blue-500/30 text-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.2)]';
-                if (c.theme === 'purple') badgeStyle = 'bg-purple-500/10 border-purple-500/30 text-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.2)]';
-                if (c.theme === 'rose') badgeStyle = 'bg-rose-500/10 border-rose-500/30 text-rose-500 shadow-[0_0_15px_rgba(244,63,94,0.2)]';
-
-                // First card spans 2 columns on md screens
-                const spanClass = index === 0 ? 'md:col-span-2' : '';
+            ach.cards.forEach((c, idx) => {
+                let badgeStyle = 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800/60 text-emerald-600 dark:text-emerald-400';
+                if (c.theme === 'cyan') badgeStyle = 'bg-cyan-50 dark:bg-cyan-900/30 border-cyan-200 dark:border-cyan-800/60 text-cyan-600 dark:text-cyan-400';
+                if (c.theme === 'blue') badgeStyle = 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800/60 text-blue-600 dark:text-blue-400';
+                if (c.theme === 'purple') badgeStyle = 'bg-purple-50 dark:bg-purple-900/30 border-purple-200 dark:border-purple-800/60 text-purple-600 dark:text-purple-400';
+                if (c.theme === 'rose') badgeStyle = 'bg-rose-50 dark:bg-rose-900/30 border-rose-200 dark:border-rose-800/60 text-rose-600 dark:text-rose-400';
 
                 cardsHtml += `
-                    <div class="${spanClass} relative overflow-hidden bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 group card-hover">
-                        <!-- Techy background element -->
-                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-sky-100 dark:bg-sky-900/20 rounded-full blur-2xl opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        
-                        <div class="relative z-10 flex flex-col h-full">
-                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[10px] font-bold tracking-widest uppercase mb-6 self-start backdrop-blur-sm ${badgeStyle}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <div class="notepad-page p-6 pl-12 flex flex-col justify-between" onclick="peelCurrentNotepadPage()" title="Click to flip page">
+                        <div class="flex justify-between items-start">
+                            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[10px] font-bold tracking-widest uppercase mb-3 ${badgeStyle}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 ${c.badge}
                             </div>
-                            <h3 class="text-slate-900 dark:text-white text-2xl md:text-3xl font-black font-heading tracking-tight mb-2 group-hover:text-sky-500 transition-colors">${c.title}</h3>
-                            <h4 class="text-sky-600 dark:text-sky-400 text-sm md:text-base font-bold mb-8">${c.subtitle}</h4>
-                            
-                            <div class="mt-auto flex items-center gap-2 text-xs md:text-sm text-slate-500 font-medium pt-5 border-t border-slate-100 dark:border-slate-800">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500 font-bold bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded">
+                                ${idx + 1} / ${ach.cards.length}
+                            </span>
+                        </div>
+
+                        <div>
+                            <h3 class="text-slate-900 dark:text-white text-2xl md:text-3xl font-black font-heading tracking-tight mb-1">${c.title}</h3>
+                            <h4 class="text-sky-600 dark:text-sky-400 text-sm font-bold">${c.subtitle}</h4>
+                        </div>
+                        
+                        <div class="mt-auto flex items-center justify-between text-xs text-slate-500 font-medium pt-3 border-t border-slate-200/60 dark:border-slate-800">
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                 </svg>
-                                <span>${c.detail}</span>
+                                <span class="font-bold text-slate-700 dark:text-slate-300">${c.detail}</span>
                             </div>
+                            <span class="text-[10px] text-sky-500 font-bold hover:underline flex items-center gap-1">Flip &rarr;</span>
                         </div>
                     </div>
                 `;
             });
 
-            // ... (keep badges the same)
+            // Dots indicators below calendar
+            let dotsHtml = '';
+            ach.cards.forEach((_, idx) => {
+                dotsHtml += `<button onclick="jumpToNotepadPage(${idx})" class="notepad-dot w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all cursor-pointer" data-index="${idx}"></button>`;
+            });
+
             let badgesHtml = '';
             ach.badges.forEach(b => {
                 badgesHtml += `
                     <div class="interactive-badge relative w-[140px] h-[140px] md:w-[160px] md:h-[160px] shrink-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur p-5 rounded-3xl border border-sky-100 dark:border-slate-800 shadow-lg hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:border-sky-300 dark:hover:border-sky-500 transition-all duration-300 flex flex-col justify-center items-center text-center cursor-pointer overflow-hidden group">
-                        <!-- 3D Glare overlay -->
                         <div class="badge-glare absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0,transparent_50%)] opacity-0 pointer-events-none mix-blend-overlay transition-opacity duration-300"></div>
-                        
                         <img src="${getImageUrl(b.icon)}" onerror="handleImgError(this, '${b.icon}')" alt="${b.title}" class="w-12 h-12 md:w-16 md:h-16 mb-3 object-contain group-hover:scale-110 transition-transform duration-500 z-10">
                         <h4 class="text-xs md:text-sm font-bold text-slate-800 dark:text-slate-100 mb-1 z-10">${b.title}</h4>
                         <p class="text-[9px] uppercase tracking-wider text-sky-500 font-bold z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">${b.provider}</p>
@@ -1347,7 +1452,7 @@
             });
 
             container.innerHTML = `
-                <div class="flex justify-between items-center mb-10">
+                <div class="flex justify-between items-center mb-8">
                     <h2 class="text-2xl font-heading font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
                         <span class="w-8 h-[2px] bg-sky-400 inline-block"></span> Academic Journey
                     </h2>
@@ -1359,13 +1464,46 @@
                     ` : ''}
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mx-auto mb-16">
-                    ${cardsHtml}
+                <!-- 3D FLIPPING CALENDAR NOTEPAD STACK -->
+                <div class="notepad-stack-wrapper mb-12">
+                    <div class="absolute inset-0 bg-white dark:bg-slate-800 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 translate-y-3 translate-x-1.5 opacity-60"></div>
+                    <div class="absolute inset-0 bg-white dark:bg-slate-800 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 translate-y-1.5 translate-x-0.5 opacity-80"></div>
+
+                    <div class="relative bg-slate-50 dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-1">
+                        <!-- Metallic Binder Rings -->
+                        <div class="calendar-binder">
+                            <div class="calendar-ring"></div>
+                            <div class="calendar-ring"></div>
+                            <div class="calendar-ring"></div>
+                            <div class="calendar-ring"></div>
+                            <div class="calendar-ring"></div>
+                            <div class="calendar-ring"></div>
+                            <div class="calendar-ring"></div>
+                        </div>
+
+                        <div class="notepad-stack" id="notepad-peel-container">
+                            ${cardsHtml}
+                        </div>
+                    </div>
+
+                    <!-- Interactive Controls & Page Indicators -->
+                    <div class="flex items-center justify-between mt-4 px-2">
+                        <button onclick="peelCurrentNotepadPage()" class="text-xs font-bold text-sky-600 dark:text-sky-400 hover:text-sky-700 flex items-center gap-1.5 bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800/60 px-3 py-1.5 rounded-full shadow-sm hover:scale-105 transition-all cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 044.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            Flip Page
+                        </button>
+                        <div class="flex items-center gap-2" id="notepad-dots-container">
+                            ${dotsHtml}
+                        </div>
+                    </div>
                 </div>
-                
-                <h3 class="text-center font-heading font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-sm mt-12 mb-6">Certifications & Badges</h3>
-                <div class="flex flex-wrap justify-center gap-4 mt-4" style="perspective: 1000px;">
-                    ${badgesHtml}
+
+                <!-- CERTIFICATIONS & BADGES MARQUEE -->
+                <h3 class="text-center font-heading font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-xs mb-4">Certifications & Badges</h3>
+                <div class="badge-scroller">
+                    <div class="badge-scroller__inner cursor-pointer" id="badge-track">
+                        ${badgesHtml}
+                    </div>
                 </div>
             `;
 
@@ -1663,6 +1801,84 @@
             const cached = sessionStorage.getItem('img_cache_' + path);
             if (cached) return cached;
             return path;
+        }
+
+        // --- REALISTIC ACADEMIC CALENDAR FLIPPING NOTEPAD LOGIC ---
+        let currentNotepadIndex = 0;
+        let isPeelingActive = false;
+
+        function initializeNotepadPeel() {
+            const container = document.getElementById('notepad-peel-container');
+            if (!container) return;
+
+            const pages = Array.from(container.querySelectorAll('.notepad-page'));
+            if (pages.length === 0) return;
+
+            currentNotepadIndex = 0;
+
+            pages.forEach(p => {
+                p.style.opacity = '0';
+                p.style.zIndex = '1';
+                p.classList.remove('peeling');
+            });
+
+            pages[0].style.opacity = '1';
+            pages[0].style.zIndex = '10';
+            if (pages.length > 1) {
+                pages[1].style.opacity = '1';
+                pages[1].style.zIndex = '5';
+            }
+
+            updateNotepadDots();
+
+            if (window.notepadPeelInterval) clearInterval(window.notepadPeelInterval);
+            window.notepadPeelInterval = setInterval(peelCurrentNotepadPage, 5500); 
+        }
+
+        function peelCurrentNotepadPage() {
+            if (isPeelingActive) return;
+            const container = document.getElementById('notepad-peel-container');
+            if (!container) return;
+
+            const pages = Array.from(container.querySelectorAll('.notepad-page'));
+            if (pages.length <= 1) return;
+
+            isPeelingActive = true;
+            const currentPage = pages[currentNotepadIndex];
+            const nextIndex = (currentNotepadIndex + 1) % pages.length;
+            const nextNextIndex = (currentNotepadIndex + 2) % pages.length;
+
+            currentPage.classList.add('peeling');
+
+            setTimeout(() => {
+                currentPage.classList.remove('peeling');
+                currentPage.style.opacity = '0';
+                currentPage.style.zIndex = '1';
+
+                pages[nextIndex].style.zIndex = '10';
+                pages[nextNextIndex].style.opacity = '1';
+                pages[nextNextIndex].style.zIndex = '5';
+
+                currentNotepadIndex = nextIndex;
+                updateNotepadDots();
+                isPeelingActive = false;
+            }, 1200); 
+        }
+
+        function jumpToNotepadPage(targetIndex) {
+            if (isPeelingActive || targetIndex === currentNotepadIndex) return;
+            peelCurrentNotepadPage();
+        }
+
+        function updateNotepadDots() {
+            const dots = document.querySelectorAll('.notepad-dot');
+            dots.forEach((dot, idx) => {
+                if (idx === currentNotepadIndex) {
+                    dot.className = "notepad-dot w-6 h-2.5 rounded-full bg-sky-500 shadow-sm transition-all cursor-pointer";
+                } else {
+                    dot.className = "notepad-dot w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 hover:bg-sky-300 transition-all cursor-pointer";
+                }
+            });
         }
 
         function handleImgError(img, originalPath) {
