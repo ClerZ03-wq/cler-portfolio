@@ -942,8 +942,13 @@
         <img id="lightbox-img" src="" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl transform scale-95 transition-transform duration-300" alt="Project Screenshot">
     </div>
 
+    <!-- SCROLL TO TOP BUTTON -->
+    <button id="scroll-to-top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-6 right-6 z-[150] bg-sky-500 hover:bg-sky-600 text-white p-3 rounded-full shadow-lg shadow-sky-500/30 transform translate-y-20 opacity-0 transition-all duration-300 cursor-pointer flex items-center justify-center" aria-label="Scroll to top">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+    </button>
+
     <!-- TOAST NOTIFICATION CONTAINER -->
-    <div id="toast-container" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-2 pointer-events-none"></div>
+    <div id="toast-container" class="fixed bottom-24 right-6 z-[200] flex flex-col gap-2 pointer-events-none"></div>
 
 
     <!-- ========================================== -->
@@ -3028,7 +3033,7 @@
                             loader.style.opacity = '0';
                             loader.style.pointerEvents = 'none';
                             
-                            setTimeout(reveal, 100);
+                            setTimeout(handleScroll, 100);
                             initializeInteractiveBadges(); 
                             
                             setTimeout(() => { loader.remove(); }, 1000);
@@ -3042,15 +3047,26 @@
         });
 
         // --- Scroll Reveal Logic ---
-        function reveal() {
+        function handleScroll() {
+            // Reveal animations
             const reveals = document.querySelectorAll(".reveal");
+            const windowHeight = window.innerHeight;
             for (let i = 0; i < reveals.length; i++) {
-                const windowHeight = window.innerHeight;
                 const elementTop = reveals[i].getBoundingClientRect().top;
                 if (elementTop < windowHeight - 50) { reveals[i].classList.add("active"); }
             }
+
+            // Scroll to top button visibility
+            const scrollTopBtn = document.getElementById('scroll-to-top-btn');
+            if (window.scrollY > 300) {
+                scrollTopBtn.classList.remove('translate-y-20', 'opacity-0');
+            } else {
+                scrollTopBtn.classList.add('translate-y-20', 'opacity-0');
+            }
         }
-        window.addEventListener("scroll", reveal);
+        window.addEventListener("scroll", handleScroll);
+        // Initial check in case they reload scrolled down
+        window.addEventListener("load", handleScroll);
     </script>
 </body>
 </html>
