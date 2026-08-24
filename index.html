@@ -251,6 +251,66 @@
             outline-offset: 4px;
             border-radius: 1rem;
         }
+
+        /* --- CUSTOM TAILORED SCROLLBAR --- */
+        /* Firefox */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #38bdf8 #f0f9ff;
+        }
+        :is(.dark) * {
+            scrollbar-color: #38bdf8 #0f172a;
+        }
+
+        /* WebKit (Chrome, Safari, Edge, Opera) */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f0f9ff;
+            border-radius: 9999px;
+        }
+        :is(.dark) ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #38bdf8, #0284c7);
+            border-radius: 9999px;
+            border: 2px solid #f0f9ff;
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        :is(.dark) ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #38bdf8, #0369a1);
+            border: 2px solid #0f172a;
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #7dd3fc, #0284c7);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+        }
+        :is(.dark) ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #7dd3fc, #0284c7);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        /* Modal & Container Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #38bdf8;
+            border-radius: 9999px;
+            border: none;
+        }
     </style>
 </head>
 <body class="bg-sky-50 text-slate-800 font-sans antialiased selection:bg-sky-300 selection:text-slate-900 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-500 overflow-x-hidden pb-12">
@@ -311,10 +371,10 @@
             
             <div class="flex items-center space-x-4 md:space-x-8">
                 <div class="hidden md:flex space-x-8 font-medium text-sm text-slate-500 dark:text-slate-400">
-                    <a href="#about" class="hover:text-sky-500 dark:hover:text-sky-300 transition-colors">About</a>
-                    <a href="#projects" class="hover:text-sky-500 dark:hover:text-sky-300 transition-colors">Projects</a>
-                    <a href="#certs" class="hover:text-sky-500 dark:hover:text-sky-300 transition-colors">Achievements</a>
-                    <a href="#contact" class="hover:text-sky-500 dark:hover:text-sky-300 transition-colors">Contact</a>
+                    <a href="#about" class="nav-link hover:text-sky-500 dark:hover:text-sky-300 transition-colors">About</a>
+                    <a href="#projects" class="nav-link hover:text-sky-500 dark:hover:text-sky-300 transition-colors">Projects</a>
+                    <a href="#certs" class="nav-link hover:text-sky-500 dark:hover:text-sky-300 transition-colors">Achievements</a>
+                    <a href="#contact" class="nav-link hover:text-sky-500 dark:hover:text-sky-300 transition-colors">Contact</a>
                 </div>
                 
                 <button id="dark-mode-toggle" title="Toggle theme" class="p-2 rounded-full text-slate-500 hover:bg-sky-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-all">
@@ -3048,17 +3108,47 @@
 
         // --- Scroll Reveal Logic ---
         function handleScroll() {
+            const windowHeight = window.innerHeight;
+            const scrollY = window.scrollY;
+
             // Reveal animations
             const reveals = document.querySelectorAll(".reveal");
-            const windowHeight = window.innerHeight;
             for (let i = 0; i < reveals.length; i++) {
                 const elementTop = reveals[i].getBoundingClientRect().top;
                 if (elementTop < windowHeight - 50) { reveals[i].classList.add("active"); }
             }
 
+            // Navigation highlight logic
+            const navSections = ['about', 'projects', 'certs', 'contact'];
+            let currentSection = '';
+            
+            navSections.forEach(id => {
+                const section = document.getElementById(id);
+                if (section) {
+                    // Check if section is in view
+                    const sectionTop = section.offsetTop;
+                    // Add offset for fixed header (approx 100px)
+                    if (scrollY >= sectionTop - 150) {
+                        currentSection = id;
+                    }
+                }
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link, .mobile-link');
+            navLinks.forEach(link => {
+                const isMobile = link.classList.contains('mobile-link');
+                link.classList.remove('text-sky-500', 'dark:text-sky-300', 'font-bold');
+                if (isMobile) link.classList.add('text-slate-800', 'dark:text-slate-100');
+
+                if (currentSection && link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('text-sky-500', 'dark:text-sky-300', 'font-bold');
+                    if (isMobile) link.classList.remove('text-slate-800', 'dark:text-slate-100');
+                }
+            });
+
             // Scroll to top button visibility
             const scrollTopBtn = document.getElementById('scroll-to-top-btn');
-            if (window.scrollY > 300) {
+            if (scrollY > 300) {
                 scrollTopBtn.classList.remove('translate-y-20', 'opacity-0');
             } else {
                 scrollTopBtn.classList.add('translate-y-20', 'opacity-0');
