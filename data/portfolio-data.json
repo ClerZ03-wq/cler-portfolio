@@ -212,11 +212,11 @@
   },
   "contact": {
     "title": "Let's Connect",
-    "subtitle": "I'm currently open for opportunities in web development, backend programming, and network administration. Fill out the form below and I'll get back to you!",
+    "subtitle": "I'm currently open for opportunities in web development, backend programming, and security administration. Fill out the form below and I'll get back to you!",
     "formspreeUrl": "https://formspree.io/f/xkoypkaa"
   },
   "footer": {
-    "copyright": "© 2026 John Clerwin N. Dela Cruz. All rights reserved."
+    "copyright": "© 2026 John Clerwin Dela Cruz. All rights reserved."
   },
   "githubConfig": {
     "owner": "ClerZ03-wq",
