@@ -13,7 +13,27 @@
       "linkedin": "https://linkedin.com/in/clerz",
       "github": "https://github.com/ClerZ03-wq",
       "facebook": "https://facebook.com/clerz.pogi.meow/"
-    }
+    },
+    "socialLinks": [
+      {
+        "id": "soc-1",
+        "name": "LinkedIn",
+        "url": "https://linkedin.com/in/clerz",
+        "icon": "linkedin"
+      },
+      {
+        "id": "soc-2",
+        "name": "GitHub",
+        "url": "https://github.com/ClerZ03-wq",
+        "icon": "github"
+      },
+      {
+        "id": "soc-3",
+        "name": "Facebook",
+        "url": "https://facebook.com/clerz.pogi.meow/",
+        "icon": "facebook"
+      }
+    ]
   },
   "about": {
     "title": "About Me",

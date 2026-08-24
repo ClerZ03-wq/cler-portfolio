@@ -473,19 +473,17 @@
 
                 <hr class="border-sky-100 dark:border-slate-800 my-2">
 
+                <!-- CUSTOM SOCIAL LINKS EDITOR -->
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">LinkedIn URL</label>
-                    <input type="url" id="edit-hero-linkedin" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">GitHub URL</label>
-                    <input type="url" id="edit-hero-github" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Facebook URL</label>
-                    <input type="url" id="edit-hero-facebook" class="w-full px-4 py-2.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Social Links & Profiles</label>
+                        <button type="button" onclick="addSocialLinkEditorItem()" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1 rounded-lg text-xs flex items-center gap-1 shadow-sm">
+                            + Add Social Link
+                        </button>
+                    </div>
+                    <div id="hero-socials-editor" class="space-y-3 max-h-64 overflow-y-auto p-1">
+                        <!-- Populated dynamically by JS -->
+                    </div>
                 </div>
 
                 <div class="pt-4 flex justify-end gap-3">
@@ -782,7 +780,27 @@
               "linkedin": "https://linkedin.com/in/clerz",
               "github": "https://github.com/ClerZ03-wq",
               "facebook": "https://facebook.com/clerz.pogi.meow/"
-            }
+            },
+            "socialLinks": [
+              {
+                "id": "soc-1",
+                "name": "LinkedIn",
+                "url": "https://linkedin.com/in/clerz",
+                "icon": "linkedin"
+              },
+              {
+                "id": "soc-2",
+                "name": "GitHub",
+                "url": "https://github.com/ClerZ03-wq",
+                "icon": "github"
+              },
+              {
+                "id": "soc-3",
+                "name": "Facebook",
+                "url": "https://facebook.com/clerz.pogi.meow/",
+                "icon": "facebook"
+              }
+            ]
           },
           "about": {
             "title": "About Me",
@@ -918,6 +936,35 @@
             setTimeout(reveal, 100);
         }
 
+        function getSocialIcon(iconType, customIconUrl) {
+            if (customIconUrl && (iconType === 'custom' || customIconUrl.startsWith('img/') || customIconUrl.startsWith('http://') || customIconUrl.startsWith('https://') || customIconUrl.startsWith('data:'))) {
+                return `<img src="${getImageUrl(customIconUrl)}" onerror="handleImgError(this, '${customIconUrl}')" class="w-4.5 h-4.5 object-contain">`;
+            }
+
+            switch (iconType ? iconType.toLowerCase() : '') {
+                case 'linkedin':
+                    return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>`;
+                case 'github':
+                    return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>`;
+                case 'facebook':
+                    return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>`;
+                case 'twitter':
+                case 'x':
+                    return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>`;
+                case 'instagram':
+                    return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>`;
+                case 'youtube':
+                    return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>`;
+                case 'email':
+                case 'mail':
+                    return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>`;
+                case 'discord':
+                    return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6h0a14 14 0 0 0-4-1.2 1 1 0 0 0-1 .5 9.7 9.7 0 0 0-.5 1A15.3 15.3 0 0 0 11.5 6.3a9.7 9.7 0 0 0-.5-1 1 1 0 0 0-1-.5A14 14 0 0 0 6 6a15.8 15.8 0 0 0-3 10.5A1 1 0 0 0 3.5 17a14 14 0 0 0 4.3 2.2 1 1 0 0 0 1.1-.4c.3-.5.7-1 1-1.5a1 1 0 0 0-.5-1.4 9.6 9.6 0 0 1-1.5-.7 1 1 0 0 1 .2-1.7 10.6 10.6 0 0 0 7.8 0 1 1 0 0 1 .2 1.7 9.6 9.6 0 0 1-1.5.7 1 1 0 0 0-.5 1.4c.3.5.7 1 1 1.5a1 1 0 0 0 1.1.4 14 14 0 0 0 4.3-2.2 1 1 0 0 0 .5-.5A15.8 15.8 0 0 0 18 6z"></path></svg>`;
+                default:
+                    return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`;
+            }
+        }
+
         // 1. Hero Section Render
         function renderHero() {
             const h = portfolioData.hero;
@@ -925,6 +972,27 @@
             const showEdit = adminState.isLoggedIn && adminState.mode === 'edit';
 
             const rolesHtml = h.roles.map((r, i) => `${r}${i < h.roles.length - 1 ? ' <span class="text-sky-300 mx-1">|</span> ' : ''}`).join('');
+
+            // Dynamic Social Links (with fallback to legacy hero.socials)
+            let socialLinks = h.socialLinks;
+            if (!socialLinks || socialLinks.length === 0) {
+                socialLinks = [];
+                if (h.socials) {
+                    if (h.socials.linkedin) socialLinks.push({ name: 'LinkedIn', url: h.socials.linkedin, icon: 'linkedin' });
+                    if (h.socials.github) socialLinks.push({ name: 'GitHub', url: h.socials.github, icon: 'github' });
+                    if (h.socials.facebook) socialLinks.push({ name: 'Facebook', url: h.socials.facebook, icon: 'facebook' });
+                }
+            }
+
+            const socialsHtml = socialLinks.map(s => {
+                if (!s.url) return '';
+                return `
+                    <a href="${s.url}" target="_blank" class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-full text-sm text-slate-600 font-bold border border-sky-100 shadow-sm hover:border-sky-300 transition-all dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400">
+                        ${getSocialIcon(s.icon, s.customIcon)}
+                        ${s.name || 'Link'}
+                    </a>
+                `;
+            }).join('');
 
             container.innerHTML = `
                 <div class="absolute inset-0 z-0 pointer-events-none">
@@ -954,26 +1022,7 @@
                     <div class="flex flex-wrap items-center gap-4">
                         <a href="${h.ctaLink}" class="bg-sky-400 text-white px-6 py-2.5 rounded-full font-bold shadow-md hover:bg-sky-500 transition-all">${h.ctaText}</a>
                         
-                        ${h.socials.linkedin ? `
-                            <a href="${h.socials.linkedin}" target="_blank" class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-full text-sm text-slate-600 font-bold border border-sky-100 shadow-sm hover:border-sky-300 transition-all dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-                                LinkedIn
-                            </a>
-                        ` : ''}
-
-                        ${h.socials.github ? `
-                            <a href="${h.socials.github}" target="_blank" class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-full text-sm text-slate-600 font-bold border border-sky-100 shadow-sm hover:border-sky-300 transition-all dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                                GitHub
-                            </a>
-                        ` : ''}
-
-                        ${h.socials.facebook ? `
-                            <a href="${h.socials.facebook}" target="_blank" class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-full text-sm text-slate-600 font-bold border border-sky-100 shadow-sm hover:border-sky-300 transition-all dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-                                Facebook
-                            </a>
-                        ` : ''}
+                        ${socialsHtml}
                     </div>
                 </div>
             `;
@@ -1643,10 +1692,98 @@
             if (prev) prev.src = getImageUrl(h.avatar);
             document.getElementById('edit-hero-cta-text').value = h.ctaText;
             document.getElementById('edit-hero-cta-link').value = h.ctaLink;
-            document.getElementById('edit-hero-linkedin').value = h.socials.linkedin || '';
-            document.getElementById('edit-hero-github').value = h.socials.github || '';
-            document.getElementById('edit-hero-facebook').value = h.socials.facebook || '';
+
+            // Populate Social Links Editor
+            const socContainer = document.getElementById('hero-socials-editor');
+            if (socContainer) {
+                socContainer.innerHTML = '';
+                let socialLinks = h.socialLinks;
+                if (!socialLinks || socialLinks.length === 0) {
+                    socialLinks = [];
+                    if (h.socials) {
+                        if (h.socials.linkedin) socialLinks.push({ id: 'soc-1', name: 'LinkedIn', url: h.socials.linkedin, icon: 'linkedin' });
+                        if (h.socials.github) socialLinks.push({ id: 'soc-2', name: 'GitHub', url: h.socials.github, icon: 'github' });
+                        if (h.socials.facebook) socialLinks.push({ id: 'soc-3', name: 'Facebook', url: h.socials.facebook, icon: 'facebook' });
+                    }
+                }
+                socialLinks.forEach(item => addSocialLinkEditorItem(item));
+            }
             openModal('modal-edit-hero');
+        }
+
+        function addSocialLinkEditorItem(item = { name: '', url: '', icon: 'linkedin', customIcon: '' }) {
+            const container = document.getElementById('hero-socials-editor');
+            if (!container) return;
+            const uniqueId = `soc-icon-input-${Date.now()}-${Math.floor(Math.random()*1000)}`;
+            const div = document.createElement('div');
+            div.className = 'p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-sky-100 dark:border-slate-700 relative text-xs space-y-2 group';
+            
+            const isCustom = item.icon === 'custom' || (item.customIcon && item.customIcon.length > 0);
+
+            div.innerHTML = `
+                <div class="flex justify-between items-center pb-1 border-b border-slate-200 dark:border-slate-700">
+                    <span class="font-bold text-[10px] uppercase text-sky-600 dark:text-sky-400 flex items-center gap-1.5">
+                        <span class="soc-icon-preview inline-flex items-center justify-center shrink-0">${getSocialIcon(item.icon, item.customIcon || item.icon)}</span>
+                        <span class="soc-label-title">${item.name || 'Social Link'}</span>
+                    </span>
+                    <button type="button" onclick="this.closest('.group').remove();" class="text-slate-400 hover:text-rose-500 font-bold text-[10px]" title="Remove Link">Remove</button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 mb-0.5">Platform / Title</label>
+                        <input type="text" value="${item.name || ''}" placeholder="e.g. LinkedIn, GitHub, Discord" oninput="this.closest('.group').querySelector('.soc-label-title').textContent = this.value || 'Social Link'" class="soc-name w-full px-3 py-1.5 rounded-lg border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold focus:ring-2 focus:ring-sky-500">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 mb-0.5">Icon Preset</label>
+                        <select class="soc-icon-select w-full px-3 py-1.5 rounded-lg border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500" onchange="toggleCustomSocialIcon(this)">
+                            <option value="linkedin" ${item.icon === 'linkedin' ? 'selected' : ''}>LinkedIn</option>
+                            <option value="github" ${item.icon === 'github' ? 'selected' : ''}>GitHub</option>
+                            <option value="facebook" ${item.icon === 'facebook' ? 'selected' : ''}>Facebook</option>
+                            <option value="twitter" ${item.icon === 'twitter' || item.icon === 'x' ? 'selected' : ''}>Twitter / X</option>
+                            <option value="instagram" ${item.icon === 'instagram' ? 'selected' : ''}>Instagram</option>
+                            <option value="youtube" ${item.icon === 'youtube' ? 'selected' : ''}>YouTube</option>
+                            <option value="email" ${item.icon === 'email' || item.icon === 'mail' ? 'selected' : ''}>Email / Mail</option>
+                            <option value="discord" ${item.icon === 'discord' ? 'selected' : ''}>Discord</option>
+                            <option value="website" ${item.icon === 'website' || item.icon === 'globe' ? 'selected' : ''}>Website / Globe</option>
+                            <option value="custom" ${isCustom ? 'selected' : ''}>Custom Image Upload</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 mb-0.5">Link URL</label>
+                    <input type="url" value="${item.url || ''}" placeholder="https://..." class="soc-url w-full px-3 py-1.5 rounded-lg border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                </div>
+                <div class="soc-custom-icon-box ${isCustom ? '' : 'hidden'}">
+                    <label class="block text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 mb-0.5">Custom Icon Upload / Image Path</label>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="${uniqueId}" value="${item.customIcon || ''}" placeholder="img/custom-icon.png" oninput="toggleCustomSocialIcon(this)" class="soc-custom-icon flex-1 px-3 py-1.5 rounded-lg border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-mono text-[11px] focus:ring-2 focus:ring-sky-500">
+                        <label class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1.5 rounded-lg text-[10px] flex items-center justify-center cursor-pointer shrink-0">
+                            Upload Icon
+                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, '${uniqueId}')">
+                        </label>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function toggleCustomSocialIcon(elem) {
+            const group = elem.closest('.group');
+            if (!group) return;
+            const selectElem = group.querySelector('.soc-icon-select');
+            const customBox = group.querySelector('.soc-custom-icon-box');
+            const customIconVal = group.querySelector('.soc-custom-icon')?.value.trim();
+
+            if (selectElem.value === 'custom') {
+                customBox.classList.remove('hidden');
+            } else {
+                customBox.classList.add('hidden');
+            }
+
+            const preview = group.querySelector('.soc-icon-preview');
+            if (preview) {
+                preview.innerHTML = getSocialIcon(selectElem.value, customIconVal);
+            }
         }
 
         function saveHeroData(e) {
@@ -1657,14 +1794,42 @@
             h.avatar = document.getElementById('edit-hero-avatar').value.trim();
             h.ctaText = document.getElementById('edit-hero-cta-text').value.trim();
             h.ctaLink = document.getElementById('edit-hero-cta-link').value.trim();
-            h.socials.linkedin = document.getElementById('edit-hero-linkedin').value.trim();
-            h.socials.github = document.getElementById('edit-hero-github').value.trim();
-            h.socials.facebook = document.getElementById('edit-hero-facebook').value.trim();
+
+            // Collect Social Links
+            const socDivs = document.querySelectorAll('#hero-socials-editor > div');
+            const newSocialLinks = [];
+            h.socials = h.socials || {};
+
+            socDivs.forEach((div, idx) => {
+                const name = div.querySelector('.soc-name')?.value.trim();
+                const icon = div.querySelector('.soc-icon-select')?.value;
+                const url = div.querySelector('.soc-url')?.value.trim();
+                const customIcon = div.querySelector('.soc-custom-icon')?.value.trim();
+
+                if (url || name) {
+                    const socObj = {
+                        id: `soc-${Date.now()}-${idx}`,
+                        name: name || 'Link',
+                        url: url || '#',
+                        icon: icon || 'website'
+                    };
+                    if (customIcon) socObj.customIcon = customIcon;
+                    newSocialLinks.push(socObj);
+
+                    // Backwards compatibility map
+                    const lower = (name || icon || '').toLowerCase();
+                    if (lower.includes('linkedin')) h.socials.linkedin = url;
+                    if (lower.includes('github')) h.socials.github = url;
+                    if (lower.includes('facebook')) h.socials.facebook = url;
+                }
+            });
+
+            h.socialLinks = newSocialLinks;
 
             renderHero();
             closeModal('modal-edit-hero');
             markUnsaved();
-            showToast('Hero updated! Click "Save Changes to GitHub" at top to publish live.', 'info');
+            showToast('Hero & Social Links updated! Click "Save Changes to GitHub" at top to publish live.', 'info');
         }
 
         // About Modal
