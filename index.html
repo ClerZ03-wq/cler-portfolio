@@ -1816,20 +1816,51 @@
 
         async function verifyAndApplyToken(token, remember) {
             if (!token) return false;
-            try {
-                // 1. Verify token user with GitHub API
-                const userRes = await fetch('https://api.github.com/user', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
+            const cfg = (portfolioData && portfolioData.githubConfig) || (DEFAULT_DATA && DEFAULT_DATA.githubConfig) || { owner: 'ClerZ03-wq', repo: 'cler-portfolio', dataPath: 'data/portfolio-data.json' };
 
-                if (!userRes.ok) {
-                    return false;
+            try {
+                let userData = null;
+                let isValid = false;
+
+                // 1. Try verifying with /user endpoint (Classic PATs)
+                try {
+                    const userRes = await fetch('https://api.github.com/user', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    if (userRes.ok) {
+                        userData = await userRes.json();
+                        isValid = true;
+                    }
+                } catch (e) {
+                    console.log('/user endpoint check failed:', e);
                 }
 
-                const userData = await userRes.json();
+                // 2. Fallback: Try verifying directly with repository contents endpoint (Fine-Grained PATs without user scope)
+                if (!isValid) {
+                    try {
+                        const repoRes = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.dataPath}`, {
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Accept': 'application/vnd.github.v3+json'
+                            }
+                        });
+                        if (repoRes.ok) {
+                            const repoData = await repoRes.json();
+                            adminState.fileSha = repoData.sha;
+                            userData = { login: cfg.owner };
+                            isValid = true;
+                        }
+                    } catch (e) {
+                        console.log('repo contents endpoint check failed:', e);
+                    }
+                }
+
+                if (!isValid) {
+                    return false;
+                }
 
                 adminState.isLoggedIn = true;
                 adminState.token = token;
@@ -1848,8 +1879,10 @@
                 const userInfo = document.getElementById('admin-user-info');
                 if (userInfo) userInfo.innerHTML = `Logged in as <strong>@${userData.login}</strong>`;
 
-                // Fetch latest file SHA asynchronously
-                fetchRepoSha();
+                // Fetch latest file SHA asynchronously if not already fetched
+                if (!adminState.fileSha) {
+                    fetchRepoSha();
+                }
 
                 // Re-render page sections with edit controls
                 renderAllSections();
