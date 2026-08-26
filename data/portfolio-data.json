@@ -17,25 +17,25 @@
     },
     "socialLinks": [
       {
-        "id": "soc-1787673019330-0",
+        "id": "soc-1787708400167-0",
         "name": "LinkedIn",
         "url": "https://linkedin.com/in/clerz",
         "icon": "linkedin"
       },
       {
-        "id": "soc-1787673019330-1",
+        "id": "soc-1787708400167-1",
         "name": "GitHub",
         "url": "https://github.com/ClerZ03-wq",
         "icon": "github"
       },
       {
-        "id": "soc-1787673019330-2",
+        "id": "soc-1787708400167-2",
         "name": "Facebook",
         "url": "https://facebook.com/clerz.pogi.meow/",
         "icon": "facebook"
       },
       {
-        "id": "soc-1787673019330-3",
+        "id": "soc-1787708400167-3",
         "name": "AWS Builder",
         "url": "https://builder.aws.com/community/@clerz?tab=badges",
         "icon": "custom",
@@ -44,7 +44,7 @@
     ],
     "location": "Taguig City, Philippines",
     "education": "University of Makati (4th Year IT)",
-    "work": "Sa bahay ni yun-tzu",
+    "work": "",
     "idBadge": {
       "qrCode": "https://www.instagram.com/clrwnz/",
       "accessLevel": "Admin"
