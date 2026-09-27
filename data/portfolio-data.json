@@ -96,7 +96,7 @@
       "period": "March 2026 - May 2026",
       "logo": "img/1790517530790_vulnerability-assessment-glyph-icon-illustration-vector.jpg",
       "image": "",
-      "description": "• Review of a comprehensive Information Assurance and Security Plan, synthesizing multi-domain vulnerability data into a\ncohesive executive risk mitigation strategy.\n• Designed actionable security controls for software/hardware inventory, secure endpoint configurations, malware\ndefenses, and wireless access, aligning municipal IT operations with NIST and DICT Cybersecurity Frameworks.\n• Authored targeted vulnerability findings addressing personnel security, backup recovery processes, and Data Privacy\nAct of 2012 (RA 10173) compliance, establishing a prioritized remediation roadmap for the city government.",
+      "description": "• Review of a comprehensive Information Assurance and Security Plan, synthesizing multi-domain vulnerability data into a\ncohesive executive risk mitigation strategy.\n\n• Designed actionable security controls for software/hardware inventory, secure endpoint configurations, malware\ndefenses, and wireless access, aligning municipal IT operations with NIST and DICT Cybersecurity Frameworks.\n\n• Authored targeted vulnerability findings addressing personnel security, backup recovery processes, and Data Privacy\nAct of 2012 (RA 10173) compliance, establishing a prioritized remediation roadmap for the city government.",
       "tags": [
         "ISO/IEC 27001",
         "NIST Cybersecurity Framework (CSF)",
