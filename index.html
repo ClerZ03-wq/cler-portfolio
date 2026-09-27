@@ -1583,7 +1583,7 @@
                                 </div>
                                 <img src="${getImageUrl(p.logo)}" onerror="handleImgError(this, '${p.logo}')" alt="${p.title} Logo" class="w-14 h-14 shrink-0 object-contain rounded-xl bg-slate-50 dark:bg-slate-800 p-2 border border-slate-100 dark:border-slate-700 shadow-sm">
                             </div>
-                            <p class="text-slate-600 dark:text-slate-400 mb-6 text-sm leading-relaxed">
+                            <p class="text-slate-600 dark:text-slate-400 mb-6 text-sm leading-relaxed text-justify whitespace-pre-line">
                                 ${p.description}
                             </p>
                             <div class="flex flex-wrap gap-2 mb-6">
@@ -3080,7 +3080,7 @@
                                 <span class="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-widest">${p.role} • ${p.period}</span>
                             </div>
                         </div>
-                        <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 leading-relaxed">${p.description}</p>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 leading-relaxed text-justify whitespace-pre-line">${p.description}</p>
                         <div class="flex flex-wrap gap-2 mb-4">
                             ${p.tags.map(t => `<span class="text-[10px] font-bold text-slate-500 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded">${t}</span>`).join('')}
                         </div>
