@@ -207,6 +207,12 @@
         "title": "Introduction to AI Azure",
         "provider": "BlackStride",
         "icon": "img/1787598183623_ebed8b84-d7a5-4a3e-b210-49f83c79a103.png"
+      },
+      {
+        "id": "badge-10",
+        "title": "Vulnerability Management",
+        "provider": "IBM",
+        "icon": "img/1790515219908_vulnerability-management.png"
       }
     ]
   },
