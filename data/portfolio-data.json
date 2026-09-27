@@ -73,30 +73,34 @@
     },
     {
       "id": "proj-1",
-      "title": "FIL-TRACK",
-      "role": "Lead Programmer | Security Specialist | System Administration Specialist",
+      "title": "FIL-TRACK (Filoil Logistics)",
+      "role": "Lead Programmer | Systems Administrator",
       "period": "Feb — May 2026",
       "logo": "img/logo.svg",
       "image": "",
-      "description": "An IT asset inventory management system for Filoil Logistics. Features include role-based access control and comprehensive hardware lifecycle monitoring.",
+      "description": "• Developed a centralized web-based multi-department digital ecosystem, eliminating isolated information silos across IT,\nHR, and Finance and replacing manual, version-control-prone spreadsheet tracking.\n\n• Engineered end-to-end asset lifecycle tracking features to trace the physical movement and operational status of\nequipment across remote terminals and the central head office, providing management with real-time global oversight and\nminimizing the risk of unrecorded corporate losses.\n\n• Secured enterprise asset data by enforcing Role-Based Access Control (RBAC) and client-mandated VPN network\narchitecture, ensuring strict data confidentiality and safe geographic tracking of equipment across all terminal locations.",
       "tags": [
         "Django",
         "PostgreSQL",
-        "Tailwind"
+        "HTML",
+        "Tailwind",
+        "Ubuntu",
+        "Docker"
       ],
       "link": "#"
     },
     {
       "id": "proj-2",
-      "title": "ServeLink",
-      "role": "Project Manager & Lead Dev",
-      "period": "Oct 2025 — Jan 2026",
-      "logo": "img/servelink-logo.png",
-      "description": "A web-based reporting platform for technical troubleshooting and repair solutions within academic networks.",
+      "title": "Vulnerability Assessment (ICTO, Makati City Hall)",
+      "role": "Information Security Analyst (Academic Project)",
+      "period": "March 2026 - May 2026",
+      "logo": "img/1790517530790_vulnerability-assessment-glyph-icon-illustration-vector.jpg",
+      "image": "",
+      "description": "• Review of a comprehensive Information Assurance and Security Plan, synthesizing multi-domain vulnerability data into a\ncohesive executive risk mitigation strategy.\n• Designed actionable security controls for software/hardware inventory, secure endpoint configurations, malware\ndefenses, and wireless access, aligning municipal IT operations with NIST and DICT Cybersecurity Frameworks.\n• Authored targeted vulnerability findings addressing personnel security, backup recovery processes, and Data Privacy\nAct of 2012 (RA 10173) compliance, establishing a prioritized remediation roadmap for the city government.",
       "tags": [
-        "Docker",
-        "PHP",
-        "MySQL"
+        "ISO/IEC 27001",
+        "NIST Cybersecurity Framework (CSF)",
+        "DICT Cybersecurity Frameworks"
       ],
       "link": "#"
     }
