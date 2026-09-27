@@ -1590,8 +1590,7 @@
                                 ${tagsHtml}
                             </div>
                             <div class="flex items-center gap-4">
-                                <a href="${p.link}" class="text-sm text-sky-600 font-bold hover:text-sky-800 dark:text-sky-300 transition-colors pb-1 border-b border-sky-200">Live Demo &rarr;</a>
-                                ${p.image ? `<button onclick="openLightbox('${p.image}')" class="text-sm text-slate-500 font-bold hover:text-slate-700 dark:hover:text-slate-300 transition-colors flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> View Image</button>` : ''}
+                                ${p.image ? `<button onclick="openLightbox('${p.image}')" class="text-sm text-sky-600 font-bold hover:text-sky-800 dark:text-sky-300 transition-colors flex items-center gap-1.5 pb-1 border-b border-sky-200"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> View Project Image</button>` : ''}
                             </div>
                         </div>
                     </div>
@@ -3085,8 +3084,7 @@
                             ${p.tags.map(t => `<span class="text-[10px] font-bold text-slate-500 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded">${t}</span>`).join('')}
                         </div>
                         <div class="flex items-center gap-4">
-                            <a href="${p.link}" target="_blank" class="text-xs text-sky-600 font-bold hover:text-sky-800 dark:text-sky-300 transition-colors pb-1 border-b border-sky-200">Live Demo &rarr;</a>
-                            ${p.image ? `<button onclick="openLightbox('${p.image}')" class="text-xs text-slate-500 font-bold hover:text-slate-700 dark:hover:text-slate-300 transition-colors flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> View Image</button>` : ''}
+                            ${p.image ? `<button onclick="openLightbox('${p.image}')" class="text-xs text-sky-600 font-bold hover:text-sky-800 dark:text-sky-300 transition-colors flex items-center gap-1.5 pb-1 border-b border-sky-200"><svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> View Project Image</button>` : ''}
                         </div>
                     </div>
                 </div>
