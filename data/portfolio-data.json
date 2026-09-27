@@ -58,15 +58,16 @@
     {
       "id": "proj-1787304675615",
       "title": "FIL-NODE",
-      "role": "Lead Programmer",
+      "role": "Lead Developer | Security Architect",
       "period": "Aug 2026 - Present",
       "logo": "img/logo.svg",
-      "description": "Endpoint Security Checker",
+      "image": "",
+      "description": "• Architected a secure, VPN-independent telemetry pipeline using a C#/.NET endpoint agent and Django REST\nbackend, continuously synchronizing remote device health and network data into a centralized PostgreSQL\ndatabase.\n\n• Engineered a custom rule-based detection engine to analyze historical telemetry and baseline deviations, accelerating IT\nincident resolution by generating automated, human-in-the-loop remediation workflows.\n\n• Automated endpoint security baseline checks (firewall, antivirus, and storage configurations) using AES-256-GCM encryption,\ntransforming remote asset management into a proactive system aligned with ISO/IEC 27001:2022, NIST, and CIS\nBenchmarks.",
       "tags": [
         "Django",
         "Postgres",
-        "Html",
-        "Css"
+        "HTML",
+        "CSS"
       ],
       "link": "#"
     },
