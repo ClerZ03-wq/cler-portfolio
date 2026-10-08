@@ -719,26 +719,23 @@
             position: absolute;
             top: var(--y);
             left: var(--x);
-            width: 1.2rem;
-            height: 0.42rem;
-            border: 1px solid rgba(255,255,255,0.62);
-            border-left-color: transparent;
-            border-radius: 70% 25% 70% 25%;
-            opacity: 0.48;
-            transform: rotate(var(--rotation));
-            animation: seed-drift 13s ease-in-out var(--delay) infinite;
+            width: 0.75rem;
+            height: 0.75rem;
+            background: #38bdf8;
+            clip-path: polygon(50% 0%, 63% 37%, 100% 50%, 63% 63%, 50% 100%, 37% 63%, 0% 50%, 37% 37%);
+            filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.75)) drop-shadow(0 0 10px rgba(14, 165, 233, 0.45));
+            opacity: 0;
+            pointer-events: none;
+            animation: seed-drift 11s ease-in-out var(--delay) infinite;
+        }
+
+        :is(.dark) .scene-seed {
+            background: #a5f3fc;
+            filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.95)) drop-shadow(0 0 14px rgba(14, 165, 233, 0.75));
         }
 
         .scene-seed::after {
-            content: "";
-            position: absolute;
-            right: 96%;
-            top: 48%;
-            width: 2.2rem;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.44));
-            transform: rotate(-12deg);
-            transform-origin: right center;
+            display: none;
         }
 
         .hero-content {
@@ -908,10 +905,26 @@
         }
 
         @keyframes seed-drift {
-            0% { opacity: 0; transform: translate3d(-2rem, 1rem, 0) rotate(var(--rotation)); }
-            20% { opacity: 0.46; }
-            58% { opacity: 0.62; transform: translate3d(6rem, -2rem, 0) rotate(calc(var(--rotation) + 12deg)); }
-            100% { opacity: 0; transform: translate3d(13rem, 4rem, 0) rotate(calc(var(--rotation) + 28deg)); }
+            0% {
+                opacity: 0;
+                transform: translate3d(-1rem, 1rem, 0) scale(0.5) rotate(var(--rotation));
+            }
+            25% {
+                opacity: 0.7;
+                transform: translate3d(2rem, -0.6rem, 0) scale(0.95) rotate(calc(var(--rotation) + 35deg));
+            }
+            60% {
+                opacity: 0.9;
+                transform: translate3d(5.5rem, -1.5rem, 0) scale(1.1) rotate(calc(var(--rotation) + 75deg));
+            }
+            85% {
+                opacity: 0.5;
+                transform: translate3d(8.5rem, 0.4rem, 0) scale(0.8) rotate(calc(var(--rotation) + 115deg));
+            }
+            100% {
+                opacity: 0;
+                transform: translate3d(11rem, 1.8rem, 0) scale(0.4) rotate(calc(var(--rotation) + 150deg));
+            }
         }
 
         @keyframes profile-float {
@@ -1833,7 +1846,7 @@
                         <div class="absolute -inset-2.5 rounded-full border border-cyan-400/0 group-hover:border-cyan-400/40 transition-colors duration-700 group-hover:animate-[spin_6s_linear_infinite_reverse] z-0"></div>
                         
                         <!-- Badge Image -->
-                        <img id="cyberpro-badge-img" src="img/dict-cyberpro-level2.png" alt="DICT Cyberpro Level 2" class="relative w-28 h-28 rounded-full border-2 border-blue-400 dark:border-blue-400/80 object-cover shadow-[0_0_25px_rgba(59,130,246,0.4)] transition-all duration-500 group-hover:scale-105 z-10 bg-slate-950 p-1">
+                        <img id="cyberpro-badge-img" src="img/dict-cyberpro-level2.png" alt="DICT Cyberpro Level 2" class="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full border-2 border-blue-400 dark:border-blue-400/80 object-cover shadow-[0_0_25px_rgba(59,130,246,0.4)] transition-all duration-500 group-hover:scale-105 z-10 bg-slate-950 p-1">
                         
                         <!-- Verification Shield Icon -->
                         <div class="absolute -right-1 -bottom-1 w-8 h-8 text-blue-500 dark:text-blue-400 bg-white dark:bg-slate-900 rounded-full border border-blue-300 dark:border-blue-500/60 p-1.5 z-20 shadow-md flex items-center justify-center">
@@ -2478,11 +2491,11 @@
                             ${h.ctaText}
                         </a>
                         
-                        <button onclick="openLightbox('img/dict-cyberpro-level2.png')" class="group relative flex items-center gap-2.5 bg-gradient-to-r from-slate-900/90 to-slate-800/90 backdrop-blur px-5 py-2.5 rounded-full text-sm text-white font-bold border border-blue-400/60 shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] hover:border-blue-400 hover:scale-105 transition-all overflow-hidden hero-cta">
+                        <button onclick="openLightbox('img/dict-cyberpro-level2.png')" class="group relative flex items-center gap-3 bg-gradient-to-r from-slate-900/90 to-slate-800/90 backdrop-blur px-6 py-3 sm:px-7 sm:py-3.5 rounded-full text-base sm:text-lg text-white font-bold border border-blue-400/60 shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] hover:border-blue-400 hover:scale-105 transition-all overflow-hidden hero-cta">
                             <!-- Shimmer effect -->
                             <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-blue-400/30 to-transparent group-hover:translate-x-full transition-transform duration-1000 pointer-events-none"></div>
                             
-                            <img src="img/dict-cyberpro-level2.png" alt="DICT Pro" class="w-6 h-6 rounded-sm object-cover border border-white/20 drop-shadow-[0_0_5px_rgba(59,130,246,0.8)]">
+                            <img src="img/dict-cyberpro-level2.png" alt="DICT Pro" class="w-8 h-8 sm:w-10 sm:h-10 rounded-sm object-cover border border-white/20 drop-shadow-[0_0_5px_rgba(59,130,246,0.8)]">
                             <span class="text-blue-100 drop-shadow-sm">DICT Cyberpro Level 2</span>
                         </button>
 
