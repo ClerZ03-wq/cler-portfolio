@@ -218,6 +218,12 @@
         "title": "Vulnerability Management",
         "provider": "IBM",
         "icon": "img/1790515219908_vulnerability-management.png"
+      },
+      {
+        "provider": "DICT",
+        "title": "Cyberpro Level 2 - Intermediate",
+        "id": "badge-11",
+        "icon": "img/dict-cyberpro-level2.png"
       }
     ]
   },
