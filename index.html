@@ -2036,7 +2036,8 @@
     "work": "",
     "idBadge": {
       "qrCode": "https://www.instagram.com/clrwnz/",
-      "accessLevel": "Admin"
+      "accessLevel": "Admin",
+      "role": "Cybersecurity"
     }
   },
   "about": {
@@ -4259,7 +4260,8 @@
             // Populate Data
             document.getElementById('digital-id-avatar').src = getImageUrl(h.avatar);
             document.getElementById('digital-id-name').textContent = h.name;
-            document.getElementById('digital-id-role').textContent = h.roles[0] || 'Developer';
+            const idBadge = h.idBadge || { qrCode: '', accessLevel: 'Admin', role: 'Cybersecurity' };
+            document.getElementById('digital-id-role').textContent = idBadge.role || 'Cybersecurity';
             
             const locEl = document.getElementById('digital-id-location');
             if (h.location) {
@@ -4269,7 +4271,6 @@
                 locEl.style.display = 'none';
             }
 
-            const idBadge = h.idBadge || { qrCode: '', accessLevel: 'Admin' };
             document.getElementById('digital-id-access-level').textContent = `Access Level: ${idBadge.accessLevel || 'Admin'}`;
             
             const qrFake = document.getElementById('digital-id-qr-fake');

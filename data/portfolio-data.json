@@ -47,7 +47,8 @@
     "work": "",
     "idBadge": {
       "qrCode": "https://www.instagram.com/clrwnz/",
-      "accessLevel": "Admin"
+      "accessLevel": "Admin",
+      "role": "Cybersecurity"
     }
   },
   "about": {
