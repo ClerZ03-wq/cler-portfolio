@@ -1024,7 +1024,15 @@
                 transform: none !important;
             }
         }
-    </style>
+        </style>
+
+    <!-- Optional, dependency-free travelling-castle interaction layers. -->
+    <link rel="stylesheet" href="castle-motion.css">
+    <link rel="stylesheet" href="castle-scene.css">
+    <link rel="stylesheet" href="castle-audio.css">
+    <link rel="stylesheet" href="heavy-animations.css">
+    <script src="castle-audio.js" defer></script>
+    <script src="castle-scene.js" defer></script>
 </head>
 <body class="bg-sky-50 text-slate-800 font-sans antialiased selection:bg-sky-300 selection:text-slate-900 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-500 overflow-x-hidden pb-12">
 
@@ -1040,7 +1048,7 @@
                     Logged in to <strong id="admin-repo-name" class="text-white">ClerZ03-wq/cler-portfolio</strong>
                 </span>
                 <span id="unsaved-badge" class="hidden bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded text-[11px] font-bold animate-pulse">
-                    ● Unsaved Changes
+                    Ã¢â€”Â Unsaved Changes
                 </span>
             </div>
             <div class="flex items-center gap-2">
@@ -1203,7 +1211,7 @@
                 <details class="text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-800">
                     <summary class="font-bold text-sky-600 dark:text-sky-400 cursor-pointer hover:underline">How to generate a Personal Access Token?</summary>
                     <ol class="list-decimal list-inside space-y-1 mt-2 pl-1 leading-relaxed text-[11px]">
-                        <li>Go to GitHub → Settings → Developer Settings → Personal Access Tokens.</li>
+                        <li>Go to GitHub Ã¢â€ â€™ Settings Ã¢â€ â€™ Developer Settings Ã¢â€ â€™ Personal Access Tokens.</li>
                         <li>Generate a token with <strong>repo</strong> or <strong>contents: read & write</strong> scope for <code class="bg-slate-100 dark:bg-slate-800 px-1 rounded">ClerZ03-wq/cler-portfolio</code>.</li>
                         <li>Paste your token above to gain admin editing rights.</li>
                     </ol>
@@ -1237,7 +1245,7 @@
                     <!-- SECTION 1: PERSONAL & AVATAR -->
                     <div class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 space-y-4">
                         <h4 class="text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2">
-                            <span>👤</span> Personal Identity & Avatar
+                            <span>Ã°Å¸â€˜Â¤</span> Personal Identity & Avatar
                         </h4>
 
                         <div>
@@ -1263,7 +1271,7 @@
                     <!-- SECTION 2: LOCATION & EDUCATION & WORK -->
                     <div class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 space-y-4">
                         <h4 class="text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2">
-                            <span>📍</span> Location, Education & Work Status
+                            <span>Ã°Å¸â€œÂ</span> Location, Education & Work Status
                         </h4>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1286,7 +1294,7 @@
                     <!-- SECTION 3: ROLES & CALL TO ACTION -->
                     <div class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 space-y-4">
                         <h4 class="text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2">
-                            <span>💻</span> Professional Roles & CTA Button
+                            <span>Ã°Å¸â€™Â»</span> Professional Roles & CTA Button
                         </h4>
 
                         <div>
@@ -1310,7 +1318,7 @@
                     <div class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 space-y-4">
                         <div class="flex justify-between items-center">
                             <h4 class="text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2">
-                                <span>🌐</span> Social Profiles & Custom Links
+                                <span>Ã°Å¸Å’Â</span> Social Profiles & Custom Links
                             </h4>
                             <button type="button" onclick="addSocialLinkEditorItem()" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1 rounded-xl text-xs flex items-center gap-1 shadow-sm transition-all">
                                 + Add Social Link
@@ -1336,7 +1344,7 @@
         <div class="bg-white dark:bg-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl">
             <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100 dark:border-slate-800">
                 <h3 class="text-lg font-heading font-black text-slate-800 dark:text-white flex items-center gap-2">
-                    <span>🪪</span> Customize Digital ID
+                    <span>Ã°Å¸ÂªÂª</span> Customize Digital ID
                 </h3>
                 <button onclick="closeModal('modal-edit-id-badge')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -1426,7 +1434,7 @@
                     <!-- CARD 1: GENERAL INFO -->
                     <div class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 space-y-4">
                         <h4 class="text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2">
-                            <span>📌</span> Title, Role & Date
+                            <span>Ã°Å¸â€œÅ’</span> Title, Role & Date
                         </h4>
 
                         <div>
@@ -1441,7 +1449,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Period / Timeline</label>
-                                <input type="text" id="edit-proj-period" required placeholder="e.g. March 2026 — Present" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
+                                <input type="text" id="edit-proj-period" required placeholder="e.g. March 2026 Ã¢â‚¬â€ Present" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500">
                             </div>
                         </div>
                     </div>
@@ -1449,7 +1457,7 @@
                     <!-- CARD 2: MEDIA & LOGO -->
                     <div class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 space-y-4">
                         <h4 class="text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2">
-                            <span>🖼️</span> Project Logo & Screenshot
+                            <span>Ã°Å¸â€“Â¼Ã¯Â¸Â</span> Project Logo & Screenshot
                         </h4>
 
                         <div>
@@ -1481,7 +1489,7 @@
                     <!-- CARD 3: DESCRIPTION, TAGS & LINK -->
                     <div class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 space-y-4">
                         <h4 class="text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2">
-                            <span>📝</span> Description, Tags & Live Link
+                            <span>Ã°Å¸â€œÂ</span> Description, Tags & Live Link
                         </h4>
 
                         <div>
@@ -1571,11 +1579,11 @@
             <!-- Navigation Tabs -->
             <div class="flex border-b border-sky-100 dark:border-slate-800 px-6 gap-2 shrink-0 bg-slate-50/50 dark:bg-slate-950/40">
                 <button type="button" id="tab-btn-cards" onclick="switchAchievementTab('cards')" class="py-3 px-4 text-xs font-bold transition-all border-b-2 border-sky-500 text-sky-600 dark:text-sky-400 flex items-center gap-2">
-                    <span>📄 Peel Cards</span>
+                    <span>Ã°Å¸â€œâ€ž Peel Cards</span>
                     <span id="tab-count-cards" class="px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/40 text-[10px]">0</span>
                 </button>
                 <button type="button" id="tab-btn-badges" onclick="switchAchievementTab('badges')" class="py-3 px-4 text-xs font-bold transition-all border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-2">
-                    <span>🎖️ Scroller Badges</span>
+                    <span>Ã°Å¸Å½â€“Ã¯Â¸Â Scroller Badges</span>
                     <span id="tab-count-badges" class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px]">0</span>
                 </button>
             </div>
@@ -1689,14 +1697,14 @@
                 <p class="font-bold text-amber-800 dark:text-amber-300">How to fix in 1 minute:</p>
                 <ol class="list-decimal list-inside space-y-1 text-[11px] leading-relaxed">
                     <li>Click the button below to open GitHub token generator.</li>
-                    <li>Ensure the <strong>repo</strong> checkbox (or <strong>Contents → Read and write</strong>) is checked.</li>
+                    <li>Ensure the <strong>repo</strong> checkbox (or <strong>Contents Ã¢â€ â€™ Read and write</strong>) is checked.</li>
                     <li>Copy the new token and click <strong>Update Token</strong> below!</li>
                 </ol>
             </div>
 
             <div class="space-y-2">
                 <a href="https://github.com/settings/tokens/new?scopes=repo&description=Portfolio+Admin+Token" target="_blank" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 rounded-xl shadow transition-all flex items-center justify-center gap-2 text-xs">
-                    🔑 Generate Classic PAT with Repo Scope &rarr;
+                    Ã°Å¸â€â€˜ Generate Classic PAT with Repo Scope &rarr;
                 </a>
                 <button onclick="closeModal('modal-token-permission-error'); openLoginModal();" class="w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2.5 rounded-xl transition-all text-xs">
                     Update Stored Token
@@ -1843,137 +1851,243 @@
     <script>
         // --- DEFAULT EMBEDDED DATA FALLBACK ---
         const DEFAULT_DATA = {
-          "hero": {
-            "avatar": "img/503561419_2735814616619356_9132110206694480000_n.jpg",
-            "name": "John Clerwin N. Dela Cruz",
-            "location": "Taguig City, Philippines",
-            "education": "University of Makati (4th Year IT)",
-            "work": "Filoil Logistics (Lead Developer)",
-            "roles": ["Web Developer", "Backend Programmer", "Database Administrator"],
-            "ctaText": "Let's Connect",
-            "ctaLink": "#contact",
-            "socials": {
-              "linkedin": "https://linkedin.com/in/clerz",
-              "github": "https://github.com/ClerZ03-wq",
-              "facebook": "https://facebook.com/clerz.pogi.meow/"
-            },
-            "socialLinks": [
-              {
-                "id": "soc-1",
-                "name": "LinkedIn",
-                "url": "https://linkedin.com/in/clerz",
-                "icon": "linkedin"
-              },
-              {
-                "id": "soc-2",
-                "name": "GitHub",
-                "url": "https://github.com/ClerZ03-wq",
-                "icon": "github"
-              },
-              {
-                "id": "soc-3",
-                "name": "Facebook",
-                "url": "https://facebook.com/clerz.pogi.meow/",
-                "icon": "facebook"
-              }
-            ],
-            "idBadge": {
-              "qrCode": "",
-              "accessLevel": "Admin"
-            }
-          },
-          "about": {
-            "title": "About Me",
-            "content": "I am currently a third year IT student aspiring to become a full stack developer, with a strong passion for building dynamic, scalable, and secure applications. Beyond writing code, I continuously explore new tech stacks and emerging technologies to stay up to date with current industry trends."
-          },
-          "projects": [
-            {
-              "id": "proj-1",
-              "title": "FIL-TRACK",
-              "role": "Lead Developer",
-              "period": "March 2026 — Present",
-              "logo": "img/logo.svg",
-              "image": "https://placehold.co/1200x800/0ea5e9/ffffff?text=FIL-TRACK+Screenshot",
-              "description": "An IT asset inventory management system for Filoil Logistics. Features include role-based access control and comprehensive hardware lifecycle monitoring.",
-              "tags": ["Django", "PostgreSQL", "Tailwind"],
-              "link": "#"
-            },
-            {
-              "id": "proj-2",
-              "title": "ServeLink",
-              "role": "Project Manager & Lead Dev",
-              "period": "Oct 2025 — Jan 2026",
-              "logo": "img/servelink-logo.png",
-              "image": "https://placehold.co/1200x800/6366f1/ffffff?text=ServeLink+Screenshot",
-              "description": "A web-based reporting platform for technical troubleshooting and repair solutions within academic networks.",
-              "tags": ["Docker", "PHP", "MySQL"],
-              "link": "#"
-            }
-          ],
-          "skills": [
-            {
-              "id": "skill-1",
-              "category": "Full-Stack Development",
-              "items": ["Django (Python)", "PHP", "C++", "JavaScript", "PostgreSQL", "MySQL", "Git", "Tailwind CSS"]
-            },
-            {
-              "id": "skill-2",
-              "category": "Networking & Security",
-              "items": ["Windows Server (AD DS)", "Cisco Routing", "VPN Config", "Vulnerability Assessment"]
-            }
-          ],
-          "achievements": {
-            "cards": [
-              {
-                "id": "card-1",
-                "badge": "Academic Excellence",
-                "title": "Dean's Lister",
-                "subtitle": "1st to 3rd Year",
-                "detail": "University of Makati",
-                "theme": "emerald"
-              },
-              {
-                "id": "card-2",
-                "badge": "2nd Runner Up",
-                "title": "Infotechnolympics",
-                "subtitle": "Web Design (2024-2025)",
-                "detail": "2024 – 2025",
-                "theme": "cyan"
-              },
-              {
-                "id": "card-3",
-                "badge": "National Certificate II",
-                "title": "Computer System Servicing (NCII)",
-                "subtitle": "Professional Certification",
-                "detail": "Philippines",
-                "theme": "blue"
-              }
-            ],
-            "badges": [
-              { "id": "badge-1", "title": "C++ Essentials 1", "provider": "Cisco Academy", "icon": "img/c-essentials-1.png" },
-              { "id": "badge-2", "title": "Hardware Basics", "provider": "Cisco Academy", "icon": "img/computer-hardware-basics.png" },
-              { "id": "badge-3", "title": "Cyber Threat Mgt.", "provider": "Cisco Academy", "icon": "img/cyber-threat-management.png" },
-              { "id": "badge-4", "title": "Intro to Cyber", "provider": "Cisco Academy", "icon": "img/introduction-to-cybersecurity.png" },
-              { "id": "badge-5", "title": "Intro to IoT", "provider": "Cisco Academy", "icon": "img/introduction-to-iot.png" },
-              { "id": "badge-6", "title": "ISC2 Candidate", "provider": "ISC2", "icon": "img/isc2-candidate.png" },
-              { "id": "badge-7", "title": "Networking Basics", "provider": "Cisco Academy", "icon": "img/networking-basics.png" }
-            ]
-          },
-          "contact": {
-            "title": "Let's Connect",
-            "subtitle": "I'm currently open for opportunities in web development, backend programming, and network administration. Fill out the form below and I'll get back to you!",
-            "formspreeUrl": "https://formspree.io/f/xkoypkaa"
-          },
-          "footer": {
-            "copyright": "© 2026 John Clerwin N. Dela Cruz. All rights reserved."
-          },
-          "githubConfig": {
-            "owner": "ClerZ03-wq",
-            "repo": "cler-portfolio",
-            "branch": "main",
-            "dataPath": "data/portfolio-data.json"
-          }
-        };
+  "hero": {
+    "avatar": "img/1786438536257_5aa4138b-ab3a-474d-8f37-d5dbf403b983.jpg",
+    "name": "John Clerwin Dela Cruz",
+    "roles": [
+      "Web Developer",
+      "Backend Programmer",
+      "Database Administrator",
+      "Security Analyst"
+    ],
+    "ctaText": "Let's Connect",
+    "ctaLink": "#contact",
+    "socials": {
+      "linkedin": "https://linkedin.com/in/clerz",
+      "github": "https://github.com/ClerZ03-wq",
+      "facebook": "https://facebook.com/clerz.pogi.meow/"
+    },
+    "socialLinks": [
+      {
+        "id": "soc-1787708400167-0",
+        "name": "LinkedIn",
+        "url": "https://linkedin.com/in/clerz",
+        "icon": "linkedin"
+      },
+      {
+        "id": "soc-1787708400167-1",
+        "name": "GitHub",
+        "url": "https://github.com/ClerZ03-wq",
+        "icon": "github"
+      },
+      {
+        "id": "soc-1787708400167-2",
+        "name": "Facebook",
+        "url": "https://facebook.com/clerz.pogi.meow/",
+        "icon": "facebook"
+      },
+      {
+        "id": "soc-1787708400167-3",
+        "name": "AWS Builder",
+        "url": "https://builder.aws.com/community/@clerz?tab=badges",
+        "icon": "custom",
+        "customIcon": "img/1787598835307_download__1_.png"
+      }
+    ],
+    "location": "Taguig City, Philippines",
+    "education": "University of Makati (4th Year IT)",
+    "work": "",
+    "idBadge": {
+      "qrCode": "https://www.instagram.com/clrwnz/",
+      "accessLevel": "Admin"
+    }
+  },
+  "about": {
+    "title": "About Me",
+    "content": "I am currently a Fourth year IT student aspiring to become a SOC, with a strong passion for building dynamic, scalable, and secure applications. Beyond writing code, I continuously explore new tech stacks and emerging technologies to stay up to date with current industry trends."
+  },
+  "projects": [
+    {
+      "id": "proj-1787304675615",
+      "title": "FIL-NODE",
+      "role": "Lead Developer | Security Architect",
+      "period": "Aug 2026 - Present",
+      "logo": "img/logo.svg",
+      "image": "",
+      "description": "Ã¢â‚¬Â¢ Architected a secure, VPN-independent telemetry pipeline using a C#/.NET endpoint agent and Django REST\nbackend, continuously synchronizing remote device health and network data into a centralized PostgreSQL\ndatabase.\n\nÃ¢â‚¬Â¢ Engineered a custom rule-based detection engine to analyze historical telemetry and baseline deviations, accelerating IT\nincident resolution by generating automated, human-in-the-loop remediation workflows.\n\nÃ¢â‚¬Â¢ Automated endpoint security baseline checks (firewall, antivirus, and storage configurations) using AES-256-GCM encryption,\ntransforming remote asset management into a proactive system aligned with ISO/IEC 27001:2022, NIST, and CIS\nBenchmarks.",
+      "tags": [
+        "Django",
+        "Postgres",
+        "HTML",
+        "CSS"
+      ],
+      "link": "#"
+    },
+    {
+      "id": "proj-1",
+      "title": "FIL-TRACK (Filoil Logistics)",
+      "role": "Lead Programmer | Systems Administrator",
+      "period": "Feb Ã¢â‚¬â€ May 2026",
+      "logo": "img/logo.svg",
+      "image": "",
+      "description": "Ã¢â‚¬Â¢ Developed a centralized web-based multi-department digital ecosystem, eliminating isolated information silos across IT,\nHR, and Finance and replacing manual, version-control-prone spreadsheet tracking.\n\nÃ¢â‚¬Â¢ Engineered end-to-end asset lifecycle tracking features to trace the physical movement and operational status of\nequipment across remote terminals and the central head office, providing management with real-time global oversight and\nminimizing the risk of unrecorded corporate losses.\n\nÃ¢â‚¬Â¢ Secured enterprise asset data by enforcing Role-Based Access Control (RBAC) and client-mandated VPN network\narchitecture, ensuring strict data confidentiality and safe geographic tracking of equipment across all terminal locations.",
+      "tags": [
+        "Django",
+        "PostgreSQL",
+        "HTML",
+        "Tailwind",
+        "Ubuntu",
+        "Docker"
+      ],
+      "link": "#"
+    },
+    {
+      "id": "proj-2",
+      "title": "Vulnerability Assessment (ICTO, Makati City Hall)",
+      "role": "Information Security Analyst (Academic Project)",
+      "period": "March 2026 - May 2026",
+      "logo": "img/1790517530790_vulnerability-assessment-glyph-icon-illustration-vector.jpg",
+      "image": "",
+      "description": "Ã¢â‚¬Â¢ Review of a comprehensive Information Assurance and Security Plan, synthesizing multi-domain vulnerability data into a\ncohesive executive risk mitigation strategy.\n\nÃ¢â‚¬Â¢ Designed actionable security controls for software/hardware inventory, secure endpoint configurations, malware\ndefenses, and wireless access, aligning municipal IT operations with NIST and DICT Cybersecurity Frameworks.\n\nÃ¢â‚¬Â¢ Authored targeted vulnerability findings addressing personnel security, backup recovery processes, and Data Privacy\nAct of 2012 (RA 10173) compliance, establishing a prioritized remediation roadmap for the city government.",
+      "tags": [
+        "ISO/IEC 27001",
+        "NIST Cybersecurity Framework (CSF)",
+        "DICT Cybersecurity Frameworks"
+      ],
+      "link": "#"
+    }
+  ],
+  "skills": [
+    {
+      "id": "skill-1",
+      "category": "Full-Stack Development",
+      "items": [
+        "Django (Python)",
+        "PHP",
+        "C++",
+        "JavaScript",
+        "PostgreSQL",
+        "MySQL",
+        "Git",
+        "Tailwind CSS"
+      ]
+    },
+    {
+      "id": "skill-2",
+      "category": "Networking & Security",
+      "items": [
+        "Windows Server (AD DS)",
+        "Cisco Routing",
+        "VPN Config",
+        "Vulnerability Assessment"
+      ]
+    }
+  ],
+  "achievements": {
+    "cards": [
+      {
+        "id": "card-1",
+        "badge": "Academic Excellence",
+        "title": "Dean's Lister",
+        "subtitle": "1st to 3rd Year",
+        "detail": "University of Makati",
+        "theme": "emerald"
+      },
+      {
+        "id": "card-2",
+        "badge": "2nd Runner Up",
+        "title": "Infotechnolympics",
+        "subtitle": "Web Design (2024-2025)",
+        "detail": "2024 Ã¢â‚¬â€œ 2025",
+        "theme": "cyan"
+      },
+      {
+        "id": "card-3",
+        "badge": "National Certificate II",
+        "title": "Computer System Servicing (NCII)",
+        "subtitle": "Professional Certification",
+        "detail": "Philippines",
+        "theme": "blue"
+      }
+    ],
+    "badges": [
+      {
+        "id": "badge-1",
+        "title": "C++ Essentials 1",
+        "provider": "Cisco Academy",
+        "icon": "img/c-essentials-1.png"
+      },
+      {
+        "id": "badge-2",
+        "title": "Hardware Basics",
+        "provider": "Cisco Academy",
+        "icon": "img/computer-hardware-basics.png"
+      },
+      {
+        "id": "badge-3",
+        "title": "Cyber Threat Mitigation",
+        "provider": "Cisco Academy",
+        "icon": "img/cyber-threat-management.png"
+      },
+      {
+        "id": "badge-4",
+        "title": "Intro to Cybersecurity",
+        "provider": "Cisco Academy",
+        "icon": "img/introduction-to-cybersecurity.png"
+      },
+      {
+        "id": "badge-5",
+        "title": "Intro to IoT",
+        "provider": "Cisco Academy",
+        "icon": "img/introduction-to-iot.png"
+      },
+      {
+        "id": "badge-6",
+        "title": "ISC2 Candidate",
+        "provider": "ISC2",
+        "icon": "img/isc2-candidate.png"
+      },
+      {
+        "id": "badge-7",
+        "title": "Networking Basics",
+        "provider": "Cisco Academy",
+        "icon": "img/networking-basics.png"
+      },
+      {
+        "id": "badge-8",
+        "title": "Governance, Risk, Compliance, and Data Privacy",
+        "provider": "IBM",
+        "icon": "img/1787598076783_image__2_.png"
+      },
+      {
+        "id": "badge-9",
+        "title": "Introduction to AI Azure",
+        "provider": "BlackStride",
+        "icon": "img/1787598183623_ebed8b84-d7a5-4a3e-b210-49f83c79a103.png"
+      },
+      {
+        "id": "badge-10",
+        "title": "Vulnerability Management",
+        "provider": "IBM",
+        "icon": "img/1790515219908_vulnerability-management.png"
+      }
+    ]
+  },
+  "contact": {
+    "title": "Let's Connect",
+    "subtitle": "I'm currently open for opportunities in web development, backend programming, and database administration. Fill out the form below and I'll get back to you!",
+    "formspreeUrl": "https://formspree.io/f/xkoypkaa"
+  },
+  "footer": {
+    "copyright": "Ã‚Â© 2026 John Clerwin Dela Cruz. All rights reserved."
+  },
+  "githubConfig": {
+    "owner": "ClerZ03-wq",
+    "repo": "cler-portfolio",
+    "branch": "main",
+    "dataPath": "data/portfolio-data.json"
+  }
+};
 
         // --- GLOBAL APP STATE ---
         let portfolioData = JSON.parse(JSON.stringify(DEFAULT_DATA));
@@ -2354,10 +2468,10 @@
                         <div class="bg-white rounded-2xl p-8 border border-sky-100 shadow-sm card-hover storybook-card dark:bg-slate-900 dark:border-slate-800 transition-all relative">
                             ${showEdit ? `
                                 <div class="absolute -top-3 -right-3 flex items-center gap-1.5 z-20">
-                                    <button onclick="moveProject('${p.id}', -1)" ${index === 0 ? 'disabled' : ''} class="admin-edit-btn bg-slate-700 hover:bg-sky-600 disabled:opacity-30 disabled:hover:bg-slate-700 text-white font-bold p-1.5 rounded-lg text-xs shadow-md cursor-pointer transition-colors" title="Move Project Up (▲)">
+                                    <button onclick="moveProject('${p.id}', -1)" ${index === 0 ? 'disabled' : ''} class="admin-edit-btn bg-slate-700 hover:bg-sky-600 disabled:opacity-30 disabled:hover:bg-slate-700 text-white font-bold p-1.5 rounded-lg text-xs shadow-md cursor-pointer transition-colors" title="Move Project Up (Ã¢â€“Â²)">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
                                     </button>
-                                    <button onclick="moveProject('${p.id}', 1)" ${index === projects.length - 1 ? 'disabled' : ''} class="admin-edit-btn bg-slate-700 hover:bg-sky-600 disabled:opacity-30 disabled:hover:bg-slate-700 text-white font-bold p-1.5 rounded-lg text-xs shadow-md cursor-pointer transition-colors" title="Move Project Down (▼)">
+                                    <button onclick="moveProject('${p.id}', 1)" ${index === projects.length - 1 ? 'disabled' : ''} class="admin-edit-btn bg-slate-700 hover:bg-sky-600 disabled:opacity-30 disabled:hover:bg-slate-700 text-white font-bold p-1.5 rounded-lg text-xs shadow-md cursor-pointer transition-colors" title="Move Project Down (Ã¢â€“Â¼)">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                                     </button>
                                     <button onclick="openEditProjectModal('${p.id}')" class="admin-edit-btn bg-sky-500 hover:bg-sky-600 text-white font-bold p-1.5 rounded-lg text-xs shadow-md cursor-pointer ml-1" title="Edit Project">
@@ -3621,11 +3735,11 @@
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Badge Color Theme</label>
                         <select class="card-theme w-full px-3.5 py-2 rounded-xl border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold focus:ring-2 focus:ring-sky-500 shadow-sm cursor-pointer">
-                            <option value="emerald" ${c.theme === 'emerald' ? 'selected' : ''}>🟢 Emerald Green</option>
-                            <option value="cyan" ${c.theme === 'cyan' ? 'selected' : ''}>🔷 Cyan Teal</option>
-                            <option value="blue" ${c.theme === 'blue' ? 'selected' : ''}>🔵 Sky Blue</option>
-                            <option value="purple" ${c.theme === 'purple' ? 'selected' : ''}>🟣 Royal Purple</option>
-                            <option value="rose" ${c.theme === 'rose' ? 'selected' : ''}>🌹 Rose Pink</option>
+                            <option value="emerald" ${c.theme === 'emerald' ? 'selected' : ''}>Ã°Å¸Å¸Â¢ Emerald Green</option>
+                            <option value="cyan" ${c.theme === 'cyan' ? 'selected' : ''}>Ã°Å¸â€Â· Cyan Teal</option>
+                            <option value="blue" ${c.theme === 'blue' ? 'selected' : ''}>Ã°Å¸â€Âµ Sky Blue</option>
+                            <option value="purple" ${c.theme === 'purple' ? 'selected' : ''}>Ã°Å¸Å¸Â£ Royal Purple</option>
+                            <option value="rose" ${c.theme === 'rose' ? 'selected' : ''}>Ã°Å¸Å’Â¹ Rose Pink</option>
                         </select>
                     </div>
                 </div>
@@ -3850,10 +3964,10 @@
                 <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 mb-4 hover:border-sky-300 dark:hover:border-sky-500 transition-all flex flex-col md:flex-row gap-6 relative group">
                     ${showEdit ? `
                         <div class="absolute top-3 right-3 flex items-center gap-1.5 z-20">
-                            <button onclick="moveProject('${p.id}', -1)" ${index === 0 ? 'disabled' : ''} class="admin-edit-btn bg-slate-700 hover:bg-sky-600 disabled:opacity-30 disabled:hover:bg-slate-700 text-white font-bold p-1.5 rounded-lg text-xs shadow-md cursor-pointer transition-colors" title="Move Project Up (▲)">
+                            <button onclick="moveProject('${p.id}', -1)" ${index === 0 ? 'disabled' : ''} class="admin-edit-btn bg-slate-700 hover:bg-sky-600 disabled:opacity-30 disabled:hover:bg-slate-700 text-white font-bold p-1.5 rounded-lg text-xs shadow-md cursor-pointer transition-colors" title="Move Project Up (Ã¢â€“Â²)">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
                             </button>
-                            <button onclick="moveProject('${p.id}', 1)" ${index === projects.length - 1 ? 'disabled' : ''} class="admin-edit-btn bg-slate-700 hover:bg-sky-600 disabled:opacity-30 disabled:hover:bg-slate-700 text-white font-bold p-1.5 rounded-lg text-xs shadow-md cursor-pointer transition-colors" title="Move Project Down (▼)">
+                            <button onclick="moveProject('${p.id}', 1)" ${index === projects.length - 1 ? 'disabled' : ''} class="admin-edit-btn bg-slate-700 hover:bg-sky-600 disabled:opacity-30 disabled:hover:bg-slate-700 text-white font-bold p-1.5 rounded-lg text-xs shadow-md cursor-pointer transition-colors" title="Move Project Down (Ã¢â€“Â¼)">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                             </button>
                             <button onclick="openEditProjectModal('${p.id}')" class="admin-edit-btn bg-sky-500 hover:bg-sky-600 text-white font-bold p-1.5 rounded-lg text-xs shadow-md cursor-pointer ml-1" title="Edit Project">
@@ -3869,7 +3983,7 @@
                         <div class="flex justify-between items-start gap-4 mb-2 ${showEdit ? 'pr-28' : ''}">
                             <div>
                                 <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100">${p.title}</h3>
-                                <span class="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-widest">${p.role} • ${p.period}</span>
+                                <span class="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-widest">${p.role} Ã¢â‚¬Â¢ ${p.period}</span>
                             </div>
                         </div>
                         <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 leading-relaxed text-justify whitespace-pre-line">${p.description}</p>
@@ -4166,7 +4280,7 @@
                 handleOrientation._baseBeta  = e.beta;
             }
 
-            // Low-pass filter smoothing (alpha = 0.15 → heavy smoothing, feels natural)
+            // Low-pass filter smoothing (alpha = 0.15 Ã¢â€ â€™ heavy smoothing, feels natural)
             const SMOOTH = 0.15;
             handleOrientation._smoothGamma = handleOrientation._smoothGamma !== undefined
                 ? handleOrientation._smoothGamma + SMOOTH * (e.gamma - handleOrientation._smoothGamma)
@@ -4184,7 +4298,7 @@
             if (orient === 90)  { const t = rawX; rawX =  rawY; rawY = -t; }
             if (orient === -90 || orient === 270) { const t = rawX; rawX = -rawY; rawY =  t; }
 
-            // Clamp to ±30° range, map to ±18° visual tilt
+            // Clamp to Ã‚Â±30Ã‚Â° range, map to Ã‚Â±18Ã‚Â° visual tilt
             const CLAMP = 30, MAX_TILT = 18;
             const rotateY =  Math.max(-CLAMP, Math.min(CLAMP, rawX)) / CLAMP * MAX_TILT;
             const rotateX = -Math.max(-CLAMP, Math.min(CLAMP, rawY)) / CLAMP * MAX_TILT;
@@ -4238,29 +4352,33 @@
             // Bar creeps to 60% slowly
             setTimeout(() => { bar.style.width = '60%'; }, 200);
 
-            window.addEventListener('load', () => {
+                        const removeLoader = () => {
+                if (loader.dataset.removed) return;
+                loader.dataset.removed = 'true';
                 window.scrollTo(0, 0);
                 document.documentElement.scrollTop = 0;
                 document.body.scrollTop = 0;
 
-                // After load, crawl to 100%
                 bar.style.width = '100%';
-
-                // Hold for 1.8s so user can read the name, then fade out
+                
                 setTimeout(() => {
                     loader.style.opacity = '0';
                     loader.style.pointerEvents = 'none';
                     setTimeout(() => {
-                        loader.remove();
+                        if (loader.parentNode) loader.remove();
                         window.scrollTo(0, 0);
                         document.documentElement.scrollTop = 0;
                         document.body.scrollTop = 0;
                         document.documentElement.classList.add('scroll-smooth');
-                        handleScroll();
-                        initializeInteractiveBadges();
+                        try { handleScroll(); } catch(e){}
+                        try { initializeInteractiveBadges(); } catch(e){}
                     }, 700);
-                }, 1800);
-            });
+                }, 1000);
+            };
+
+            window.addEventListener('load', removeLoader);
+            // Fallback in case assets fail to load locally
+            setTimeout(removeLoader, 3500);
         });
 
 
