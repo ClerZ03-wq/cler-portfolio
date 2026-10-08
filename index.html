@@ -1713,6 +1713,39 @@
         </div>
     </div>
 
+        <!-- GACHA POPUP MODAL -->
+    <div id="modal-gacha" class="hidden fixed inset-0 z-[200] bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 transition-opacity duration-500" onclick="closeGachaModal()">
+        
+        <!-- Rotating sunburst rays background -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center opacity-30">
+            <div class="w-[200vw] h-[200vw] animate-[spin_20s_linear_infinite]" style="background: repeating-conic-gradient(from 0deg, transparent 0deg 15deg, rgba(56,189,248,0.4) 15deg 30deg);"></div>
+        </div>
+
+        <div id="modal-gacha-content" class="relative z-10 flex flex-col items-center justify-center transform scale-0 opacity-0 transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
+            
+            <div class="relative group cursor-pointer" onclick="event.stopPropagation()">
+                <!-- Massive glow behind the card -->
+                <div class="absolute -inset-4 bg-gradient-to-r from-sky-400 to-indigo-500 rounded-3xl blur-2xl opacity-70 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+                
+                <!-- The actual big card -->
+                <div class="relative w-[280px] h-[360px] md:w-[320px] md:h-[400px] bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-2 border-sky-300 dark:border-sky-400 p-8 rounded-3xl shadow-[0_0_50px_rgba(56,189,248,0.5)] flex flex-col items-center justify-center text-center transform perspective-1000 preserve-3d" style="transform-style: preserve-3d;">
+                    <!-- Holographic sheen -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-in-out z-20 pointer-events-none" style="width: 200%; left: -50%;"></div>
+                    
+                    <img id="gacha-badge-icon" src="" class="w-32 h-32 md:w-40 md:h-40 object-contain mb-6 drop-shadow-[0_10px_10px_rgba(0,0,0,0.3)] animate-bounce" style="animation-duration: 3s;" alt="">
+                    
+                    <div class="bg-sky-100 dark:bg-sky-900/50 px-4 py-1.5 rounded-full mb-4 border border-sky-200 dark:border-sky-700">
+                        <p id="gacha-badge-provider" class="text-xs uppercase tracking-widest text-sky-600 dark:text-sky-400 font-black"></p>
+                    </div>
+                    
+                    <h3 id="gacha-badge-title" class="text-xl md:text-2xl font-black font-heading text-slate-800 dark:text-white leading-tight"></h3>
+                </div>
+            </div>
+
+            <p class="mt-8 text-sky-200 font-bold tracking-widest text-sm uppercase animate-pulse">Tap anywhere to close</p>
+        </div>
+    </div>
+
     <!-- CREDLY BADGES MODAL -->
     <div id="modal-credly" class="hidden fixed inset-0 z-[120] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 rounded-3xl max-w-3xl w-full p-6 md:p-8 shadow-2xl relative overflow-hidden transform scale-95 transition-transform duration-500" id="modal-credly-content">
@@ -2641,7 +2674,7 @@
             let badgesHtml = '';
             ach.badges.forEach(b => {
                 badgesHtml += `
-                    <div class="interactive-badge relative w-[110px] h-[120px] md:w-[130px] md:h-[140px] shrink-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur p-3 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-lg hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:border-sky-300 dark:hover:border-sky-500 transition-all duration-300 flex flex-col justify-center items-center text-center cursor-pointer overflow-hidden group">
+                    <div onclick="openGachaModal('${b.id}')" class="interactive-badge relative w-[110px] h-[120px] md:w-[130px] md:h-[140px] shrink-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur p-3 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-lg hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:border-sky-300 dark:hover:border-sky-500 transition-all duration-300 flex flex-col justify-center items-center text-center cursor-pointer overflow-hidden group">
                         <div class="badge-glare absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0,transparent_50%)] opacity-0 pointer-events-none mix-blend-overlay transition-opacity duration-300"></div>
                         <img src="${getImageUrl(b.icon)}" onerror="handleImgError(this, '${b.icon}')" alt="${b.title}" class="w-10 h-10 md:w-12 md:h-12 mb-2 object-contain group-hover:scale-110 transition-transform duration-500 z-10 shrink-0">
                         <h4 class="text-[9px] md:text-[10px] font-bold text-slate-800 dark:text-slate-100 mb-0.5 z-10 leading-tight line-clamp-3 px-1">${b.title}</h4>
@@ -4023,6 +4056,52 @@
             }, 300);
         }
 
+                // --- Gacha Modal Logic ---
+        function openGachaModal(badgeId) {
+            const badges = portfolioData.achievements?.badges || [];
+            const badge = badges.find(b => b.id === badgeId);
+            if (!badge) return;
+
+            const modal = document.getElementById('modal-gacha');
+            const content = document.getElementById('modal-gacha-content');
+            
+            document.getElementById('gacha-badge-icon').src = getImageUrl(badge.icon);
+            document.getElementById('gacha-badge-title').textContent = badge.title;
+            document.getElementById('gacha-badge-provider').textContent = badge.provider;
+
+            modal.classList.remove('hidden');
+            // Force reflow
+            void modal.offsetWidth;
+
+            modal.classList.remove('opacity-0');
+            modal.classList.add('opacity-100');
+
+            setTimeout(() => {
+                content.classList.remove('scale-0', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 100);
+            
+            if (window.navigator && window.navigator.vibrate) {
+                try { window.navigator.vibrate([50, 100, 50]); } catch(e) {}
+            }
+        }
+
+        function closeGachaModal() {
+            const modal = document.getElementById('modal-gacha');
+            const content = document.getElementById('modal-gacha-content');
+
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-0', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.remove('opacity-100');
+                modal.classList.add('opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 500);
+            }, 300);
+        }
+
         // --- Credly Modal Logic ---
         function openCredlyModal() {
             const modal = document.getElementById('modal-credly');
@@ -4031,7 +4110,7 @@
             const badges = portfolioData.achievements?.badges || [];
             
             grid.innerHTML = badges.map(b => `
-                <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 flex flex-col items-center justify-center text-center border border-slate-200 dark:border-slate-700 hover:border-sky-300 dark:hover:border-sky-500 transition-colors">
+                <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 flex flex-col items-center justify-center text-center border border-slate-200 dark:border-slate-700 hover:border-sky-300 dark:hover:border-sky-500 transition-all cursor-pointer hover:shadow-[0_0_15px_rgba(56,189,248,0.2)] hover:-translate-y-1 transform group" onclick="openGachaModal('${b.id}')">
                     <img src="${getImageUrl(b.icon)}" alt="${b.title}" class="w-12 h-12 md:w-16 md:h-16 mb-3 object-contain">
                     <h5 class="text-[10px] md:text-xs font-bold text-slate-800 dark:text-slate-100 mb-1 leading-tight">${b.title}</h5>
                     <p class="text-[9px] uppercase tracking-wider text-sky-500 font-bold">${b.provider}</p>
