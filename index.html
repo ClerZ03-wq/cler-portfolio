@@ -470,7 +470,7 @@
             flex-wrap: nowrap;
             gap: 1rem;
             width: max-content;
-            animation: scroll-badges 25s linear infinite;
+            animation: scroll-badges 38s linear infinite;
         }
         .badge-scroller__inner:hover {
             animation-play-state: paused;
@@ -1704,6 +1704,7 @@
                 <div class="hidden md:flex space-x-8 font-medium text-sm text-slate-500 dark:text-slate-400">
                     <a href="#about" class="nav-link hover:text-sky-500 dark:hover:text-sky-300 transition-colors">About</a>
                     <a href="#projects" class="nav-link hover:text-sky-500 dark:hover:text-sky-300 transition-colors">Projects</a>
+                    <a href="#accreditations" class="nav-link hover:text-sky-500 dark:hover:text-sky-300 transition-colors">Accreditations</a>
                     <a href="#certs" class="nav-link hover:text-sky-500 dark:hover:text-sky-300 transition-colors">Achievements</a>
                     <a href="#contact" class="nav-link hover:text-sky-500 dark:hover:text-sky-300 transition-colors">Contact</a>
                 </div>
@@ -1727,6 +1728,7 @@
         </button>
         <a href="#about" class="mobile-link text-slate-800 dark:text-slate-100 hover:text-sky-500 transition-colors">About Me</a>
         <a href="#projects" class="mobile-link text-slate-800 dark:text-slate-100 hover:text-sky-500 transition-colors">Projects</a>
+        <a href="#accreditations" class="mobile-link text-slate-800 dark:text-slate-100 hover:text-sky-500 transition-colors">Accreditations</a>
         <a href="#certs" class="mobile-link text-slate-800 dark:text-slate-100 hover:text-sky-500 transition-colors">Achievements</a>
         <a href="#contact" class="mobile-link text-slate-800 dark:text-slate-100 hover:text-sky-500 transition-colors">Contact</a>
     </div>
@@ -1768,6 +1770,12 @@
         </div>
 
     </main>
+
+    <!-- VERIFIED ACCREDITATIONS & CERTIFICATIONS SHOWCASE -->
+    <section id="accreditations" class="border-t border-sky-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-950/40 py-20 reveal scroll-mt-24 admin-editable-section">
+        <!-- Rendered dynamically by renderCertifications() -->
+    </section>
+
 
     <!-- CONTACT SECTION -->
     <section id="contact" class="border-t border-sky-100 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 py-20 reveal scroll-mt-24 admin-editable-section">
@@ -3130,6 +3138,7 @@
             renderProjects();
             renderSkills();
             renderAchievements();
+            renderCertifications();
             renderContact();
             renderFooter();
             setTimeout(() => {
@@ -3694,100 +3703,15 @@
             `;
         }
 
-        // 5. Achievements Section Render
+                // 5. Achievements Section Render (Academic Journey & Digital Badges)
         function renderAchievements() {
             const ach = portfolioData.achievements || { cards: [], badges: [], certificates: [] };
-            const certs = (ach.certificates && ach.certificates.length) ? ach.certificates : (DEFAULT_DATA.achievements.certificates || []);
             const container = document.getElementById('certs');
             const showEdit = adminState.isLoggedIn && adminState.mode === 'edit';
 
-            // --- 1. CERTIFICATES HORIZONTAL CAROUSEL ---
-            let certsHtml = '';
-            certs.forEach((c, idx) => {
-                const skillsHtml = (c.skills || []).slice(0, 3).map(s => 
-                    `<span class="text-[9px] bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded font-medium border border-slate-200/50 dark:border-slate-700/50">${s}</span>`
-                ).join(' ');
-
-                certsHtml += `
-                    <div class="cert-card w-[290px] sm:w-[330px] shrink-0 snap-start flex flex-col justify-between bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-2xl border border-sky-100 dark:border-sky-500/20 hover:border-sky-400 dark:hover:border-sky-400 shadow-md hover:shadow-[0_0_30px_rgba(56,189,248,0.28)] transition-all duration-300 p-4 relative group overflow-hidden">
-                        <!-- Holographic Top Glow Line -->
-                        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-sky-400 to-cyan-300 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        
-                        <!-- Top Row: Category Pill & Floating IBM Badge Pin -->
-                        <div class="flex items-start justify-between mb-3 relative z-10">
-                            <div>
-                                <span class="inline-flex items-center gap-1 text-[9px] font-mono font-bold uppercase tracking-wider text-sky-600 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/80 border border-sky-200 dark:border-sky-800/80 px-2.5 py-0.5 rounded-md">
-                                    ${c.category || 'Cybersecurity'}
-                                </span>
-                                <div class="text-[10px] font-mono text-slate-400 dark:text-slate-500 mt-1 flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                    IBM Verified Credential
-                                </div>
-                            </div>
-
-                            <!-- Floating IBM Credly Badge Pin -->
-                            <div class="relative group/badge cursor-pointer" onclick="openCertModal('${c.id}')" title="Click to inspect certificate">
-                                <div class="absolute -inset-1 bg-sky-400/40 rounded-full blur-sm opacity-0 group-hover/badge:opacity-100 transition-opacity"></div>
-                                <img src="${getImageUrl(c.badgeIcon)}" alt="${c.title}" class="relative w-11 h-11 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.25)] group-hover:scale-110 transition-transform duration-300">
-                            </div>
-                        </div>
-
-                        <!-- Certificate Preview Frame (Click to open modal) -->
-                        <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-950/80 cursor-pointer mb-3 group/preview shadow-inner" onclick="openCertModal('${c.id}')">
-                            <img src="${getImageUrl(c.preview)}" alt="${c.title}" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover/preview:scale-105">
-                            
-                            <!-- Hover Overlay -->
-                            <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px] opacity-0 group-hover/preview:opacity-100 transition-opacity flex items-center justify-center">
-                                <span class="bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs py-1.5 px-3.5 rounded-full shadow-lg flex items-center gap-1.5 transform scale-90 group-hover/preview:scale-100 transition-transform">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                                    Inspect Certificate
-                                </span>
-                            </div>
-                            
-                            <!-- Issue Date Ribbon -->
-                            <div class="absolute bottom-2 left-2 bg-slate-900/85 backdrop-blur-md px-2 py-0.5 rounded text-[9px] font-mono font-bold text-slate-200 border border-white/10 flex items-center gap-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-2.5 h-2.5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                ${c.issueDate}
-                            </div>
-                        </div>
-
-                        <!-- Title and Skills -->
-                        <div class="mb-4">
-                            <h4 class="text-sm font-black text-slate-900 dark:text-white line-clamp-2 leading-tight group-hover:text-sky-500 dark:group-hover:text-sky-300 transition-colors cursor-pointer" onclick="openCertModal('${c.id}')">
-                                ${c.title}
-                            </h4>
-                            <div class="flex flex-wrap gap-1 mt-2">
-                                ${skillsHtml}
-                            </div>
-                        </div>
-
-                        <!-- Bottom Action Bar -->
-                        <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-1.5 mt-auto">
-                            <button onclick="openCertModal('${c.id}')" class="flex-1 bg-sky-500 hover:bg-sky-600 text-white text-[11px] font-bold py-1.5 px-2.5 rounded-lg transition-all flex items-center justify-center gap-1 shadow-sm cursor-pointer hover:shadow-sky-500/20">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                                View PDF
-                            </button>
-                            <a href="${c.verifyUrl}" target="_blank" rel="noopener noreferrer" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-bold py-1.5 px-2.5 rounded-lg transition-all flex items-center justify-center gap-1 border border-slate-200 dark:border-slate-700" title="Verify credential on Credly">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                                Verify
-                            </a>
-                            <a href="${c.pdf}" download class="p-1.5 text-slate-400 hover:text-sky-500 hover:bg-sky-50 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer" title="Download authentic PDF certificate">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                            </a>
-                        </div>
-                    </div>
-                `;
-            });
-
-            // Dots for cert carousel
-            let certDotsHtml = '';
-            certs.forEach((_, idx) => {
-                certDotsHtml += `<button onclick="jumpToCertCard(${idx})" class="cert-dot w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700 transition-all cursor-pointer ${idx === 0 ? 'active' : ''}" data-index="${idx}" aria-label="Go to certificate ${idx + 1}"></button>`;
-            });
-
-            // --- 2. ACADEMIC JOURNEY CARDS (FLIPPING NOTEPAD) ---
+            // --- ACADEMIC JOURNEY NOTEPAD PAGES ---
             let cardsHtml = '';
-            ach.cards.forEach((c, idx) => {
+            (ach.cards || []).forEach((c, idx) => {
                 let badgeStyle = 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800/60 text-emerald-600 dark:text-emerald-400';
                 if (c.theme === 'cyan') badgeStyle = 'bg-cyan-50 dark:bg-cyan-900/30 border-cyan-200 dark:border-cyan-800/60 text-cyan-600 dark:text-cyan-400';
                 if (c.theme === 'blue') badgeStyle = 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800/60 text-blue-600 dark:text-blue-400';
@@ -3833,79 +3757,34 @@
 
             // Dots indicators below calendar
             let dotsHtml = '';
-            ach.cards.forEach((_, idx) => {
-                dotsHtml += `<button onclick="jumpToNotepadPage(${idx})" class="notepad-dot w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all cursor-pointer" data-index="${idx}"></button>`;
+            (ach.cards || []).forEach((_, idx) => {
+                dotsHtml += `<button onclick="jumpToNotepadPage(${idx})" class="notepad-dot w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all cursor-pointer" data-index="${idx}" aria-label="Page ${idx + 1}"></button>`;
             });
 
-            // --- 3. BADGES SCROLLER ---
+            // --- DIGITAL BADGES (UNIFORM SIZING) ---
             let badgesHtml = '';
-            ach.badges.forEach(b => {
+            (ach.badges || []).forEach(b => {
+                const isCyberpro = b.id === 'badge-11' || (b.title && b.title.toLowerCase().includes('cyberpro'));
                 badgesHtml += `
-                    <div onclick="${b.id === 'badge-11' || (b.title && b.title.toLowerCase().includes('cyberpro')) ? 'openCyberproModal()' : `openGachaModal('${b.id}')`}" class="interactive-badge relative w-[110px] h-[120px] md:w-[130px] md:h-[140px] shrink-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur p-3 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-lg hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:border-sky-300 dark:hover:border-sky-500 transition-all duration-300 flex flex-col justify-center items-center text-center cursor-pointer overflow-hidden group">
+                    <div onclick="${isCyberpro ? 'openCyberproModal()' : `openGachaModal('${b.id}')`}" class="interactive-badge relative w-[125px] h-[145px] shrink-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur p-3 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-md hover:shadow-[0_0_20px_rgba(56,189,248,0.35)] hover:border-sky-400 dark:hover:border-sky-400 transition-all duration-300 flex flex-col justify-between items-center text-center cursor-pointer overflow-hidden group">
                         <div class="badge-glare absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0,transparent_50%)] opacity-0 pointer-events-none mix-blend-overlay transition-opacity duration-300"></div>
-                        <img src="${getImageUrl(b.icon)}" onerror="handleImgError(this, '${b.icon}')" alt="${b.title}" class="w-10 h-10 md:w-12 md:h-12 mb-2 object-contain group-hover:scale-110 transition-transform duration-500 z-10 shrink-0">
-                        <h4 class="text-[9px] md:text-[10px] font-bold text-slate-800 dark:text-slate-100 mb-0.5 z-10 leading-tight line-clamp-3 px-1">${b.title}</h4>
-                        <p class="text-[7px] uppercase tracking-wider text-sky-500 font-bold z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute bottom-3 translate-y-4 group-hover:translate-y-0 px-1 w-full truncate">${b.provider}</p>
+                        <img src="${getImageUrl(b.icon)}" onerror="handleImgError(this, '${b.icon}')" alt="${b.title}" class="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-500 z-10 shrink-0">
+                        <h4 class="text-[10px] font-bold text-slate-800 dark:text-slate-100 z-10 leading-snug line-clamp-2 px-1 w-full">${b.title}</h4>
+                        <span class="text-[8px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-mono font-bold z-10 px-1 truncate w-full">${b.provider}</span>
                     </div>
                 `;
             });
 
             container.innerHTML = `
-                <!-- 1. VERIFIED CYBERSECURITY CERTIFICATIONS (SCROLLABLE SHOWCASE) -->
-                <div class="mb-14">
-                    <div class="flex items-center justify-between mb-4 px-1">
-                        <div>
-                            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">
-                                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping"></span>
-                                Official Accreditations
-                            </div>
-                            <h3 class="text-xl sm:text-2xl font-black font-heading text-slate-800 dark:text-white flex items-center gap-2">
-                                ${getSectionOrbHtml()} Verified Certifications
-                            </h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                                IBM Cybersecurity Specialist Series • Issued via Credly
-                            </p>
-                        </div>
-                        
-                        <!-- Scroll Track Navigation Buttons -->
-                        <div class="flex items-center gap-1.5 shrink-0">
-                            <button onclick="scrollCertTrack(-1)" class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-sky-500 dark:hover:text-sky-400 hover:border-sky-400 flex items-center justify-center transition-all shadow-sm cursor-pointer hover:scale-105" aria-label="Previous Certificate">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-                            </button>
-                            <button onclick="scrollCertTrack(1)" class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-sky-500 dark:hover:text-sky-400 hover:border-sky-400 flex items-center justify-center transition-all shadow-sm cursor-pointer hover:scale-105" aria-label="Next Certificate">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Scrollable Certificate Track -->
-                    <div class="relative cert-scroll-container">
-                        <div class="cert-track flex gap-4 overflow-x-auto snap-x snap-mandatory py-2 px-1 scroll-smooth select-none cursor-grab" id="cert-scroll-track">
-                            ${certsHtml}
-                        </div>
-                    </div>
-
-                    <!-- Pagination Dots & Scroll Hint -->
-                    <div class="flex items-center justify-between mt-3 px-2">
-                        <span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono font-medium flex items-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-                            Swipe or drag horizontally (${certs.length} certificates)
-                        </span>
-                        <div class="flex items-center gap-1.5" id="cert-dots-container">
-                            ${certDotsHtml}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. ACADEMIC JOURNEY -->
-                <div class="flex justify-between items-center mb-6">
+                <!-- ACADEMIC JOURNEY HEADER -->
+                <div class="flex justify-between items-center mb-8">
                     <h2 class="text-2xl font-heading font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
                         ${getSectionOrbHtml()} Academic Journey
                     </h2>
                     ${showEdit ? `
                         <button onclick="openEditAchievementsModal()" class="admin-edit-btn bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1 rounded-full text-xs shadow flex items-center gap-1 cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                            Edit Achievements
+                            Edit Journey
                         </button>
                     ` : ''}
                 </div>
@@ -3944,24 +3823,177 @@
                     </div>
                 </div>
 
-                <!-- 3. CERTIFICATIONS & BADGES MARQUEE -->
-                <div class="flex items-center justify-between mb-8 px-2">
-                    <h3 class="font-heading font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-xs">All Digital Badges (${ach.badges.length})</h3>
-                    <button onclick="openCredlyModal()" class="text-[10px] font-bold text-sky-500 hover:text-sky-600 dark:hover:text-sky-400 flex items-center gap-1 transition-colors cursor-pointer">
-                        View All <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </button>
-                </div>
-                <div class="badge-scroller">
-                    <div class="badge-scroller__inner cursor-pointer" id="badge-track">
-                        ${badgesHtml}
+                <!-- DIGITAL BADGES SECTION -->
+                <div class="pt-6 border-t border-slate-200/60 dark:border-slate-800">
+                    <div class="flex items-center justify-between mb-4 px-1">
+                        <div>
+                            <h3 class="font-heading font-black text-slate-800 dark:text-slate-100 text-sm sm:text-base flex items-center gap-2">
+                                Digital Badges
+                            </h3>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                                Interactive tokens (${ach.badges.length}) • Click to inspect
+                            </p>
+                        </div>
+                        <button onclick="openCredlyModal()" class="text-xs font-bold text-sky-500 hover:text-sky-600 dark:hover:text-sky-400 flex items-center gap-1 transition-colors bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800/60 px-3 py-1 rounded-full cursor-pointer hover:scale-105">
+                            View All <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </button>
+                    </div>
+
+                    <!-- Marquee with Duplicated Badges for 100% Seamless Infinite Loop -->
+                    <div class="badge-scroller">
+                        <div class="badge-scroller__inner cursor-pointer" id="badge-track">
+                            ${badgesHtml}${badgesHtml}
+                        </div>
                     </div>
                 </div>
             `;
 
             setTimeout(initializeNotepadPeel, 200);
             setTimeout(initializeInteractiveBadges, 200);
+        }
+
+        // 5b. Dedicated Full-Width Verified Certifications Showcase Render
+        function renderCertifications() {
+            const container = document.getElementById('accreditations');
+            if (!container) return;
+
+            const certs = getCertificatesList();
+            if (!certs || !certs.length) return;
+
+            let certsHtml = '';
+            certs.forEach((c, idx) => {
+                const skillsHtml = (c.skills || []).slice(0, 3).map(s => 
+                    `<span class="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded font-medium border border-slate-200/50 dark:border-slate-700/50">${s}</span>`
+                ).join(' ');
+
+                certsHtml += `
+                    <div class="cert-card w-[310px] sm:w-[350px] shrink-0 snap-start flex flex-col justify-between bg-white dark:bg-slate-900/90 backdrop-blur-xl rounded-3xl border border-sky-100 dark:border-slate-800 hover:border-sky-400 dark:hover:border-sky-400 shadow-md hover:shadow-[0_0_35px_rgba(56,189,248,0.25)] transition-all duration-300 p-5 relative group overflow-hidden">
+                        <!-- Holographic Top Glow Line -->
+                        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 via-sky-400 to-cyan-300 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        
+                        <!-- Top Row: Category Pill & Floating IBM Badge Pin -->
+                        <div class="flex items-start justify-between mb-4 relative z-10">
+                            <div>
+                                <span class="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-sky-600 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/80 border border-sky-200 dark:border-sky-800/80 px-3 py-1 rounded-full">
+                                    ${c.category || 'Cybersecurity'}
+                                </span>
+                                <div class="text-[11px] font-mono text-emerald-500 mt-1.5 flex items-center gap-1 font-semibold">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    IBM & Credly Verified
+                                </div>
+                            </div>
+
+                            <!-- Floating IBM Credly Badge Pin -->
+                            <div class="relative group/badge cursor-pointer" onclick="openCertModal('${c.id}')" title="Click to inspect certificate">
+                                <div class="absolute -inset-1.5 bg-sky-400/30 rounded-full blur-md opacity-0 group-hover/badge:opacity-100 transition-opacity"></div>
+                                <img src="${getImageUrl(c.badgeIcon)}" alt="${c.title}" class="relative w-12 h-12 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.3)] group-hover:scale-110 transition-transform duration-300">
+                            </div>
+                        </div>
+
+                        <!-- Certificate Preview Frame (Uncropped, crisp landscape presentation) -->
+                        <div class="relative w-full aspect-[16/11] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-950 flex items-center justify-center cursor-pointer mb-4 group/preview shadow-md" onclick="openCertModal('${c.id}')">
+                            <img src="${getImageUrl(c.preview)}" alt="${c.title}" class="w-full h-full object-contain p-1 transition-transform duration-500 group-hover/preview:scale-105">
+                            
+                            <!-- Hover Overlay -->
+                            <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px] opacity-0 group-hover/preview:opacity-100 transition-opacity flex items-center justify-center">
+                                <span class="bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs py-2 px-4 rounded-full shadow-lg flex items-center gap-2 transform scale-90 group-hover/preview:scale-100 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    Inspect Certificate
+                                </span>
+                            </div>
+                            
+                            <!-- Issue Date Ribbon -->
+                            <div class="absolute bottom-2.5 left-2.5 bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] font-mono font-bold text-slate-200 border border-white/10 flex items-center gap-1.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                Issued: ${c.issueDate}
+                            </div>
+                        </div>
+
+                        <!-- Title and Skills -->
+                        <div class="mb-5">
+                            <h4 class="text-base font-black text-slate-900 dark:text-white line-clamp-2 leading-snug group-hover:text-sky-500 dark:group-hover:text-sky-300 transition-colors cursor-pointer" onclick="openCertModal('${c.id}')">
+                                ${c.title}
+                            </h4>
+                            <div class="flex flex-wrap gap-1.5 mt-2.5">
+                                ${skillsHtml}
+                            </div>
+                        </div>
+
+                        <!-- Bottom Action Bar -->
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2 mt-auto">
+                            <button onclick="openCertModal('${c.id}')" class="flex-1 bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm cursor-pointer hover:shadow-sky-500/25">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                View PDF
+                            </button>
+                            <a href="${c.verifyUrl}" target="_blank" rel="noopener noreferrer" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-700" title="Verify credential on Credly">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                                Verify
+                            </a>
+                            <a href="${c.pdf}" download class="p-2 text-slate-400 hover:text-sky-500 hover:bg-sky-50 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700" title="Download authentic PDF certificate">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Dots for cert carousel
+            let certDotsHtml = '';
+            certs.forEach((_, idx) => {
+                certDotsHtml += `<button onclick="jumpToCertCard(${idx})" class="cert-dot w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700 transition-all cursor-pointer ${idx === 0 ? 'active' : ''}" data-index="${idx}" aria-label="Go to certificate ${idx + 1}"></button>`;
+            });
+
+            container.innerHTML = `
+                <div class="max-w-6xl mx-auto px-6">
+                    <!-- Section Header -->
+                    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+                        <div>
+                            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-xs font-mono font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-2">
+                                <span class="w-2 h-2 rounded-full bg-blue-500 animate-ping"></span>
+                                Official Industry Accreditations
+                            </div>
+                            <h2 class="text-3xl font-heading font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
+                                ${getSectionOrbHtml()} Verified Cybersecurity Certifications
+                            </h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl">
+                                Professional IBM Cybersecurity Specialist credentials digitally issued and verified via Credly.
+                            </p>
+                        </div>
+
+                        <!-- Navigation Controls -->
+                        <div class="flex items-center gap-2 self-start sm:self-auto">
+                            <button onclick="scrollCertTrack(-1)" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-sky-500 dark:hover:text-sky-400 hover:border-sky-400 flex items-center justify-center transition-all shadow-sm cursor-pointer hover:scale-105" aria-label="Previous Certificate">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                            </button>
+                            <button onclick="scrollCertTrack(1)" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-sky-500 dark:hover:text-sky-400 hover:border-sky-400 flex items-center justify-center transition-all shadow-sm cursor-pointer hover:scale-105" aria-label="Next Certificate">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Scrollable Certificate Track -->
+                    <div class="relative cert-scroll-container">
+                        <div class="cert-track flex gap-6 overflow-x-auto snap-x snap-mandatory py-4 px-1 scroll-smooth select-none cursor-grab" id="cert-scroll-track">
+                            ${certsHtml}
+                        </div>
+                    </div>
+
+                    <!-- Pagination Dots & Scroll Hint -->
+                    <div class="flex items-center justify-between mt-4 px-2">
+                        <span class="text-xs text-slate-400 dark:text-slate-500 font-mono font-medium flex items-center gap-1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                            Drag or swipe horizontally (${certs.length} certificates)
+                        </span>
+                        <div class="flex items-center gap-2" id="cert-dots-container">
+                            ${certDotsHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+
             setTimeout(initCertTrackInteractivity, 200);
         }
+
 
         // 6. Contact Section Render
         function renderContact() {
@@ -5091,6 +5123,7 @@
             portfolioData.achievements.cards = newCards;
             portfolioData.achievements.badges = newBadges;
             renderAchievements();
+            renderCertifications();
             closeModal('modal-edit-achievements');
             markUnsaved();
             showToast('Achievements updated locally!', 'info');
