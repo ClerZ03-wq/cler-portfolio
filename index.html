@@ -409,6 +409,23 @@
             color: #91dcf6 !important;
         }
 
+        .nav-link {
+            position: relative;
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            transition: all 0.25s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(56, 189, 248, 0.12);
+            color: #0284c7 !important;
+        }
+
+        :is(.dark) .nav-link:hover {
+            background: rgba(56, 189, 248, 0.18);
+            color: #7dd3fc !important;
+        }
+
         #scroll-progress {
             position: absolute;
             inset: auto 0 0;
@@ -747,6 +764,18 @@
             animation-direction: reverse;
         }
 
+        .current-stroke--swirl3 {
+            stroke: rgba(125, 211, 243, 0.35);
+            stroke-width: 2.2px;
+            stroke-dasharray: 10 15;
+            animation: flowCurrents 29s linear infinite;
+        }
+
+        :is(.dark) .current-stroke--swirl3 {
+            stroke: rgba(186, 230, 253, 0.35);
+            filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.45));
+        }
+
         .current-stroke--wave1,
         .current-stroke--wave2 {
             stroke: rgba(147, 197, 253, 0.25);
@@ -804,8 +833,8 @@
         }
 
         @keyframes haloPulse {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.45; }
-            50% { transform: translate(-50%, -50%) scale(1.08); opacity: 0.9; }
+            0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.45; }
+            50% { transform: translate(-50%, -50%) scale(1.08) rotate(35deg); opacity: 0.9; }
         }
 
         .hero-moon {
@@ -985,6 +1014,48 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-0.9rem); }
         }
+
+        @keyframes sporeFloat {
+            0%, 100% { transform: translateY(0) scale(0.8); opacity: 0.25; }
+            50% { transform: translateY(-16px) scale(1.25); opacity: 0.95; }
+        }
+
+        .kelp-spore {
+            filter: drop-shadow(0 0 6px #38bdf8);
+            animation: sporeFloat 4.2s ease-in-out infinite;
+        }
+        .kelp-spore--1 { animation-delay: 0s; }
+        .kelp-spore--2 { animation-delay: -1.8s; }
+        .kelp-spore--3 { animation-delay: -0.9s; }
+        .kelp-spore--4 { animation-delay: -2.7s; }
+
+        /* Starry Night Section Orb Indicator */
+        .starry-section-orb {
+            isolation: isolate;
+        }
+        .starry-section-orb .starry-orb-ring {
+            animation: haloPulse 3.5s ease-in-out infinite;
+        }
+
+        /* Starry Night Oceanic Timeline */
+        .starry-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .starry-timeline::before {
+            content: "";
+            position: absolute;
+            top: 0.5rem;
+            bottom: 0.5rem;
+            left: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #38bdf8 0%, rgba(56, 189, 248, 0.45) 50%, rgba(56, 189, 248, 0.08) 100%);
+            border-radius: 9999px;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
+        }
+        :is(.dark) .starry-timeline::before {
+            background: linear-gradient(180deg, #38bdf8 0%, rgba(14, 165, 233, 0.4) 60%, rgba(14, 165, 233, 0.05) 100%);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
         }
 
         .hero-content {
@@ -1051,7 +1122,11 @@
         .hero-title {
             text-wrap: balance;
             animation: hero-title-in 1.05s 0.22s both cubic-bezier(0.22, 1, 0.36, 1);
-            text-shadow: 0 5px 20px rgba(255,255,255,0.25);
+            text-shadow: 0 4px 18px rgba(255,255,255,0.4);
+        }
+
+        :is(.dark) .hero-title {
+            text-shadow: 0 0 35px rgba(56, 189, 248, 0.45), 0 2px 12px rgba(0, 0, 0, 0.85);
         }
 
         .hero-meta {
@@ -2165,8 +2240,8 @@
     <div id="modal-all-projects" class="hidden fixed inset-0 z-[150] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl relative transform scale-95 transition-transform duration-500" id="modal-all-projects-content">
             <div class="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
-                <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white flex items-center gap-2">
-                    <div class="relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-100 dark:bg-sky-900/40"><div class="absolute w-full h-full bg-sky-400/20 rounded-full animate-ping"></div><div class="w-2.5 h-2.5 bg-sky-500 rounded-full shadow-[0_0_8px_rgba(56,189,248,0.8)]"></div></div> All Projects
+                <h3 class="text-2xl font-heading font-black text-slate-800 dark:text-white flex items-center gap-3">
+                    <div class="starry-section-orb relative flex h-7 w-7 shrink-0 items-center justify-center select-none" aria-hidden="true"><span class="absolute inset-0 rounded-full bg-sky-400/20 dark:bg-sky-400/30 animate-ping"></span><span class="absolute inset-1 rounded-full border border-sky-400/50 dark:border-sky-300/40 starry-orb-ring"></span><span class="relative w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-sky-500 via-sky-400 to-cyan-300 shadow-[0_0_12px_rgba(56,189,248,0.95)] flex items-center justify-center"><span class="w-1 h-1 rounded-full bg-white shadow-xs"></span></span></div> All Projects
                 </h3>
                 <button onclick="closeAllProjectsModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -2618,19 +2693,31 @@
             }
         }
 
+        // Section Title Starlight / Pearl Orb Indicator
+        function getSectionOrbHtml() {
+            return `
+                <div class="starry-section-orb relative flex h-7 w-7 shrink-0 items-center justify-center select-none" aria-hidden="true">
+                    <span class="absolute inset-0 rounded-full bg-sky-400/20 dark:bg-sky-400/30 animate-ping"></span>
+                    <span class="absolute inset-1 rounded-full border border-sky-400/50 dark:border-sky-300/40 starry-orb-ring"></span>
+                    <span class="relative w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-sky-500 via-sky-400 to-cyan-300 shadow-[0_0_12px_rgba(56,189,248,0.95)] flex items-center justify-center">
+                        <span class="w-1 h-1 rounded-full bg-white shadow-xs"></span>
+                    </span>
+                </div>
+            `;
+        }
+
         // 1. Hero Section Render
         function renderHero() {
             const h = portfolioData.hero;
             const container = document.getElementById('hero-container');
             const showEdit = adminState.isLoggedIn && adminState.mode === 'edit';
 
-            const rolesHtml = h.roles.map((r, i) => `
-                <span class="inline-flex items-center whitespace-nowrap gap-1">
-                    <span class="font-mono text-sky-500 font-bold opacity-80 text-base md:text-xl">&lt;</span>
-                    <span class="font-medium">${r}</span>
-                    <span class="font-mono text-sky-500 font-bold opacity-80 text-base md:text-xl">&frasl;&gt;</span>
+            const rolesHtml = h.roles.map(r => `
+                <span class="inline-flex items-center whitespace-nowrap gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm border border-sky-200/50 dark:border-slate-700/60 shadow-xs hover:border-sky-400 transition-colors">
+                    <span class="font-mono text-sky-500 font-bold opacity-80 text-sm md:text-base">&lt;</span>
+                    <span class="font-medium text-xs sm:text-sm md:text-base">${r}</span>
+                    <span class="font-mono text-sky-500 font-bold opacity-80 text-sm md:text-base">&frasl;&gt;</span>
                 </span>
-                ${i < h.roles.length - 1 ? '<span class="hidden sm:inline text-slate-300 dark:text-slate-600 font-normal">|</span>' : ''}
             `).join('');
 
             // Dynamic Social Links (with fallback to legacy hero.socials)
@@ -2697,6 +2784,7 @@
                         <path class="current-stroke current-stroke--accent" d="M -60,420 C 240,380 400,240 540,180 C 680,120 830,140 870,240 C 890,300 820,350 740,335 C 670,320 670,250 720,210 C 760,180 825,195 890,230 C 1010,295 1160,315 1520,235" />
                         <path class="current-stroke current-stroke--accent2" d="M -100,340 C 200,300 360,180 490,120 C 630,60 770,80 820,180 C 850,250 790,310 720,295 C 660,280 660,220 700,180 C 740,150 805,160 870,195 C 990,255 1140,275 1520,175" />
                         <path class="current-stroke current-stroke--swirl2" d="M 280,140 C 380,80 480,100 520,160 C 550,220 500,270 430,260 C 370,250 360,190 410,150 C 450,120 520,130 600,180 C 710,250 860,270 1020,220" />
+                        <path class="current-stroke current-stroke--swirl3" d="M 960,180 C 1050,110 1140,130 1170,200 C 1190,250 1150,290 1100,280 C 1060,270 1050,220 1090,190 C 1120,170 1160,180 1200,210 C 1280,270 1380,290 1520,260" />
                         <path class="current-stroke current-stroke--wave1" d="M -50,220 Q 320,140 680,220 T 1420,180 T 1600,150" />
                         <path class="current-stroke current-stroke--wave2" d="M -50,300 Q 380,230 760,290 T 1480,260" />
                     </svg>
@@ -2717,20 +2805,36 @@
 
                     <!-- Seafloor & Kelp Silhouettes -->
                     <svg class="hero-landscape" viewBox="0 0 1440 460" preserveAspectRatio="none" focusable="false">
+                        <defs>
+                            <linearGradient id="kelpGradLeft" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.95" />
+                                <stop offset="40%" stop-color="#0284c7" stop-opacity="0.9" />
+                                <stop offset="100%" stop-color="#082d46" stop-opacity="1" />
+                            </linearGradient>
+                            <linearGradient id="kelpGradRight" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#7dd3fc" stop-opacity="0.95" />
+                                <stop offset="40%" stop-color="#0369a1" stop-opacity="0.9" />
+                                <stop offset="100%" stop-color="#082d46" stop-opacity="1" />
+                            </linearGradient>
+                        </defs>
                         <path class="hero-landscape__far" d="M0,280 C180,210 320,250 460,300 C620,350 720,240 880,265 C1020,290 1120,210 1260,250 C1360,280 1410,230 1440,250 L1440,460 L0,460 Z"></path>
                         <path class="hero-landscape__mid" d="M0,330 C150,280 280,290 420,345 C560,395 680,310 820,335 C960,360 1060,280 1200,320 C1320,355 1400,300 1440,325 L1440,460 L0,460 Z"></path>
                         <path class="hero-landscape__mist" d="M0,340 C180,310 300,350 480,330 C640,310 740,370 900,340 C1040,315 1160,365 1280,330 C1370,300 1410,340 1440,335 L1440,410 C1320,415 1200,395 1060,410 C920,425 800,395 660,410 C500,425 360,395 200,412 C110,420 50,412 0,418 Z"></path>
                         <path class="hero-landscape__near" d="M0,380 C160,350 260,380 390,395 C540,415 620,360 780,380 C940,400 1040,355 1180,380 C1300,405 1390,365 1440,382 L1440,460 L0,460 Z"></path>
                         
                         <g class="kelp-cluster kelp-cluster--left">
-                            <path class="kelp-frond kelp-frond--1" d="M55,460 Q35,320 70,200 Q85,130 65,70 Q78,135 58,210 Q30,320 55,460 Z"></path>
-                            <path class="kelp-frond kelp-frond--2" d="M90,460 Q115,340 92,230 Q75,160 98,110 Q80,165 102,240 Q118,340 90,460 Z"></path>
-                            <path class="kelp-frond kelp-frond--3" d="M25,460 Q10,360 38,280 Q52,220 32,170 Q46,225 28,290 Q8,360 25,460 Z"></path>
+                            <path class="kelp-frond kelp-frond--1" fill="url(#kelpGradLeft)" d="M55,460 Q35,320 70,200 Q85,130 65,70 Q78,135 58,210 Q30,320 55,460 Z"></path>
+                            <path class="kelp-frond kelp-frond--2" fill="url(#kelpGradLeft)" d="M90,460 Q115,340 92,230 Q75,160 98,110 Q80,165 102,240 Q118,340 90,460 Z"></path>
+                            <path class="kelp-frond kelp-frond--3" fill="url(#kelpGradLeft)" d="M25,460 Q10,360 38,280 Q52,220 32,170 Q46,225 28,290 Q8,360 25,460 Z"></path>
+                            <circle cx="70" cy="180" r="2.5" fill="#38bdf8" class="kelp-spore kelp-spore--1"></circle>
+                            <circle cx="95" cy="220" r="2" fill="#7dd3fc" class="kelp-spore kelp-spore--2"></circle>
                         </g>
                         
                         <g class="kelp-cluster kelp-cluster--right">
-                            <path class="kelp-frond kelp-frond--4" d="M1385,460 Q1410,340 1385,230 Q1365,160 1385,95 Q1375,165 1395,240 Q1418,340 1385,460 Z"></path>
-                            <path class="kelp-frond kelp-frond--5" d="M1420,460 Q1442,360 1420,270 Q1405,210 1422,155 Q1412,215 1432,280 Q1448,360 1420,460 Z"></path>
+                            <path class="kelp-frond kelp-frond--4" fill="url(#kelpGradRight)" d="M1385,460 Q1410,340 1385,230 Q1365,160 1385,95 Q1375,165 1395,240 Q1418,340 1385,460 Z"></path>
+                            <path class="kelp-frond kelp-frond--5" fill="url(#kelpGradRight)" d="M1420,460 Q1442,360 1420,270 Q1405,210 1422,155 Q1412,215 1432,280 Q1448,360 1420,460 Z"></path>
+                            <circle cx="1380" cy="190" r="2.5" fill="#38bdf8" class="kelp-spore kelp-spore--3"></circle>
+                            <circle cx="1415" cy="240" r="2" fill="#7dd3fc" class="kelp-spore kelp-spore--4"></circle>
                         </g>
                     </svg>
                 </div>
@@ -2820,7 +2924,7 @@
             container.innerHTML = `
                 <div class="flex justify-between items-center mb-6 reveal-left">
                     <h2 class="text-2xl font-heading font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
-                        <div class="relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-100 dark:bg-sky-900/40"><div class="absolute w-full h-full bg-sky-400/20 rounded-full animate-ping"></div><div class="w-2.5 h-2.5 bg-sky-500 rounded-full shadow-[0_0_8px_rgba(56,189,248,0.8)]"></div></div> ${ab.title}
+                        ${getSectionOrbHtml()} ${ab.title}
                     </h2>
                     ${showEdit ? `
                         <button onclick="openEditAboutModal()" class="admin-edit-btn bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1 rounded-full text-xs shadow flex items-center gap-1 cursor-pointer">
@@ -2891,9 +2995,11 @@
                 const tagsHtml = p.tags.map(t => `<span class="text-[10px] font-bold text-slate-500 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded">${t}</span>`).join(' ');
 
                 itemsHtml += `
-                    <div class="relative mb-12 ml-8 ${animClass}">
-                        <div class="absolute w-4 h-4 ${isFirst ? 'bg-sky-500 animate-pulse' : 'bg-sky-400'} rounded-full -left-[9px] border-4 border-sky-50 dark:border-slate-950 shadow-sm"></div>
-                        <span class="ml-2 text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-widest block mb-3">${p.period}</span>
+                    <div class="relative mb-12 ${animClass}">
+                        <div class="absolute -left-[calc(2rem+7px)] top-1 w-4 h-4 rounded-full bg-white dark:bg-slate-900 border-2 border-sky-400 shadow-[0_0_10px_rgba(56,189,248,0.8)] flex items-center justify-center z-10">
+                            <div class="w-1.5 h-1.5 rounded-full ${isFirst ? 'bg-sky-400 animate-ping' : 'bg-sky-500'}"></div>
+                        </div>
+                        <span class="ml-1 text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-widest block mb-3">${p.period}</span>
                         
                         <div class="bg-white rounded-2xl p-8 border border-sky-100 shadow-sm card-hover storybook-card dark:bg-slate-900 dark:border-slate-800 transition-all relative">
                             ${showEdit ? `
@@ -2949,7 +3055,7 @@
             container.innerHTML = `
                 <div class="flex flex-wrap justify-between items-center gap-4 mb-10">
                     <h2 class="text-2xl font-heading font-black text-slate-800 dark:text-slate-100 flex items-center gap-3 reveal-left">
-                        <div class="relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-100 dark:bg-sky-900/40"><div class="absolute w-full h-full bg-sky-400/20 rounded-full animate-ping"></div><div class="w-2.5 h-2.5 bg-sky-500 rounded-full shadow-[0_0_8px_rgba(56,189,248,0.8)]"></div></div> Featured Projects
+                        ${getSectionOrbHtml()} Featured Projects
                     </h2>
                     ${showEdit ? `
                         <div class="flex items-center gap-2">
@@ -2965,7 +3071,7 @@
                     ` : ''}
                 </div>
                 
-                <div class="relative border-l-2 border-sky-200 dark:border-slate-800 ml-3">
+                <div class="starry-timeline ml-3">
                     ${itemsHtml}
                 </div>
                 ${viewAllHtml}
@@ -2980,10 +3086,18 @@
 
             let groupsHtml = '';
             skills.forEach(g => {
-                const itemsHtml = g.items.map(item => `<span class="bg-sky-50 dark:bg-slate-800 px-3 py-1 rounded-md">${item}</span>`).join(' ');
+                const itemsHtml = g.items.map(item => `
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50/70 dark:bg-slate-800/80 border border-sky-100 dark:border-slate-700/70 text-slate-700 dark:text-slate-200 text-xs font-semibold shadow-xs hover:border-sky-400/80 hover:text-sky-600 dark:hover:text-sky-300 hover:shadow-[0_0_12px_rgba(56,189,248,0.25)] transition-all transform hover:-translate-y-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+                        ${item}
+                    </span>
+                `).join(' ');
                 groupsHtml += `
                     <div class="bg-white rounded-2xl border border-sky-100 p-6 card-hover storybook-card shadow-sm dark:bg-slate-900 dark:border-slate-800 transition-all">
-                        <h3 class="text-sm font-black uppercase tracking-wider mb-4 text-sky-600 dark:text-sky-400">${g.category}</h3>
+                        <h3 class="text-sm font-black uppercase tracking-wider mb-4 text-sky-600 dark:text-sky-400 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-sky-500 shadow-[0_0_6px_rgba(56,189,248,0.8)]"></span>
+                            ${g.category}
+                        </h3>
                         <div class="flex flex-wrap gap-2 text-sm font-medium text-slate-600 dark:text-slate-300">
                             ${itemsHtml}
                         </div>
@@ -2994,7 +3108,7 @@
             container.innerHTML = `
                 <div class="flex justify-between items-center mb-6 reveal-left">
                     <h2 class="text-2xl font-heading font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
-                        <div class="relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-100 dark:bg-sky-900/40"><div class="absolute w-full h-full bg-sky-400/20 rounded-full animate-ping"></div><div class="w-2.5 h-2.5 bg-sky-500 rounded-full shadow-[0_0_8px_rgba(56,189,248,0.8)]"></div></div> Technical Arsenal
+                        ${getSectionOrbHtml()} Technical Arsenal
                     </h2>
                     ${showEdit ? `
                         <button onclick="openEditSkillsModal()" class="admin-edit-btn bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1 rounded-full text-xs shadow flex items-center gap-1 cursor-pointer">
@@ -3025,8 +3139,13 @@
                 if (c.theme === 'rose') badgeStyle = 'bg-rose-50 dark:bg-rose-900/30 border-rose-200 dark:border-rose-800/60 text-rose-600 dark:text-rose-400';
 
                 cardsHtml += `
-                    <div class="notepad-page p-6 pl-12 flex flex-col justify-between" onclick="peelCurrentNotepadPage()" title="Click to flip page">
-                        <div class="flex justify-between items-start">
+                    <div class="notepad-page p-6 pl-12 flex flex-col justify-between relative overflow-hidden" onclick="peelCurrentNotepadPage()" title="Click to flip page">
+                        <!-- Subtle celestial watermark -->
+                        <div class="absolute right-4 bottom-4 opacity-5 pointer-events-none select-none text-sky-500 dark:text-sky-300" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l2.4 6.6 6.6 2.4-6.6 2.4-2.4 6.6-2.4-6.6-6.6-2.4 6.6-2.4 2.4-6.6z"/></svg>
+                        </div>
+
+                        <div class="flex justify-between items-start relative z-10">
                             <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[10px] font-bold tracking-widest uppercase mb-3 ${badgeStyle}">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -3038,12 +3157,12 @@
                             </span>
                         </div>
 
-                        <div>
+                        <div class="relative z-10">
                             <h3 class="text-slate-900 dark:text-white text-2xl md:text-3xl font-black font-heading tracking-tight mb-1">${c.title}</h3>
                             <h4 class="text-sky-600 dark:text-sky-400 text-sm font-bold">${c.subtitle}</h4>
                         </div>
                         
-                        <div class="mt-auto flex items-center justify-between text-xs text-slate-500 font-medium pt-3 border-t border-slate-200/60 dark:border-slate-800">
+                        <div class="mt-auto flex items-center justify-between text-xs text-slate-500 font-medium pt-3 border-t border-slate-200/60 dark:border-slate-800 relative z-10">
                             <div class="flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -3077,7 +3196,7 @@
             container.innerHTML = `
                 <div class="flex justify-between items-center mb-8">
                     <h2 class="text-2xl font-heading font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
-                        <div class="relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-100 dark:bg-sky-900/40"><div class="absolute w-full h-full bg-sky-400/20 rounded-full animate-ping"></div><div class="w-2.5 h-2.5 bg-sky-500 rounded-full shadow-[0_0_8px_rgba(56,189,248,0.8)]"></div></div> Academic Journey
+                        ${getSectionOrbHtml()} Academic Journey
                     </h2>
                     ${showEdit ? `
                         <button onclick="openEditAchievementsModal()" class="admin-edit-btn bg-sky-500 hover:bg-sky-600 text-white font-bold px-3 py-1 rounded-full text-xs shadow flex items-center gap-1 cursor-pointer">
@@ -3156,39 +3275,43 @@
                         </div>
                     ` : ''}
 
-                    <div class="text-center mb-12">
-                        <h2 class="text-3xl font-heading font-black mb-4 text-slate-800 dark:text-slate-100">${ct.title}</h2>
+                    <div class="text-center mb-10">
+                        <h2 class="text-3xl font-heading font-black mb-3 text-slate-800 dark:text-slate-100 flex items-center justify-center gap-3">
+                            ${getSectionOrbHtml()} ${ct.title}
+                        </h2>
                         <p class="text-sm text-slate-600 max-w-xl mx-auto dark:text-slate-400">
                             ${ct.subtitle}
                         </p>
                     </div>
 
-                    <form action="${ct.formspreeUrl}" method="POST" class="max-w-2xl mx-auto space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="name" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Name</label>
-                                <input type="text" id="name" name="name" required placeholder="John Doe" 
-                                    class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all placeholder-slate-400 dark:placeholder-slate-500 shadow-sm">
+                    <div class="bg-white/70 dark:bg-slate-900/70 border border-sky-100 dark:border-slate-800 rounded-3xl p-8 md:p-12 shadow-sm backdrop-blur-sm max-w-2xl mx-auto">
+                        <form action="${ct.formspreeUrl}" method="POST" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="name" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Name</label>
+                                    <input type="text" id="name" name="name" required placeholder="John Doe" 
+                                        class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all placeholder-slate-400 dark:placeholder-slate-500 shadow-sm">
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email</label>
+                                    <input type="email" id="email" name="email" required placeholder="john@example.com" 
+                                        class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all placeholder-slate-400 dark:placeholder-slate-500 shadow-sm">
+                                </div>
                             </div>
+                            
                             <div>
-                                <label for="email" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email</label>
-                                <input type="email" id="email" name="email" required placeholder="john@example.com" 
-                                    class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all placeholder-slate-400 dark:placeholder-slate-500 shadow-sm">
+                                <label for="message" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Message</label>
+                                <textarea id="message" name="message" rows="5" required placeholder="Hi Clerwin, I'd like to talk about..." 
+                                    class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all resize-none placeholder-slate-400 dark:placeholder-slate-500 shadow-sm"></textarea>
                             </div>
-                        </div>
-                        
-                        <div>
-                            <label for="message" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Message</label>
-                            <textarea id="message" name="message" rows="5" required placeholder="Hi Clerwin, I'd like to talk about..." 
-                                class="w-full px-4 py-3 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all resize-none placeholder-slate-400 dark:placeholder-slate-500 shadow-sm"></textarea>
-                        </div>
-                        
-                        <div class="text-center pt-4">
-                            <button type="submit" class="inline-block bg-sky-500 text-white px-10 py-3.5 rounded-full font-bold shadow-md hover:bg-sky-600 hover:-translate-y-1 transition-all cursor-pointer">
-                                Send Message &rarr;
-                            </button>
-                        </div>
-                    </form>
+                            
+                            <div class="text-center pt-2">
+                                <button type="submit" class="inline-block bg-sky-500 text-white px-10 py-3.5 rounded-full font-bold shadow-md hover:bg-sky-600 hover:-translate-y-1 transition-all cursor-pointer">
+                                    Send Message &rarr;
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             `;
         }
@@ -3641,9 +3764,9 @@
             const dots = document.querySelectorAll('.notepad-dot');
             dots.forEach((dot, idx) => {
                 if (idx === currentNotepadIndex) {
-                    dot.className = "notepad-dot w-6 h-2.5 rounded-full bg-sky-500 shadow-sm transition-all cursor-pointer";
+                    dot.className = "notepad-dot w-6 h-2.5 rounded-full bg-sky-500 shadow-[0_0_10px_rgba(56,189,248,0.7)] transition-all cursor-pointer";
                 } else {
-                    dot.className = "notepad-dot w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 hover:bg-sky-300 transition-all cursor-pointer";
+                    dot.className = "notepad-dot w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 hover:bg-sky-400/60 transition-all cursor-pointer";
                 }
             });
         }
