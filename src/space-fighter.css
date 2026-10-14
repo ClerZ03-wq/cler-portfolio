@@ -1,0 +1,43 @@
+.fighter-dialog {
+  width: min(520px, calc(100vw - 24px));
+  max-height: calc(100dvh - 24px);
+  margin: auto;
+  padding: 20px;
+  overflow-y: auto;
+  border: 1px solid var(--line-bright);
+  border-radius: 20px;
+  color: var(--text);
+  background: var(--panel-solid);
+  box-shadow: 0 0 80px color-mix(in srgb, var(--cyan) 12%, transparent);
+}
+.fighter-dialog::backdrop { background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(8px); }
+.fighter-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 12px; }
+.fighter-kicker { font: 8px var(--font-mono); letter-spacing: .15em; color: var(--cyan); }
+.fighter-header h2 { margin: 6px 0 0; font: 600 28px/1 var(--font-display); letter-spacing: -.05em; }
+.fighter-header h2 span { color: var(--gold); }
+.fighter-close { width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; color: var(--muted); background: var(--bg-elevated); font-size: 25px; }
+.fighter-hud { display: flex; justify-content: space-between; gap: 10px; padding: 14px 8px; border-block: 1px solid var(--line); font: 8px var(--font-mono); color: var(--muted); }
+.fighter-hud b { display: block; margin-top: 6px; color: var(--cyan-light); font-size: 16px; }
+.fighter-hud > span:last-child b { color: var(--gold); }
+.fighter-field { position: relative; width: min(100%, calc(55dvh * 480 / 520)); margin: 12px auto 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.fighter-field canvas { display: block; width: 100%; height: auto; aspect-ratio: 480 / 520; touch-action: none; cursor: crosshair; }
+.fighter-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; padding: 24px; background: color-mix(in srgb, var(--bg) 86%, transparent); }
+.fighter-overlay h3 { margin: 14px 0; font: 600 clamp(26px, 5vw, 36px)/1.1 var(--font-display); letter-spacing: -.04em; }
+.fighter-overlay p { max-width: 290px; margin: 0 0 24px; font-size: 13px; line-height: 1.7; color: var(--muted); }
+.fighter-overlay small { margin-top: 22px; color: var(--gold); font: 8px var(--font-mono); letter-spacing: .12em; }
+.fighter-controls { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 14px; }
+.fighter-controls p { margin: 0; font: 8px/1.8 var(--font-mono); color: var(--muted); }
+.fighter-controls strong { display: block; color: var(--text); font-weight: 400; }
+.fighter-controls button { min-height: 44px; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg-elevated); color: var(--cyan); font: 10px var(--font-mono); }
+.fighter-controls button:disabled { opacity: .4; }
+.fighter-status { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.arcade-trigger { display: inline-flex; align-items: center; gap: 7px; min-width: 44px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 99px; background: transparent; color: var(--muted); font: 8px var(--font-mono); letter-spacing: .08em; transition: color .2s, border-color .2s; }
+.arcade-trigger:hover { color: var(--gold); border-color: var(--gold); }
+@media (max-width: 520px) {
+  .fighter-dialog { padding: 14px; }
+  .fighter-controls p { font-size: 7px; }
+  .fighter-overlay { padding: 18px; }
+}
+@media (max-height: 600px) {
+  .fighter-field { width: 100%; }
+}
