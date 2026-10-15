@@ -1,0 +1,12 @@
+{
+  "title": "ClerDev | John Clerwin Dela Cruz",
+  "language": "en",
+  "description": "Showcases a 4th-year IT student's skills, projects, and certifications with a sleek starry night design to attract recruiters and collaborators.",
+  "robots": {
+    "index": true
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
