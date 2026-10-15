@@ -70,8 +70,16 @@ const projects = [
     number: "01",
     title: "FIL-NODE",
     eyebrow: "Telemetry & Detection Engine",
-    copy: "A centralized security telemetry pipeline engineered to collect, normalize, and detect anomalous endpoint events in real time.",
-    tags: ["Django", "PostgreSQL", "SecOps"],
+    client: "Filoil Philippines Corporation",
+    date: "August 2026 — Present",
+    role: "Lead Developer | Security Architect",
+    copy: "A secure, VPN-independent endpoint telemetry and detection platform built for proactive remote asset management.",
+    details: [
+      "Architected a secure, VPN-independent telemetry pipeline using a C#/.NET endpoint agent and Django REST backend, continuously synchronizing remote device health and network data into a centralized PostgreSQL database.",
+      "Engineered a custom rule-based detection engine to analyze historical telemetry and baseline deviations, accelerating IT incident resolution through automated, human-in-the-loop remediation workflows.",
+      "Automated endpoint security baseline checks for firewall, antivirus, and storage configurations using AES-256-GCM encryption, transforming remote asset management into a proactive system aligned with ISO/IEC 27001:2022, NIST, and CIS Benchmarks.",
+    ],
+    tags: ["C# / .NET", "Django REST", "PostgreSQL", "SecOps"],
     icon: "terminal" as IconName,
     accent: "cyan",
   },
@@ -79,8 +87,16 @@ const projects = [
     number: "02",
     title: "FIL-TRACK",
     eyebrow: "Filoil Logistics Asset Tracker",
-    copy: "An intelligent asset visibility platform for real-time fleet monitoring, movement history, and operational reporting.",
-    tags: ["Full-Stack", "Geospatial", "Analytics"],
+    client: "Filoil Philippines Corporation",
+    date: "February 2026 — May 2026",
+    role: "Lead Programmer | Systems Administrator",
+    copy: "A centralized, multi-department asset lifecycle platform connecting IT, HR, Finance, remote terminals, and the head office.",
+    details: [
+      "Developed a centralized web-based, multi-department digital ecosystem, eliminating isolated information silos across IT, HR, and Finance while replacing manual, version-control-prone spreadsheet tracking.",
+      "Engineered end-to-end asset lifecycle tracking to trace the physical movement and operational status of equipment across remote terminals and the central head office, giving management real-time global oversight and reducing the risk of unrecorded corporate losses.",
+      "Secured enterprise asset data by enforcing Role-Based Access Control (RBAC) and a client-mandated VPN network architecture, ensuring strict data confidentiality and safe geographic tracking of equipment across all terminal locations.",
+    ],
+    tags: ["Full-Stack", "Asset Lifecycle", "RBAC", "Systems Admin"],
     icon: "map" as IconName,
     accent: "gold",
   },
@@ -88,12 +104,22 @@ const projects = [
     number: "03",
     title: "Makati City Hall",
     eyebrow: "Vulnerability Assessment",
-    copy: "A structured assessment uncovering security gaps, quantifying risk, and delivering actionable remediation guidance.",
-    tags: ["VAPT", "Reporting", "Risk"],
+    client: "ICTO, Makati City Hall",
+    date: "March 2026 — May 2026",
+    role: "Information Security Analyst (Academic Project)",
+    copy: "A comprehensive information assurance and security assessment translating municipal vulnerabilities into a prioritized remediation roadmap.",
+    details: [
+      "Reviewed a comprehensive Information Assurance and Security Plan, synthesizing multi-domain vulnerability data into a cohesive executive risk mitigation strategy.",
+      "Designed actionable security controls for software and hardware inventory, secure endpoint configurations, malware defenses, and wireless access, aligning municipal IT operations with NIST and DICT Cybersecurity Frameworks.",
+      "Authored targeted vulnerability findings addressing personnel security, backup recovery processes, and Data Privacy Act of 2012 (RA 10173) compliance, establishing a prioritized remediation roadmap for the city government.",
+    ],
+    tags: ["NIST", "DICT Framework", "Risk", "RA 10173"],
     icon: "shield" as IconName,
     accent: "violet",
   },
 ];
+
+type Project = typeof projects[number];
 
 const arsenal = [
   ["Django", "Full-stack web framework", "DJ"],
@@ -145,7 +171,7 @@ function ArsenalCard({ skill, index }: { skill: string[]; index: number }) {
   );
 }
 
-function ProjectCard({ project }: { project: typeof projects[number] }) {
+function ProjectCard({ project, onView }: { project: Project; onView: (project: Project) => void }) {
   return (
     <article className={`project-card ${project.accent}`}>
       <div className="project-visual">
@@ -157,11 +183,82 @@ function ProjectCard({ project }: { project: typeof projects[number] }) {
       <div className="project-content">
         <span className="project-eyebrow">{project.eyebrow}</span>
         <h3>{project.title}</h3>
+        <div className="project-card-meta"><span>{project.client}</span><span>{project.date}</span></div>
         <p>{project.copy}</p>
         <div className="tag-row">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-        <a href="#contact">Discuss this project <Icon name="arrow" size={16} /></a>
+        <button className="project-detail-trigger" type="button" onClick={() => onView(project)}>View project details <Icon name="arrow" size={16} /></button>
       </div>
     </article>
+  );
+}
+
+function ProjectDetailsDialog({ project, onClose }: { project: Project; onClose: () => void }) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [closing, setClosing] = useState(false);
+  const closeTimer = useRef<number | null>(null);
+
+  const requestClose = () => {
+    if (closeTimer.current !== null) return;
+    setClosing(true);
+    const delay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 240;
+    closeTimer.current = window.setTimeout(onClose, delay);
+  };
+
+  useEffect(() => {
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialog.current?.showModal();
+    return () => {
+      if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
+      document.body.style.overflow = overflow;
+      previousFocus?.focus({ preventScroll: true });
+    };
+  }, []);
+
+  return (
+    <dialog
+      className={`project-detail-dialog ${project.accent}${closing ? " is-closing" : ""}`}
+      ref={dialog}
+      aria-labelledby="project-detail-title"
+      onCancel={(event) => { event.preventDefault(); requestClose(); }}
+      onClick={(event) => {
+        if (event.target !== event.currentTarget) return;
+        const bounds = event.currentTarget.getBoundingClientRect();
+        if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) requestClose();
+      }}
+    >
+      <button className="icon-button project-detail-close" type="button" onClick={requestClose} aria-label="Close project details">
+        <Icon name="x" size={18} />
+      </button>
+      <div className="project-detail-visual">
+        <span className="project-detail-number">{project.number}</span>
+        <div className="project-detail-graphic" aria-hidden="true">
+          <span className="project-detail-orbit"><i /><i /><i /></span>
+          <div className="project-detail-icon"><Icon name={project.icon} size={38} /></div>
+        </div>
+        <div>
+          <span>{project.eyebrow}</span>
+          <strong>{project.client}</strong>
+          <small>{project.date}</small>
+        </div>
+      </div>
+      <div className="project-detail-content">
+        <span className="eyebrow">CLERDEV / PROJECT DOSSIER</span>
+        <h2 id="project-detail-title">{project.title}</h2>
+        <p className="project-detail-summary">{project.copy}</p>
+        <div className="project-detail-meta">
+          <div><span>Organization</span><strong>{project.client}</strong></div>
+          <div><span>Timeline</span><strong>{project.date}</strong></div>
+          <div><span>Role</span><strong>{project.role}</strong></div>
+        </div>
+        <div className="project-detail-scope">
+          <span>Scope &amp; impact</span>
+          <ul>{project.details.map((detail) => <li key={detail}>{detail}</li>)}</ul>
+        </div>
+        <div className="tag-row">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+      </div>
+    </dialog>
   );
 }
 
@@ -178,6 +275,7 @@ function SectionTitle({ eyebrow, title, copy }: { eyebrow: string; title: string
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [arcadeOpen, setArcadeOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [collectionOpen, setCollectionOpen] = useState<"credentials" | "arsenal" | "projects" | null>(null);
   const [collectionQuery, setCollectionQuery] = useState("");
   const openCollection = (collection: "credentials" | "arsenal" | "projects") => {
@@ -187,7 +285,7 @@ function App() {
   const matchesCollection = (text: string) => text.toLowerCase().includes(collectionQuery.trim().toLowerCase());
   const filteredCredentials = credentialCollection.map((badge, index) => ({ badge, index })).filter(({ badge }) => matchesCollection(`${badge.name} ${badge.issuer} ${badge.category}`));
   const filteredArsenal = arsenal.map((skill, index) => ({ skill, index })).filter(({ skill }) => matchesCollection(skill.join(" ")));
-  const filteredProjects = projects.filter((project) => matchesCollection(`${project.title} ${project.eyebrow} ${project.copy} ${project.tags.join(" ")}`));
+  const filteredProjects = projects.filter((project) => matchesCollection(`${project.title} ${project.eyebrow} ${project.client} ${project.date} ${project.role} ${project.copy} ${project.details.join(" ")} ${project.tags.join(" ")}`));
   const [lightMode, setLightMode] = useState(false);
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
@@ -581,7 +679,7 @@ function App() {
         <span className="section-planet section-planet-gold" aria-hidden="true" />
         <div className="section-collection-header"><SectionTitle eyebrow="02 / Selected work" title="Featured projects." copy="Practical systems built to observe, protect, and improve the way organizations operate." /><button className="view-all-button" type="button" aria-haspopup="dialog" onClick={() => openCollection("projects")}>View all projects <span>{projects.length}</span><Icon name="arrow" size={16} /></button></div>
         <div className="project-grid">
-          {projects.map((project) => <ProjectCard key={project.title} project={project} />)}
+          {projects.map((project) => <ProjectCard key={project.title} project={project} onView={setSelectedProject} />)}
         </div>
       </section>
 
@@ -695,12 +793,13 @@ function App() {
         {collectionOpen === "arsenal" && <div className="arsenal-section"><div className="arsenal-grid">{filteredArsenal.map(({ skill, index }) => <ArsenalCard key={skill[0]} skill={skill} index={index} />)}</div></div>}
         {collectionOpen === "projects" && <div className="collection-project-list">{filteredProjects.map((project) => <article className="collection-project-row" key={project.title}>
           <span className="collection-project-number">{project.number}</span>
-          <div className="collection-project-info"><span>{project.eyebrow}</span><h3>{project.title}</h3><p>{project.copy}</p><div className="tag-row">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div></div>
-          <a className="collection-project-link" href="#contact" onClick={(event) => { event.preventDefault(); closeCollection(() => { window.location.hash = "contact"; }); }} aria-label={`Discuss ${project.title}`}>Discuss <Icon name="arrow" size={16} /></a>
+          <div className="collection-project-info"><span>{project.eyebrow}</span><h3>{project.title}</h3><div className="collection-project-meta"><span>{project.client}</span><span>{project.date}</span></div><p>{project.copy}</p><div className="tag-row">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div></div>
+          <button className="collection-project-link" type="button" onClick={() => closeCollection(() => setSelectedProject(project))} aria-label={`View details for ${project.title}`}>View details <Icon name="arrow" size={16} /></button>
         </article>)}</div>}
         {(collectionOpen === "credentials" ? filteredCredentials.length : collectionOpen === "arsenal" ? filteredArsenal.length : filteredProjects.length) === 0 && <div className="collection-empty"><Icon name="spark" size={28} /><h3>No matches in this constellation.</h3><p>Try another name, topic, or technology.</p><button type="button" className="text-link" onClick={() => setCollectionQuery("")}>Clear search</button></div>}
         </>}
       </CollectionDialog>}
+      {selectedProject && <ProjectDetailsDialog project={selectedProject} onClose={() => setSelectedProject(null)} />}
     </main>
   );
 }
