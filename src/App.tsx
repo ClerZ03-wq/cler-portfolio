@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import clerdevPortrait from "./assets/clerdev-portrait.jpg";
 import dictCyberproCredential from "./assets/dict-cyberpro-level-2.png";
 import awsBuilderLogo from "./assets/aws-builder-logo.png";
@@ -340,6 +341,7 @@ function App() {
 
   useEffect(() => {
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const compactMotion = window.matchMedia("(max-width: 768px), (pointer: coarse)");
     const hero = document.querySelector<HTMLElement>(".hero");
     const planets = [...document.querySelectorAll<HTMLElement>(".section-planet")];
     let frame = 0;
@@ -348,7 +350,7 @@ function App() {
       const y = window.scrollY;
       const range = document.documentElement.scrollHeight - window.innerHeight;
       document.documentElement.style.setProperty("--page-progress", `${range > 0 ? y / range : 0}`);
-      if (motion.matches) {
+      if (motion.matches || compactMotion.matches) {
         hero?.style.removeProperty("--hero-drift");
         planets.forEach((planet) => planet.style.removeProperty("--scroll-depth"));
         return;
@@ -367,11 +369,13 @@ function App() {
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     motion.addEventListener("change", schedule);
+    compactMotion.addEventListener("change", schedule);
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
       motion.removeEventListener("change", schedule);
+      compactMotion.removeEventListener("change", schedule);
     };
   }, []);
 
@@ -393,14 +397,19 @@ function App() {
     const viewTransitionDocument = document as Document & {
       startViewTransition?: (update: () => void) => void;
     };
+    const nextLightMode = !lightMode;
+    const applyTheme = () => {
+      document.documentElement.dataset.theme = nextLightMode ? "dawn" : "night";
+      setLightMode(nextLightMode);
+    };
 
-    if (!viewTransitionDocument.startViewTransition) {
-      setLightMode((current) => !current);
+    if (!viewTransitionDocument.startViewTransition || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      applyTheme();
       return;
     }
 
     viewTransitionDocument.startViewTransition(() => {
-      setLightMode((current) => !current);
+      flushSync(applyTheme);
     });
   };
 
@@ -424,7 +433,7 @@ function App() {
 
   useEffect(() => {
     const warp = document.querySelector<HTMLElement>(".scroll-warp");
-    if (!warp) return;
+    if (!warp || window.matchMedia("(prefers-reduced-motion: reduce), (max-width: 768px), (pointer: coarse)").matches) return;
 
     let previousY = window.scrollY;
     let previousTime = performance.now();
@@ -477,6 +486,7 @@ function App() {
   }, [cyberproOpen]);
 
   useEffect(() => {
+    const compactMotion = window.matchMedia("(max-width: 768px), (pointer: coarse)").matches;
     const targets = document.querySelectorAll<HTMLElement>(
       ".section-heading, .about-copy, .achievement-card, .project-card, .arsenal-item, .accreditation-card, .cisco-minimal, .contact-copy, .contact-form",
     );
@@ -484,7 +494,7 @@ function App() {
 
     targets.forEach((target, index) => {
       target.classList.add("scroll-reveal");
-      target.style.setProperty("--reveal-delay", `${(index % 3) * 90}ms`);
+      target.style.setProperty("--reveal-delay", `${compactMotion ? (index % 2) * 35 : (index % 3) * 90}ms`);
     });
 
     const observer = new IntersectionObserver(
@@ -496,7 +506,7 @@ function App() {
           }
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -45px" },
+      { threshold: compactMotion ? 0.06 : 0.12, rootMargin: compactMotion ? "0px 0px -20px" : "0px 0px -45px" },
     );
 
     targets.forEach((target) => observer.observe(target));
@@ -662,8 +672,8 @@ function App() {
             <article className="achievement-card">
               <div className="achievement-icon gold"><Icon name="badge" /></div>
               <span>Competition</span>
-              <h3>1st Runner Up</h3>
-              <p>Infotechnolympics</p>
+              <h3>2nd Runner Up</h3>
+              <p>Web Design · Infotechnolympics</p>
             </article>
             <article className="achievement-card">
               <div className="achievement-icon violet"><Icon name="server" /></div>
@@ -777,7 +787,7 @@ function App() {
       <footer>
         <a className="brand" href="#home" aria-label="ClerDev home"><span>Cler<span>Dev</span></span></a>
         <p>Designed &amp; engineered under the stars by ClerDev.</p>
-        <div><span>© 2025 John Clerwin Dela Cruz</span><button className="arcade-trigger" type="button" onClick={() => setArcadeOpen(true)} aria-label="Discover the Starfighter secret arcade" title="A little detour among the stars"><Icon name="spark" size={14} /><span>Secret sector</span></button><a href="#home" aria-label="Back to top">↑</a></div>
+        <div><span>© 2025 John Clerwin Dela Cruz</span><button className="arcade-trigger" type="button" onClick={() => setArcadeOpen(true)} aria-label="Discover the Secret Sector retro arcade" title="Seven playable classics hidden among the stars"><Icon name="spark" size={14} /><span>Secret sector</span></button><a href="#home" aria-label="Back to top">↑</a></div>
       </footer>
       {arcadeOpen && <SpaceFighter onClose={() => setArcadeOpen(false)} />}
       {collectionOpen && <CollectionDialog

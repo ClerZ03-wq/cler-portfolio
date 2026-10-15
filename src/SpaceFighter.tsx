@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { MemoryGame, PongGame, QuickTapGame, SimonGame, SnakeGame, TicTacToeGame } from "./RetroGames";
 import "./space-fighter.css";
 
 type Phase = "ready" | "playing" | "paused" | "over";
@@ -7,8 +8,7 @@ type Particle = { x: number; y: number; vx: number; vy: number; life: number };
 const WIDTH = 480;
 const HEIGHT = 520;
 
-export default function SpaceFighter({ onClose }: { onClose: () => void }) {
-  const dialog = useRef<HTMLDialogElement>(null);
+function StarfighterGame() {
   const canvas = useRef<HTMLCanvasElement>(null);
   const phase = useRef<Phase>("ready");
   const restart = useRef<() => void>(() => {});
@@ -24,17 +24,6 @@ export default function SpaceFighter({ onClose }: { onClose: () => void }) {
     phase.current = next;
     setScreen(next);
   };
-
-  useEffect(() => {
-    const previousFocus = document.activeElement as HTMLElement | null;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    dialog.current?.showModal();
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      previousFocus?.focus();
-    };
-  }, []);
 
   useEffect(() => {
     const surface = canvas.current!;
@@ -259,11 +248,7 @@ export default function SpaceFighter({ onClose }: { onClose: () => void }) {
   }, []);
 
   return (
-    <dialog className="fighter-dialog" ref={dialog} aria-labelledby="fighter-title" onCancel={(event) => { event.preventDefault(); onClose(); }}>
-      <div className="fighter-header">
-        <div><span className="fighter-kicker">SECRET SECTOR / CLERDEV ARCADE</span><h2 id="fighter-title">Starfighter<span>.</span></h2></div>
-        <button className="fighter-close" type="button" onClick={onClose} aria-label="Close Starfighter">×</button>
-      </div>
+    <div className="retro-game-panel">
       <div className="fighter-hud"><span>SCORE <b>{String(hud.score).padStart(5, "0")}</b></span><span>WAVE <b>{String(hud.wave).padStart(2, "0")}</b></span><span>SHIELDS <b>{hud.lives} / 3</b></span></div>
       <div className="fighter-field">
         <canvas ref={canvas} width={WIDTH * 2} height={HEIGHT * 2} tabIndex={0} aria-label="Starfighter playfield. Move with left and right arrows, A and D, or drag. Your ship fires automatically. P pauses." />
@@ -277,6 +262,115 @@ export default function SpaceFighter({ onClose }: { onClose: () => void }) {
       </div>
       <div className="fighter-controls"><p><strong>Auto-fire enabled</strong><span>← → / A D to steer · Drag on touch · P to pause</span></p><button type="button" disabled={screen !== "playing" && screen !== "paused"} onClick={() => changePhase(screen === "playing" ? "paused" : "playing")}>{screen === "paused" ? "Resume" : "Pause"}</button></div>
       <span className="fighter-status" role="status">{screen === "over" ? `Game over. Final score ${hud.score}.` : screen === "paused" ? "Game paused." : screen === "playing" ? "Mission launched." : "Ready to launch."}</span>
+    </div>
+  );
+}
+
+const arcadeGames = [
+  { id: "starfighter", code: "SF-84", title: "Starfighter", device: "Arcade cabinet", description: "Auto-fire space defense" },
+  { id: "snake", code: "SN-97", title: "Snake", device: "Classic mobile", description: "Collect and keep moving" },
+  { id: "pong", code: "PG-72", title: "Pong", device: "Home console", description: "First to five wins" },
+  { id: "memory", code: "MM-78", title: "Memory Match", device: "Tabletop electronic", description: "Pair every signal" },
+  { id: "simon", code: "SM-78", title: "Simon", device: "Electronic handheld", description: "Repeat the sequence" },
+  { id: "tictactoe", code: "TT-58", title: "Tic-Tac-Toe", device: "Pocket computer", description: "Outsmart the CPU" },
+  { id: "quicktap", code: "GW-80", title: "Quick Tap", device: "Game & Watch", description: "Test your reflexes" },
+] as const;
+
+type ArcadeGameId = typeof arcadeGames[number]["id"];
+
+export default function SpaceFighter({ onClose }: { onClose: () => void }) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const strip = useRef<HTMLDivElement>(null);
+  const scrollTimer = useRef<number | null>(null);
+  const [activeGame, setActiveGame] = useState<ArcadeGameId>("starfighter");
+  const activeIndex = arcadeGames.findIndex((game) => game.id === activeGame);
+  const game = arcadeGames[activeIndex];
+
+  useEffect(() => {
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialog.current?.showModal();
+    return () => {
+      if (scrollTimer.current !== null) window.clearTimeout(scrollTimer.current);
+      document.body.style.overflow = previousOverflow;
+      previousFocus?.focus({ preventScroll: true });
+    };
+  }, []);
+
+  const selectGame = (index: number) => {
+    const next = Math.max(0, Math.min(arcadeGames.length - 1, index));
+    setActiveGame(arcadeGames[next].id);
+    strip.current?.querySelectorAll<HTMLElement>(".arcade-game-card")[next]?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      inline: "center",
+      block: "nearest",
+    });
+  };
+
+  const syncGameFromSwipe = () => {
+    if (scrollTimer.current !== null) window.clearTimeout(scrollTimer.current);
+    scrollTimer.current = window.setTimeout(() => {
+      const rail = strip.current;
+      if (!rail) return;
+      const center = rail.getBoundingClientRect().left + rail.clientWidth / 2;
+      const cards = [...rail.querySelectorAll<HTMLElement>(".arcade-game-card")];
+      const nearest = cards.reduce((best, card, index) => {
+        const bounds = card.getBoundingClientRect();
+        const distance = Math.abs(bounds.left + bounds.width / 2 - center);
+        return distance < best.distance ? { index, distance } : best;
+      }, { index: 0, distance: Number.POSITIVE_INFINITY });
+      setActiveGame(arcadeGames[nearest.index].id);
+    }, 90);
+  };
+
+  const renderGame = () => {
+    switch (activeGame) {
+      case "snake": return <SnakeGame />;
+      case "pong": return <PongGame />;
+      case "memory": return <MemoryGame />;
+      case "simon": return <SimonGame />;
+      case "tictactoe": return <TicTacToeGame />;
+      case "quicktap": return <QuickTapGame />;
+      default: return <StarfighterGame />;
+    }
+  };
+
+  return (
+    <dialog className="fighter-dialog arcade-dialog" ref={dialog} aria-labelledby="fighter-title" onCancel={(event) => { event.preventDefault(); onClose(); }}>
+      <div className="fighter-header">
+        <div><span className="fighter-kicker">SECRET SECTOR / 07 PLAYABLE ARCHIVES</span><h2 id="fighter-title">Pocket arcade<span>.</span></h2></div>
+        <button className="fighter-close" type="button" onClick={onClose} aria-label="Close Secret Sector arcade">×</button>
+      </div>
+
+      <div className="arcade-selector">
+        <button type="button" className="arcade-nav previous" onClick={() => selectGame(activeIndex - 1)} disabled={activeIndex === 0} aria-label="Previous game">‹</button>
+        <div className="arcade-game-strip" ref={strip} onScroll={syncGameFromSwipe} aria-label="Swipe through game cards">
+          {arcadeGames.map((item, index) => (
+            <button
+              type="button"
+              className={`arcade-game-card${item.id === activeGame ? " is-active" : ""}`}
+              aria-pressed={item.id === activeGame}
+              onClick={() => selectGame(index)}
+              key={item.id}
+            >
+              <span>{item.code}</span>
+              <strong>{item.title}</strong>
+              <small>{item.device}</small>
+            </button>
+          ))}
+        </div>
+        <button type="button" className="arcade-nav next" onClick={() => selectGame(activeIndex + 1)} disabled={activeIndex === arcadeGames.length - 1} aria-label="Next game">›</button>
+      </div>
+      <div className="arcade-swipe-hint"><span>{String(activeIndex + 1).padStart(2, "0")} / {String(arcadeGames.length).padStart(2, "0")}</span><span>Swipe cards to switch games</span></div>
+
+      <section className="arcade-stage" key={activeGame} aria-label={`${game.title} game`}>
+        <div className="arcade-stage-heading">
+          <div><span>{game.device}</span><h3>{game.title}</h3></div>
+          <p>{game.description}</p>
+        </div>
+        {renderGame()}
+      </section>
     </dialog>
   );
 }

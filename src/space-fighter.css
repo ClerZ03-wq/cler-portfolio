@@ -10,6 +10,14 @@
   background: var(--panel-solid);
   box-shadow: 0 0 80px color-mix(in srgb, var(--cyan) 12%, transparent);
 }
+.arcade-dialog {
+  width: min(1060px, calc(100vw - 24px));
+  height: min(900px, calc(100dvh - 24px));
+  max-height: calc(100dvh - 24px);
+  padding: 24px;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+}
 .fighter-dialog::backdrop { background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(8px); }
 .fighter-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 12px; }
 .fighter-kicker { font: 8px var(--font-mono); letter-spacing: .15em; color: var(--cyan); }
@@ -31,13 +39,171 @@
 .fighter-controls button { min-height: 44px; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg-elevated); color: var(--cyan); font: 10px var(--font-mono); }
 .fighter-controls button:disabled { opacity: .4; }
 .fighter-status { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.retro-game-panel { width: min(100%, 520px); margin: 0 auto; }
+.arcade-selector { display: grid; grid-template-columns: 42px minmax(0, 1fr) 42px; align-items: center; gap: 10px; }
+.arcade-nav {
+  width: 42px;
+  height: 64px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  color: var(--cyan);
+  font-size: 28px;
+  cursor: pointer;
+}
+.arcade-nav:disabled { opacity: .3; cursor: default; }
+.arcade-game-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px calc(50% - 86px) 10px;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: calc(50% - 86px);
+  scrollbar-width: none;
+  touch-action: pan-x;
+  overscroll-behavior-inline: contain;
+}
+.arcade-game-strip::-webkit-scrollbar { display: none; }
+.arcade-game-card {
+  flex: 0 0 172px;
+  min-height: 92px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  scroll-snap-align: center;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg-elevated);
+  color: var(--muted);
+  text-align: left;
+  cursor: pointer;
+  transition: transform .25s ease, border-color .25s ease, background .25s ease, opacity .25s ease;
+  opacity: .62;
+}
+.arcade-game-card > span { color: var(--cyan); font: 7px var(--font-mono); letter-spacing: .14em; }
+.arcade-game-card strong { color: var(--text); font: 500 14px var(--font-display); }
+.arcade-game-card small { font: 7px var(--font-mono); line-height: 1.4; }
+.arcade-game-card.is-active { border-color: var(--line-bright); background: color-mix(in srgb, var(--cyan) 7%, var(--bg-elevated)); opacity: 1; transform: translateY(-2px); box-shadow: inset 0 -2px var(--cyan); }
+.arcade-swipe-hint { display: flex; justify-content: space-between; gap: 16px; margin: 2px 54px 14px; color: var(--muted); font: 7px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+.arcade-swipe-hint span:first-child { color: var(--gold); }
+.arcade-stage {
+  min-height: 580px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--cyan) 4%, var(--panel-solid)), var(--panel-solid));
+  animation: arcade-game-enter .35s cubic-bezier(.22, 1, .36, 1) both;
+}
+.arcade-stage-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.arcade-stage-heading span { color: var(--cyan); font: 7px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
+.arcade-stage-heading h3 { margin: 5px 0 0; font: 600 25px/1 var(--font-display); letter-spacing: -.04em; }
+.arcade-stage-heading p { margin: 0; color: var(--muted); font: 8px var(--font-mono); }
+@keyframes arcade-game-enter {
+  from { opacity: 0; transform: translateX(14px) scale(.99); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+.retro-layout { display: grid; grid-template-columns: minmax(0, 1fr) 190px; gap: 20px; width: min(100%, 720px); margin: 0 auto; }
+.retro-sidebar { display: flex; flex-direction: column; gap: 16px; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg-elevated); }
+.retro-sidebar p,
+.retro-action-row p { margin: 0; color: var(--muted); font: 9px/1.7 var(--font-mono); }
+.retro-score span { display: block; color: var(--muted); font: 7px var(--font-mono); letter-spacing: .15em; }
+.retro-score strong { display: block; margin-top: 8px; color: var(--cyan-light); font: 600 32px var(--font-mono); }
+.retro-primary { min-height: 44px; padding: 0 16px; border: 1px solid var(--line-bright); border-radius: 9px; background: color-mix(in srgb, var(--cyan) 9%, var(--bg-elevated)); color: var(--cyan-light); font: 9px var(--font-mono); cursor: pointer; }
+.retro-primary:hover { border-color: var(--cyan); background: color-mix(in srgb, var(--cyan) 14%, var(--bg-elevated)); }
+.retro-action-row { width: min(100%, 720px); display: flex; align-items: center; justify-content: space-between; gap: 18px; margin: 16px auto 0; }
+
+.snake-board { display: grid; grid-template-columns: repeat(16, 1fr); aspect-ratio: 1; overflow: hidden; border: 1px solid var(--line-bright); border-radius: 14px; background: var(--bg); touch-action: none; outline: none; }
+.snake-board i { border: 1px solid color-mix(in srgb, var(--line) 38%, transparent); }
+.snake-board .snake-body { background: color-mix(in srgb, var(--cyan) 70%, var(--bg)); box-shadow: inset 0 0 0 2px var(--bg); }
+.snake-board .snake-head { background: var(--cyan-light); box-shadow: inset 0 0 0 2px var(--bg), 0 0 10px var(--cyan); }
+.snake-board .snake-food { border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px var(--gold); transform: scale(.55); }
+.snake-pad { display: grid; grid-template-columns: repeat(3, 40px); justify-content: center; gap: 5px; margin-top: auto; }
+.snake-pad button { width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-solid); color: var(--text); }
+.snake-pad button:first-child { grid-column: 2; }
+.snake-pad button:nth-child(2) { grid-column: 1; }
+.snake-pad button:nth-child(3) { grid-column: 2; }
+.snake-pad button:last-child { grid-column: 3; }
+
+.pong-game { width: min(100%, 720px); margin: 0 auto; }
+.pong-game canvas { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; border: 1px solid var(--line-bright); border-radius: 14px; touch-action: none; }
+.pong-score { display: flex; justify-content: center; gap: 50px; margin-bottom: 10px; color: var(--muted); font: 8px var(--font-mono); }
+.pong-score b { margin-left: 8px; color: var(--text); font-size: 17px; }
+
+.memory-game { width: min(100%, 660px); margin: 0 auto; }
+.memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.memory-grid button { aspect-ratio: 1.35; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-elevated); color: transparent; font: 700 13px var(--font-mono); transform-style: preserve-3d; transition: transform .3s ease, background .3s ease, color .2s ease, border-color .3s ease; }
+.memory-grid button::after { content: "CLER"; color: var(--muted); font: 7px var(--font-mono); letter-spacing: .14em; }
+.memory-grid button.is-visible { transform: rotateY(180deg); background: color-mix(in srgb, var(--cyan) 11%, var(--bg-elevated)); color: var(--cyan-light); border-color: var(--line-bright); }
+.memory-grid button.is-visible span { display: inline-block; transform: rotateY(180deg); }
+.memory-grid button.is-visible::after { display: none; }
+
+.simon-game { width: min(100%, 600px); margin: 0 auto; }
+.simon-console { width: min(100%, 440px); aspect-ratio: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; position: relative; margin: 0 auto; padding: 22px; border: 1px solid var(--line); border-radius: 50%; background: var(--bg); }
+.simon-console > button { border: 0; opacity: .42; transition: opacity .12s ease, filter .12s ease, transform .12s ease; }
+.simon-console > button:first-child { border-radius: 100% 12px 12px; background: var(--cyan); }
+.simon-console > button:nth-child(2) { border-radius: 12px 100% 12px 12px; background: var(--gold); }
+.simon-console > button:nth-child(3) { border-radius: 12px 12px 12px 100%; background: var(--green); }
+.simon-console > button:nth-child(4) { border-radius: 12px 12px 100% 12px; background: var(--violet); }
+.simon-console > button.is-active { opacity: 1; filter: brightness(1.5); transform: scale(.96); box-shadow: 0 0 30px currentColor; }
+.simon-console > button span { color: color-mix(in srgb, var(--bg) 80%, transparent); font: 700 16px var(--font-mono); }
+.simon-console > div { width: 104px; height: 104px; display: grid; place-items: center; align-content: center; position: absolute; inset: 50% auto auto 50%; translate: -50% -50%; border: 8px solid var(--bg); border-radius: 50%; background: var(--panel-solid); }
+.simon-console > div strong { color: var(--cyan-light); font: 700 24px var(--font-mono); }
+.simon-console > div span { color: var(--muted); font: 7px var(--font-mono); }
+
+.tic-game { width: min(100%, 520px); margin: 0 auto; }
+.tic-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; width: min(100%, 390px); margin: 0 auto; }
+.tic-board button { aspect-ratio: 1; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-elevated); color: var(--cyan-light); font: 600 clamp(34px, 8vw, 58px) var(--font-display); }
+.tic-board button:nth-child(even) { color: var(--gold); }
+
+.quick-game { width: min(100%, 680px); margin: 0 auto; }
+.quick-screen { width: 100%; min-height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; border: 1px solid var(--line-bright); border-radius: 18px; background: var(--bg); color: var(--cyan-light); }
+.quick-screen span { font: 700 clamp(42px, 9vw, 78px)/1 var(--font-mono); letter-spacing: -.08em; }
+.quick-screen small { color: var(--muted); font: 8px var(--font-mono); letter-spacing: .14em; text-transform: uppercase; }
+.quick-screen.is-waiting { color: var(--gold); }
+.quick-screen.is-ready { background: color-mix(in srgb, var(--green) 22%, var(--bg)); color: var(--text); box-shadow: inset 0 0 90px color-mix(in srgb, var(--green) 18%, transparent); }
+.quick-screen.is-result { color: var(--gold); }
+
 .arcade-trigger { display: inline-flex; align-items: center; gap: 7px; min-width: 44px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 99px; background: transparent; color: var(--muted); font: 8px var(--font-mono); letter-spacing: .08em; transition: color .2s, border-color .2s; }
 .arcade-trigger:hover { color: var(--gold); border-color: var(--gold); }
 @media (max-width: 520px) {
   .fighter-dialog { padding: 14px; }
+  .arcade-dialog { width: calc(100vw - 12px); height: calc(100dvh - 12px); max-height: calc(100dvh - 12px); border-radius: 16px; }
+  .fighter-header { margin-bottom: 12px; }
+  .fighter-header h2 { font-size: 23px; }
+  .arcade-selector { grid-template-columns: minmax(0, 1fr); }
+  .arcade-nav { display: none; }
+  .arcade-game-strip { padding-inline: calc(50% - 76px); scroll-padding-inline: calc(50% - 76px); }
+  .arcade-game-card { flex-basis: 152px; min-height: 82px; padding: 12px; }
+  .arcade-swipe-hint { margin-inline: 3px; }
+  .arcade-stage { min-height: 0; padding: 14px; border-radius: 14px; }
+  .arcade-stage-heading { align-items: flex-start; flex-direction: column; gap: 7px; margin-bottom: 12px; }
+  .arcade-stage-heading h3 { font-size: 21px; }
+  .retro-layout { grid-template-columns: 1fr; gap: 12px; }
+  .retro-sidebar { display: grid; grid-template-columns: 1fr auto; padding: 12px; gap: 8px 12px; }
+  .retro-sidebar p { grid-column: 1 / -1; }
+  .retro-sidebar .retro-primary { grid-column: 2; grid-row: 1; }
+  .retro-score strong { font-size: 24px; }
+  .snake-pad { grid-column: 1 / -1; margin-top: 0; }
+  .retro-action-row { align-items: stretch; flex-direction: column; gap: 10px; }
+  .retro-action-row .retro-primary { width: 100%; }
+  .memory-grid { gap: 6px; }
+  .memory-grid button { border-radius: 8px; font-size: 10px; }
+  .simon-console { padding: 16px; gap: 7px; }
+  .simon-console > div { width: 82px; height: 82px; }
+  .quick-screen { min-height: 280px; }
   .fighter-controls p { font-size: 7px; }
   .fighter-overlay { padding: 18px; }
 }
 @media (max-height: 600px) {
   .fighter-field { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arcade-stage,
+  .arcade-game-card,
+  .memory-grid button,
+  .simon-console > button { animation: none; transition: none; }
 }

@@ -47,7 +47,7 @@
 * { box-sizing: border-box; }
 html { scroll-padding-top: 100px; }
 body { margin: 0; overflow-x: clip; background: var(--bg); color: var(--text); font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
-body, main, .site-header, .achievement-card, .project-card, .arsenal-item, .credential-brand, .badge-card, .community-badge-card, .cisco-strip, .contact-form, .icon-button, .social-row a, input, textarea { transition: background-color .45s ease, color .35s ease, border-color .35s ease, box-shadow .35s ease; }
+body, main, .site-header, .achievement-card, .project-card, .arsenal-item, .credential-brand, .badge-card, .community-badge-card, .cisco-strip, .contact-form, .icon-button, .social-row a, input, textarea { transition: background-color .65s cubic-bezier(.22, 1, .36, 1), color .5s ease, border-color .55s ease, box-shadow .6s ease; }
 input, textarea { cursor: text; }
 button, input, textarea { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
@@ -3077,31 +3077,45 @@ footer {
 /* Smooth theme reveal */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: .62s;
+  animation-duration: .78s;
   animation-timing-function: cubic-bezier(.22, 1, .36, 1);
   mix-blend-mode: normal;
+  transform-origin: center;
 }
 
 ::view-transition-old(root) {
   animation-name: theme-fade-out;
+  z-index: 1;
 }
 
 ::view-transition-new(root) {
   animation-name: theme-reveal;
+  z-index: 2;
 }
 
 @keyframes theme-fade-out {
-  to { opacity: .72; }
+  from {
+    opacity: 1;
+    filter: brightness(1) saturate(1) blur(0);
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    filter: brightness(.94) saturate(.88) blur(3px);
+    transform: scale(1.008);
+  }
 }
 
 @keyframes theme-reveal {
   from {
-    clip-path: circle(0 at calc(100% - 55px) 38px);
-    opacity: .7;
+    opacity: 0;
+    filter: brightness(.96) saturate(.9) blur(4px);
+    transform: scale(.992);
   }
   to {
-    clip-path: circle(150% at calc(100% - 55px) 38px);
     opacity: 1;
+    filter: brightness(1) saturate(1) blur(0);
+    transform: scale(1);
   }
 }
 
@@ -4004,6 +4018,80 @@ footer {
   .project-detail-content h2 { margin-right: 48px; font-size: 38px; }
   .project-detail-meta { grid-template-columns: 1fr; }
   .project-detail-meta > div:last-child { grid-column: auto; }
+}
+@media (max-width: 768px), (pointer: coarse) {
+  .scroll-warp { display: none; }
+  .hero-copy,
+  .avatar-stage,
+  .avatar-stage .orbit-outer,
+  .avatar-stage .orbit-inner,
+  .scan-line { animation: none; }
+  .stars-one { animation: star-breathe 8s ease-in-out infinite alternate; }
+  .stars-two { animation: none; opacity: .24; }
+  .sky::before,
+  .sky::after { animation-duration: 36s; }
+  .section-planet { animation-duration: 20s; }
+  .project-detail-orbit { animation-duration: 28s; }
+
+  .scroll-reveal {
+    transition: opacity .5s ease var(--reveal-delay, 0ms),
+      transform .68s cubic-bezier(.22, 1, .36, 1) var(--reveal-delay, 0ms);
+  }
+  .scroll-reveal:not(.is-visible) {
+    transform: translate3d(0, 24px, 0) scale(.985) !important;
+    filter: none;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: .5s;
+    filter: none;
+    transform: none;
+  }
+  ::view-transition-old(root) { animation-name: theme-mobile-fade-out; }
+  ::view-transition-new(root) { animation-name: theme-mobile-fade-in; }
+
+  .collection-dialog::backdrop,
+  .project-detail-dialog::backdrop,
+  .cyber-modal-backdrop { backdrop-filter: blur(6px); }
+  .collection-dialog[open],
+  .project-detail-dialog[open],
+  .cyber-modal { animation: mobile-modal-enter .38s cubic-bezier(.22, 1, .36, 1) both; }
+  .collection-dialog[open].is-closing,
+  .project-detail-dialog[open].is-closing,
+  .cyber-modal-backdrop.is-closing .cyber-modal { animation: mobile-modal-exit .22s cubic-bezier(.4, 0, 1, 1) both; }
+}
+@media (hover: none), (pointer: coarse) {
+  .achievement-card:hover,
+  .project-card:hover,
+  .arsenal-item:hover,
+  .accreditation-card:hover,
+  .badge-card:hover,
+  .community-badge-card:hover,
+  .identity-frame:hover .avatar-shell {
+    transform: none;
+    box-shadow: none;
+  }
+  :is(.button, .icon-button, .social-row a, .project-detail-trigger, .view-all-button, .collection-project-link):active {
+    transform: scale(.97);
+    transition-duration: .12s;
+  }
+}
+@keyframes theme-mobile-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes theme-mobile-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes mobile-modal-enter {
+  from { opacity: 0; transform: translate3d(0, 22px, 0) scale(.985); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+@keyframes mobile-modal-exit {
+  from { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  to { opacity: 0; transform: translate3d(0, 14px, 0) scale(.99); }
 }
 @media (prefers-reduced-motion: reduce) {
   .collection-dialog[open], .collection-dialog[open].is-closing,
