@@ -19,6 +19,8 @@ export default defineConfig(({ mode }) => {
   return {
     base: process.env.FIGMA_PUBLIC_URL
       ? `${process.env.FIGMA_PUBLIC_URL}/`
+      : process.env.VITE_BASE_PATH
+        ? process.env.VITE_BASE_PATH
       : process.env.GITHUB_ACTIONS
         ? githubPagesBase
         : '/',
