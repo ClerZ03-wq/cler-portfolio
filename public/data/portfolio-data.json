@@ -1,0 +1,284 @@
+{
+  "hero": {
+    "statusText": "Open to internships & opportunities",
+    "intro": "Hello, world. I'm",
+    "name": "John Clerwin Dela Cruz",
+    "roles": [
+      "Web Developer",
+      "Security Analyst"
+    ],
+    "description": "4th-Year IT Student at the University of Makati, building resilient digital experiences at the intersection of code and cybersecurity.",
+    "avatar": "asset:clerdevPortrait",
+    "location": "Taguig City, Philippines",
+    "education": "University of Makati (4th Year IT)",
+    "socials": [
+      {
+        "name": "GitHub",
+        "url": "https://github.com/ClerZ03-wq",
+        "icon": "github"
+      },
+      {
+        "name": "LinkedIn",
+        "url": "https://www.linkedin.com/in/clerz/",
+        "icon": "linkedin"
+      },
+      {
+        "name": "Facebook",
+        "url": "https://www.facebook.com/clerz.pogi.meow/",
+        "icon": "facebook"
+      },
+      {
+        "name": "AWS Builder",
+        "url": "https://builder.aws.com/community/@clerz",
+        "icon": "aws"
+      }
+    ]
+  },
+  "about": {
+    "chapter": "01 / About",
+    "title": "Driven by curiosity. Built for impact.",
+    "caption": "THE MIND BEHIND THE MACHINE",
+    "lead": "I'm an aspiring SOC and Full-Stack Engineer who believes the best technology isn't just functional—it's secure by design.",
+    "bio": "My journey spans network defense, server administration, and thoughtful software engineering. I turn complex problems into reliable systems while constantly sharpening my understanding of the threats that challenge them.",
+    "location": "Makati City, PH",
+    "education": "BS Information Technology",
+    "northStarQuote": "Build thoughtfully. Defend relentlessly. Never stop learning.",
+    "achievements": [
+      {
+        "id": "ach-1",
+        "badge": "Academic Distinction",
+        "title": "Dean's Lister",
+        "subtitle": "University of Makati",
+        "detail": "Consistent excellence",
+        "featured": true,
+        "theme": "emerald"
+      },
+      {
+        "id": "ach-2",
+        "badge": "Competition",
+        "title": "1st Runner Up",
+        "subtitle": "Infotechnolympics",
+        "detail": "Web Design (2024-2025)",
+        "theme": "gold"
+      },
+      {
+        "id": "ach-3",
+        "badge": "Certification",
+        "title": "NC II Holder",
+        "subtitle": "Computer System Servicing",
+        "detail": "National Certificate II",
+        "theme": "cyan"
+      }
+    ]
+  },
+  "projects": [
+    {
+      "id": "proj-fil-node",
+      "number": "01",
+      "title": "FIL-NODE",
+      "eyebrow": "Telemetry & Detection Engine",
+      "client": "Filoil Philippines Corporation",
+      "date": "August 2026 — Present",
+      "role": "Lead Developer | Security Architect",
+      "copy": "A secure, VPN-independent endpoint telemetry and detection platform built for proactive remote asset management.",
+      "details": [
+        "Architected a secure, VPN-independent telemetry pipeline using a C#/.NET endpoint agent and Django REST backend, continuously synchronizing remote device health and network data into a centralized PostgreSQL database.",
+        "Engineered a custom rule-based detection engine to analyze historical telemetry and baseline deviations, accelerating IT incident resolution through automated, human-in-the-loop remediation workflows.",
+        "Automated endpoint security baseline checks for firewall, antivirus, and storage configurations using AES-256-GCM encryption, transforming remote asset management into a proactive system aligned with ISO/IEC 27001:2022, NIST, and CIS Benchmarks."
+      ],
+      "tags": [
+        "C# / .NET",
+        "Django REST",
+        "PostgreSQL",
+        "SecOps"
+      ],
+      "icon": "terminal",
+      "accent": "cyan"
+    },
+    {
+      "id": "proj-fil-track",
+      "number": "02",
+      "title": "FIL-TRACK",
+      "eyebrow": "Filoil Logistics Asset Tracker",
+      "client": "Filoil Philippines Corporation",
+      "date": "February 2026 — May 2026",
+      "role": "Lead Programmer | Systems Administrator",
+      "copy": "A centralized, multi-department asset lifecycle platform connecting IT, HR, Finance, remote terminals, and the head office.",
+      "details": [
+        "Developed a centralized web-based, multi-department digital ecosystem, eliminating isolated information silos across IT, HR, and Finance while replacing manual, version-control-prone spreadsheet tracking.",
+        "Engineered end-to-end asset lifecycle tracking to trace the physical movement and operational status of equipment across remote terminals and the central head office, giving management real-time global oversight and reducing the risk of unrecorded corporate losses.",
+        "Secured enterprise asset data by enforcing Role-Based Access Control (RBAC) and a client-mandated VPN network architecture, ensuring strict data confidentiality and safe geographic tracking of equipment across all terminal locations."
+      ],
+      "tags": [
+        "Full-Stack",
+        "Asset Lifecycle",
+        "RBAC",
+        "Systems Admin"
+      ],
+      "icon": "map",
+      "accent": "gold"
+    },
+    {
+      "id": "proj-makati-assessment",
+      "number": "03",
+      "title": "Makati City Hall",
+      "eyebrow": "Vulnerability Assessment",
+      "client": "ICTO, Makati City Hall",
+      "date": "March 2026 — May 2026",
+      "role": "Information Security Analyst (Academic Project)",
+      "copy": "A comprehensive information assurance and security assessment translating municipal vulnerabilities into a prioritized remediation roadmap.",
+      "details": [
+        "Reviewed a comprehensive Information Assurance and Security Plan, synthesizing multi-domain vulnerability data into a cohesive executive risk mitigation strategy.",
+        "Designed actionable security controls for software and hardware inventory, secure endpoint configurations, malware defenses, and wireless access, aligning municipal IT operations with NIST and DICT Cybersecurity Frameworks.",
+        "Authored targeted vulnerability findings addressing personnel security, backup recovery processes, and Data Privacy Act of 2012 (RA 10173) compliance, establishing a prioritized remediation roadmap for the city government."
+      ],
+      "tags": [
+        "NIST",
+        "DICT Framework",
+        "Risk",
+        "RA 10173"
+      ],
+      "icon": "shield",
+      "accent": "violet"
+    }
+  ],
+  "arsenal": [
+    {
+      "id": "sk-1",
+      "name": "Django",
+      "description": "Full-stack web framework",
+      "monogram": "DJ",
+      "category": "build"
+    },
+    {
+      "id": "sk-2",
+      "name": "PostgreSQL",
+      "description": "Relational data systems",
+      "monogram": "PG",
+      "category": "build"
+    },
+    {
+      "id": "sk-3",
+      "name": "C++",
+      "description": "Systems programming",
+      "monogram": "C+",
+      "category": "build"
+    },
+    {
+      "id": "sk-4",
+      "name": "Cisco",
+      "description": "Network infrastructure",
+      "monogram": "CS",
+      "category": "operate"
+    },
+    {
+      "id": "sk-5",
+      "name": "Windows Server",
+      "description": "Enterprise administration",
+      "monogram": "WS",
+      "category": "operate"
+    },
+    {
+      "id": "sk-6",
+      "name": "Vulnerability Assessment",
+      "description": "Security testing",
+      "monogram": "VA",
+      "category": "defend"
+    }
+  ],
+  "credentials": [
+    {
+      "id": "cred-1",
+      "name": "Security Operations and Management",
+      "short": "SecOps",
+      "issuer": "IBM SkillsBuild",
+      "category": "Cybersecurity",
+      "image": "asset:ibmSecurityOperations",
+      "verifyUrl": "https://www.credly.com/badges/9d831a30-ead6-40d8-b8e1-7815299cab15"
+    },
+    {
+      "id": "cred-2",
+      "name": "Incident Response and Systems Forensics",
+      "short": "Forensics",
+      "issuer": "IBM SkillsBuild",
+      "category": "Cybersecurity",
+      "image": "asset:ibmIncidentForensics",
+      "verifyUrl": "https://www.credly.com/badges/bbefe36a-63c2-447e-85f2-eda72bba3e1a"
+    },
+    {
+      "id": "cred-3",
+      "name": "Cloud Security",
+      "short": "Cloud",
+      "issuer": "IBM SkillsBuild",
+      "category": "Cybersecurity",
+      "image": "asset:ibmCloudSecurity",
+      "verifyUrl": "https://www.credly.com/badges/d8a84b2b-b8e9-438d-9de8-f33002ffd05b"
+    },
+    {
+      "id": "cred-4",
+      "name": "System and Network Security",
+      "short": "SNS",
+      "issuer": "IBM SkillsBuild",
+      "category": "Cybersecurity",
+      "image": "asset:ibmSystemNetworkSecurity",
+      "verifyUrl": "https://www.credly.com/badges/13190e51-fe0b-4fb1-8bd7-9c642f081c82"
+    },
+    {
+      "id": "cred-5",
+      "name": "Vulnerability Management",
+      "short": "VM",
+      "issuer": "IBM SkillsBuild",
+      "category": "Cybersecurity",
+      "image": "asset:ibmVulnerabilityManagement",
+      "verifyUrl": "https://www.credly.com/badges/4b92edb6-d85b-40ab-affa-568e19109f17"
+    },
+    {
+      "id": "cred-6",
+      "name": "Governance, Risk, Compliance, and Data Privacy",
+      "short": "GRC",
+      "issuer": "IBM SkillsBuild",
+      "category": "Cybersecurity",
+      "image": "asset:ibmGrc",
+      "verifyUrl": "https://www.credly.com/badges/257ecdbe-1f66-4677-b0b3-18da17d34471"
+    },
+    {
+      "id": "cred-7",
+      "name": "AWS Student Builder Group",
+      "short": "AWS Builder",
+      "issuer": "Participant",
+      "category": "Community",
+      "image": "asset:awsStudentBuilder",
+      "verifyUrl": "https://builder.aws.com/community/@clerz"
+    },
+    {
+      "id": "cred-8",
+      "name": "ISC2 Cybersecurity Community",
+      "short": "ISC2",
+      "issuer": "Professional development",
+      "category": "Community",
+      "image": "asset:isc2Badge",
+      "verifyUrl": "https://www.isc2.org/"
+    }
+  ],
+  "contact": {
+    "chapter": "05 / Contact",
+    "headlineMain": "Let's build something",
+    "headlineHighlight": "remarkable.",
+    "copy": "Have an opportunity, a security challenge, or an ambitious idea? I'd love to hear about it.",
+    "topics": [
+      "Internships",
+      "Collaboration",
+      "Security & development"
+    ],
+    "email": "johnclerwindelacruz@gmail.com",
+    "responseTime": "Usually responds within 24 hours",
+    "formspreeUrl": "https://formspree.io/f/xkoypkaa"
+  },
+  "githubConfig": {
+    "owner": "ClerZ03-wq",
+    "repo": "cler-portfolio",
+    "branch": "main",
+    "dataPath": "public/data/portfolio-data.json",
+    "uploadsFolder": "public/uploads"
+  }
+}

@@ -1,18 +1,31 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import clerdevPortrait from "./assets/clerdev-portrait.jpg";
-import dictCyberproCredential from "./assets/dict-cyberpro-level-2.png";
-import awsBuilderLogo from "./assets/aws-builder-logo.png";
-import awsStudentBuilderBadge from "./assets/badges/aws-student-builder.png";
-import ibmCloudBadge from "./assets/badges/ibm-cloud-security.png";
-import ibmGrcBadge from "./assets/badges/ibm-grc.png";
-import ibmForensicsBadge from "./assets/badges/ibm-incident-forensics.png";
-import ibmSecurityOperationsBadge from "./assets/badges/ibm-security-operations.png";
-import ibmSystemNetworkBadge from "./assets/badges/ibm-system-network-security.png";
-import ibmVulnerabilityBadge from "./assets/badges/ibm-vulnerability-management.png";
-import isc2Badge from "./assets/badges/isc2-badge.png";
 import SpaceFighter from "./SpaceFighter";
 import CollectionDialog from "./CollectionDialog";
+import { defaultPortfolioData } from "./data/defaultData";
+import type {
+  AdminState,
+  GitHubUser,
+  PortfolioData,
+  ProjectItem,
+} from "./types/portfolio";
+import {
+  commitPortfolioData,
+  fetchRepoData,
+  validateGitHubToken,
+} from "./services/githubService";
+import { resolveAssetUrl } from "./utils/assetResolver";
+import { ToastContainer, type ToastMessage } from "./components/Toast";
+import { AdminBar } from "./components/AdminBar";
+import { AdminLoginModal } from "./components/AdminLoginModal";
+import {
+  EditHeroModal,
+  EditAboutModal,
+  EditProjectsModal,
+  EditArsenalModal,
+  EditCredentialsModal,
+  EditContactModal,
+} from "./components/EditModals";
 
 type IconName =
   | "arrow"
@@ -66,134 +79,98 @@ function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
   );
 }
 
-const projects = [
-  {
-    number: "01",
-    title: "FIL-NODE",
-    eyebrow: "Telemetry & Detection Engine",
-    client: "Filoil Philippines Corporation",
-    date: "August 2026 — Present",
-    role: "Lead Developer | Security Architect",
-    copy: "A secure, VPN-independent endpoint telemetry and detection platform built for proactive remote asset management.",
-    details: [
-      "Architected a secure, VPN-independent telemetry pipeline using a C#/.NET endpoint agent and Django REST backend, continuously synchronizing remote device health and network data into a centralized PostgreSQL database.",
-      "Engineered a custom rule-based detection engine to analyze historical telemetry and baseline deviations, accelerating IT incident resolution through automated, human-in-the-loop remediation workflows.",
-      "Automated endpoint security baseline checks for firewall, antivirus, and storage configurations using AES-256-GCM encryption, transforming remote asset management into a proactive system aligned with ISO/IEC 27001:2022, NIST, and CIS Benchmarks.",
-    ],
-    tags: ["C# / .NET", "Django REST", "PostgreSQL", "SecOps"],
-    icon: "terminal" as IconName,
-    accent: "cyan",
-  },
-  {
-    number: "02",
-    title: "FIL-TRACK",
-    eyebrow: "Filoil Logistics Asset Tracker",
-    client: "Filoil Philippines Corporation",
-    date: "February 2026 — May 2026",
-    role: "Lead Programmer | Systems Administrator",
-    copy: "A centralized, multi-department asset lifecycle platform connecting IT, HR, Finance, remote terminals, and the head office.",
-    details: [
-      "Developed a centralized web-based, multi-department digital ecosystem, eliminating isolated information silos across IT, HR, and Finance while replacing manual, version-control-prone spreadsheet tracking.",
-      "Engineered end-to-end asset lifecycle tracking to trace the physical movement and operational status of equipment across remote terminals and the central head office, giving management real-time global oversight and reducing the risk of unrecorded corporate losses.",
-      "Secured enterprise asset data by enforcing Role-Based Access Control (RBAC) and a client-mandated VPN network architecture, ensuring strict data confidentiality and safe geographic tracking of equipment across all terminal locations.",
-    ],
-    tags: ["Full-Stack", "Asset Lifecycle", "RBAC", "Systems Admin"],
-    icon: "map" as IconName,
-    accent: "gold",
-  },
-  {
-    number: "03",
-    title: "Makati City Hall",
-    eyebrow: "Vulnerability Assessment",
-    client: "ICTO, Makati City Hall",
-    date: "March 2026 — May 2026",
-    role: "Information Security Analyst (Academic Project)",
-    copy: "A comprehensive information assurance and security assessment translating municipal vulnerabilities into a prioritized remediation roadmap.",
-    details: [
-      "Reviewed a comprehensive Information Assurance and Security Plan, synthesizing multi-domain vulnerability data into a cohesive executive risk mitigation strategy.",
-      "Designed actionable security controls for software and hardware inventory, secure endpoint configurations, malware defenses, and wireless access, aligning municipal IT operations with NIST and DICT Cybersecurity Frameworks.",
-      "Authored targeted vulnerability findings addressing personnel security, backup recovery processes, and Data Privacy Act of 2012 (RA 10173) compliance, establishing a prioritized remediation roadmap for the city government.",
-    ],
-    tags: ["NIST", "DICT Framework", "Risk", "RA 10173"],
-    icon: "shield" as IconName,
-    accent: "violet",
-  },
-];
-
-type Project = typeof projects[number];
-
-const arsenal = [
-  ["Django", "Full-stack web framework", "DJ"],
-  ["PostgreSQL", "Relational data systems", "PG"],
-  ["C++", "Systems programming", "C+"],
-  ["Cisco", "Network infrastructure", "CS"],
-  ["Windows Server", "Enterprise administration", "WS"],
-  ["Vulnerability Assessment", "Security testing", "VA"],
-];
-
-const badges = [
-  { name: "Security Operations and Management", short: "SecOps", image: ibmSecurityOperationsBadge },
-  { name: "Incident Response and Systems Forensics", short: "Forensics", image: ibmForensicsBadge },
-  { name: "Cloud Security", short: "Cloud", image: ibmCloudBadge },
-  { name: "System and Network Security", short: "SNS", image: ibmSystemNetworkBadge },
-  { name: "Vulnerability Management", short: "VM", image: ibmVulnerabilityBadge },
-  { name: "Governance, Risk, Compliance, and Data Privacy", short: "GRC", image: ibmGrcBadge },
-];
-
-const communityBadges = [
-  { name: "AWS Student Builder Group", role: "Participant", image: awsStudentBuilderBadge },
-  { name: "ISC2 Cybersecurity Community", role: "Professional development", image: isc2Badge },
-];
-
-const credentialCollection = [
-  ...badges.map((badge) => ({ ...badge, issuer: "IBM SkillsBuild", category: "Cybersecurity" })),
-  ...communityBadges.map((badge) => ({ ...badge, issuer: badge.role, category: "Community" })),
-];
-
-function CredentialCard({ badge, index }: { badge: typeof credentialCollection[number]; index: number }) {
+function CredentialCard({
+  badge,
+  index,
+}: {
+  badge: { name: string; issuer: string; category: string; image: string; verifyUrl?: string };
+  index: number;
+}) {
   return (
-    <article className={`accreditation-card credential-ticket${index >= 6 ? " community-ticket" : ""}`}>
-      <div className="ticket-header"><span>{badge.category}</span><span>NO. {String(index + 1).padStart(2, "0")}</span></div>
-      <div className="badge-display"><img src={badge.image} alt={`${badge.name} badge`} loading="lazy" /></div>
-      <div className="ticket-caption"><span>{badge.issuer}</span><h3>{badge.name}</h3></div>
-      <div className="ticket-footer"><span><Icon name={index >= 6 ? "spark" : "shield"} size={12} />{index >= 6 ? "Connect & grow" : "Learn & defend"}</span><span className="ticket-barcode" aria-hidden="true" /></div>
+    <article className={`accreditation-card credential-ticket${badge.category === "Community" ? " community-ticket" : ""}`}>
+      <div className="ticket-header">
+        <span>{badge.category}</span>
+        <span>NO. {String(index + 1).padStart(2, "0")}</span>
+      </div>
+      <div className="badge-display">
+        <img src={resolveAssetUrl(badge.image)} alt={`${badge.name} badge`} loading="lazy" />
+      </div>
+      <div className="ticket-caption">
+        <span>{badge.issuer}</span>
+        <h3>{badge.name}</h3>
+      </div>
+      <div className="ticket-footer">
+        <span>
+          <Icon name={badge.category === "Community" ? "spark" : "shield"} size={12} />
+          {badge.category === "Community" ? "Connect & grow" : "Learn & defend"}
+        </span>
+        <span className="ticket-barcode" aria-hidden="true" />
+      </div>
     </article>
   );
 }
 
-function ArsenalCard({ skill, index }: { skill: string[]; index: number }) {
+function ArsenalCard({ skill, index }: { skill: [string, string, string]; index: number }) {
   const [name, description, monogram] = skill;
   return (
     <article className="arsenal-item">
-      <div className="capability-index"><span>{index < 3 ? "BUILD" : index < 5 ? "OPERATE" : "DEFEND"}</span><span>0{index + 1}</span></div>
+      <div className="capability-index">
+        <span>{index < 3 ? "BUILD" : index < 5 ? "OPERATE" : "DEFEND"}</span>
+        <span>0{index + 1}</span>
+      </div>
       <span className={`tech-mark tech-${index}`}>{monogram}</span>
-      <div><h3>{name}</h3><p>{description}</p></div>
+      <div>
+        <h3>{name}</h3>
+        <p>{description}</p>
+      </div>
     </article>
   );
 }
 
-function ProjectCard({ project, onView }: { project: Project; onView: (project: Project) => void }) {
+function ProjectCard({
+  project,
+  onView,
+}: {
+  project: ProjectItem;
+  onView: (project: ProjectItem) => void;
+}) {
   return (
     <article className={`project-card ${project.accent}`}>
       <div className="project-visual">
         <span className="project-number">{project.number}</span>
-        <span className="mission-caption">MISSION / {project.accent === "cyan" ? "DETECT" : project.accent === "gold" ? "CONNECT" : "PROTECT"}</span>
+        <span className="mission-caption">
+          MISSION / {project.accent === "cyan" ? "DETECT" : project.accent === "gold" ? "CONNECT" : "PROTECT"}
+        </span>
         <div className="project-icon"><Icon name={project.icon} size={34} /></div>
         <div className="visual-lines"><i /><i /><i /><i /></div>
       </div>
       <div className="project-content">
         <span className="project-eyebrow">{project.eyebrow}</span>
         <h3>{project.title}</h3>
-        <div className="project-card-meta"><span>{project.client}</span><span>{project.date}</span></div>
+        <div className="project-card-meta">
+          <span>{project.client}</span>
+          <span>{project.date}</span>
+        </div>
         <p>{project.copy}</p>
-        <div className="tag-row">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-        <button className="project-detail-trigger" type="button" onClick={() => onView(project)}>View project details <Icon name="arrow" size={16} /></button>
+        <div className="tag-row">
+          {project.tags.map((tag) => <span key={tag}>{tag}</span>)}
+        </div>
+        <button
+          className="project-detail-trigger"
+          type="button"
+          onClick={() => onView(project)}
+          aria-haspopup="dialog"
+          aria-label={`View details for ${project.title}`}
+        >
+          <span>View project details</span>
+          <Icon name="arrow" size={16} />
+        </button>
       </div>
     </article>
   );
 }
 
-function ProjectDetailsDialog({ project, onClose }: { project: Project; onClose: () => void }) {
+function ProjectDetailsDialog({ project, onClose }: { project: ProjectItem; onClose: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [closing, setClosing] = useState(false);
   const closeTimer = useRef<number | null>(null);
@@ -201,72 +178,92 @@ function ProjectDetailsDialog({ project, onClose }: { project: Project; onClose:
   const requestClose = () => {
     if (closeTimer.current !== null) return;
     setClosing(true);
-    const delay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 240;
-    closeTimer.current = window.setTimeout(onClose, delay);
+    closeTimer.current = window.setTimeout(() => {
+      dialog.current?.close();
+      onClose();
+      closeTimer.current = null;
+    }, 240);
   };
 
   useEffect(() => {
-    const previousFocus = document.activeElement as HTMLElement | null;
-    const overflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    dialog.current?.showModal();
+    const element = dialog.current;
+    if (!element) return;
+    element.showModal();
+    document.body.classList.add("modal-open");
     return () => {
+      document.body.classList.remove("modal-open");
       if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
-      document.body.style.overflow = overflow;
-      previousFocus?.focus({ preventScroll: true });
     };
   }, []);
 
   return (
     <dialog
-      className={`project-detail-dialog ${project.accent}${closing ? " is-closing" : ""}`}
+      className={`project-dialog-backdrop ${closing ? "is-closing" : ""}`}
       ref={dialog}
-      aria-labelledby="project-detail-title"
-      onCancel={(event) => { event.preventDefault(); requestClose(); }}
-      onClick={(event) => {
-        if (event.target !== event.currentTarget) return;
-        const bounds = event.currentTarget.getBoundingClientRect();
-        if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) requestClose();
+      onCancel={(e) => {
+        e.preventDefault();
+        requestClose();
+      }}
+      onClick={(e) => {
+        if (e.target === dialog.current) requestClose();
       }}
     >
-      <button className="icon-button project-detail-close" type="button" onClick={requestClose} aria-label="Close project details">
-        <Icon name="x" size={18} />
-      </button>
-      <div className="project-detail-visual">
-        <span className="project-detail-number">{project.number}</span>
-        <div className="project-detail-graphic" aria-hidden="true">
-          <span className="project-detail-orbit"><i /><i /><i /></span>
-          <div className="project-detail-icon"><Icon name={project.icon} size={38} /></div>
+      <article className={`project-dialog ${project.accent}`} onClick={(e) => e.stopPropagation()}>
+        <div className="dialog-header">
+          <div className="dialog-title-group">
+            <span className="project-dialog-eyebrow">{project.eyebrow}</span>
+            <div className="dialog-heading-row">
+              <span className="dialog-number">{project.number}</span>
+              <h2>{project.title}</h2>
+            </div>
+            <div className="project-dialog-meta">
+              <span>{project.client}</span>
+              <span>{project.date}</span>
+              <span>{project.role}</span>
+            </div>
+          </div>
+          <button className="project-dialog-close" type="button" onClick={requestClose} aria-label="Close dialog">
+            <Icon name="x" size={18} />
+          </button>
         </div>
-        <div>
-          <span>{project.eyebrow}</span>
-          <strong>{project.client}</strong>
-          <small>{project.date}</small>
+        <div className="dialog-body">
+          <p className="dialog-summary">{project.copy}</p>
+          <div className="dialog-bullets">
+            <h4>Key Architecture &amp; Implementation</h4>
+            <ul>
+              {project.details.map((detail, index) => (
+                <li key={index}>{detail}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="dialog-tags">
+            {project.tags.map((tag) => (
+              <span key={tag}>{tag}</span>
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="project-detail-content">
-        <span className="eyebrow">CLERDEV / PROJECT DOSSIER</span>
-        <h2 id="project-detail-title">{project.title}</h2>
-        <p className="project-detail-summary">{project.copy}</p>
-        <div className="project-detail-meta">
-          <div><span>Organization</span><strong>{project.client}</strong></div>
-          <div><span>Timeline</span><strong>{project.date}</strong></div>
-          <div><span>Role</span><strong>{project.role}</strong></div>
-        </div>
-        <div className="project-detail-scope">
-          <span>Scope &amp; impact</span>
-          <ul>{project.details.map((detail) => <li key={detail}>{detail}</li>)}</ul>
-        </div>
-        <div className="tag-row">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-      </div>
+      </article>
     </dialog>
   );
 }
 
-function SectionTitle({ eyebrow, title, copy }: { eyebrow: string; title: string; copy?: string }) {
+function SectionTitle({
+  eyebrow,
+  title,
+  copy,
+  action,
+}: {
+  eyebrow: string;
+  title: string;
+  copy?: string;
+  action?: React.ReactNode;
+}) {
   return (
     <div className="section-heading">
-      <span className="eyebrow"><span className="eyebrow-line" />{eyebrow}</span>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px" }}>
+        <span className="eyebrow"><span className="eyebrow-line" />{eyebrow}</span>
+        {action}
+      </div>
       <h2>{title}</h2>
       {copy && <p>{copy}</p>}
     </div>
@@ -274,19 +271,288 @@ function SectionTitle({ eyebrow, title, copy }: { eyebrow: string; title: string
 }
 
 function App() {
+  // ----------------------------------------------------
+  // DATA & ADMIN STATE
+  // ----------------------------------------------------
+  const [portfolioData, setPortfolioData] = useState<PortfolioData>(() => {
+    try {
+      const draft = localStorage.getItem("admin_portfolio_draft");
+      if (draft) return JSON.parse(draft);
+    } catch {
+      // ignore JSON parse error
+    }
+    return defaultPortfolioData;
+  });
+
+  const [adminState, setAdminState] = useState<AdminState>({
+    isLoggedIn: false,
+    token: "",
+    user: null,
+    mode: "edit",
+    hasUnsavedChanges: !!localStorage.getItem("admin_portfolio_draft"),
+    fileSha: null,
+  });
+
+  const [activeEditModal, setActiveEditModal] = useState<
+    "hero" | "about" | "projects" | "arsenal" | "credentials" | "contact" | null
+  >(null);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  const addToast = (message: string, type: "success" | "error" | "info" = "info") => {
+    const id = `toast-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+    setToasts((prev) => [...prev, { id, type, message }]);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  // ----------------------------------------------------
+  // INITIAL DATA & AUTH CHECK
+  // ----------------------------------------------------
+  useEffect(() => {
+    // If no draft in localStorage, load published data from public/data/portfolio-data.json
+    const hasDraft = !!localStorage.getItem("admin_portfolio_draft");
+    if (!hasDraft) {
+      fetch(`/data/portfolio-data.json?_t=${Date.now()}`)
+        .then((res) => {
+          if (res.ok) return res.json();
+          throw new Error("Local data file not found");
+        })
+        .then((data: PortfolioData) => {
+          if (data && data.hero) {
+            setPortfolioData(data);
+          }
+        })
+        .catch(() => {
+          // fallback to bundled default
+        });
+    }
+
+    // Check saved token for automatic persistent login
+    const savedToken =
+      localStorage.getItem("admin_github_pat") ||
+      sessionStorage.getItem("admin_github_pat");
+
+    if (savedToken) {
+      validateGitHubToken(savedToken).then((res) => {
+        if (res.valid && res.user) {
+          setAdminState((prev) => ({
+            ...prev,
+            isLoggedIn: true,
+            token: savedToken,
+            user: res.user!,
+            mode: "edit",
+          }));
+          // Fetch current file SHA
+          fetchRepoData(portfolioData.githubConfig, savedToken).then((repoRes) => {
+            if (repoRes.sha) {
+              setAdminState((prev) => ({ ...prev, fileSha: repoRes.sha! }));
+            }
+          });
+        } else {
+          localStorage.removeItem("admin_github_pat");
+          sessionStorage.removeItem("admin_github_pat");
+        }
+      });
+    }
+  }, []);
+
+  // Keyboard shortcut Ctrl+Shift+A or Cmd+Shift+A
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "A" || e.key === "a")) {
+        e.preventDefault();
+        if (!adminState.isLoggedIn) {
+          setLoginModalOpen(true);
+        } else {
+          setAdminState((prev) => ({
+            ...prev,
+            mode: prev.mode === "edit" ? "preview" : "edit",
+          }));
+          addToast(
+            adminState.mode === "edit" ? "Preview Mode (Controls hidden)" : "Edit Mode Active ✏️",
+            "info"
+          );
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [adminState.isLoggedIn, adminState.mode]);
+
+  // Triple-click on brand logo to trigger admin
+  const logoClicks = useRef<number[]>([]);
+  const handleLogoClick = () => {
+    const now = Date.now();
+    logoClicks.current = logoClicks.current.filter((t) => now - t < 1500);
+    logoClicks.current.push(now);
+    if (logoClicks.current.length >= 3) {
+      logoClicks.current = [];
+      if (!adminState.isLoggedIn) {
+        setLoginModalOpen(true);
+      } else {
+        setAdminState((prev) => ({
+          ...prev,
+          mode: prev.mode === "edit" ? "preview" : "edit",
+        }));
+        addToast(
+          adminState.mode === "edit" ? "Preview Mode (Controls hidden)" : "Edit Mode Active ✏️",
+          "info"
+        );
+      }
+    }
+  };
+
+  // ----------------------------------------------------
+  // ADMIN ACTIONS
+  // ----------------------------------------------------
+  const handleLoginSuccess = (token: string, user: GitHubUser, remember: boolean) => {
+    if (remember) {
+      localStorage.setItem("admin_github_pat", token);
+    } else {
+      sessionStorage.setItem("admin_github_pat", token);
+    }
+
+    setAdminState((prev) => ({
+      ...prev,
+      isLoggedIn: true,
+      token,
+      user,
+      mode: "edit",
+    }));
+
+    addToast(`Authenticated as @${user.login}! Admin Mode active. ✨`, "success");
+
+    // Fetch SHA
+    fetchRepoData(portfolioData.githubConfig, token).then((repoRes) => {
+      if (repoRes.sha) {
+        setAdminState((prev) => ({ ...prev, fileSha: repoRes.sha! }));
+      }
+    });
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("admin_github_pat");
+    sessionStorage.removeItem("admin_github_pat");
+    setAdminState({
+      isLoggedIn: false,
+      token: "",
+      user: null,
+      mode: "preview",
+      hasUnsavedChanges: false,
+      fileSha: null,
+    });
+    addToast("Logged out of Admin Mode.", "info");
+  };
+
+  const updatePortfolio = (updater: (prev: PortfolioData) => PortfolioData) => {
+    setPortfolioData((prev) => {
+      const next = updater(prev);
+      try {
+        localStorage.setItem("admin_portfolio_draft", JSON.stringify(next));
+      } catch (e) {
+        console.error("Local draft save error:", e);
+      }
+      setAdminState((s) => ({ ...s, hasUnsavedChanges: true }));
+      return next;
+    });
+    addToast("Draft saved locally! Click 'Commit to GitHub' to publish. 💾", "info");
+  };
+
+  const handleSaveToGitHub = async () => {
+    if (!adminState.token) {
+      setLoginModalOpen(true);
+      return;
+    }
+
+    setIsSaving(true);
+    addToast("Committing changes to GitHub repository... ⏳", "info");
+
+    const result = await commitPortfolioData(
+      portfolioData.githubConfig,
+      adminState.token,
+      portfolioData,
+      adminState.fileSha || undefined
+    );
+
+    setIsSaving(false);
+
+    if (result.success) {
+      setAdminState((s) => ({
+        ...s,
+        hasUnsavedChanges: false,
+        fileSha: result.sha || s.fileSha,
+      }));
+      localStorage.removeItem("admin_portfolio_draft");
+      addToast("Changes committed to GitHub! Automatic deployment started. 🚀", "success");
+    } else {
+      addToast(result.error || "Failed to commit changes to GitHub.", "error");
+    }
+  };
+
+  const handleDiscardChanges = () => {
+    if (!confirm("Are you sure you want to discard your local draft and revert to the published version?")) {
+      return;
+    }
+    localStorage.removeItem("admin_portfolio_draft");
+    setAdminState((s) => ({ ...s, hasUnsavedChanges: false }));
+
+    fetch(`/data/portfolio-data.json?_t=${Date.now()}`)
+      .then((r) => r.json())
+      .then((data) => {
+        setPortfolioData(data);
+        addToast("Draft discarded. Reverted to repository state.", "info");
+      })
+      .catch(() => {
+        setPortfolioData(defaultPortfolioData);
+        addToast("Draft discarded. Reverted to default.", "info");
+      });
+  };
+
+  // ----------------------------------------------------
+  // APP INTERACTIVE STATES
+  // ----------------------------------------------------
   const [menuOpen, setMenuOpen] = useState(false);
   const [arcadeOpen, setArcadeOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const [collectionOpen, setCollectionOpen] = useState<"credentials" | "arsenal" | "projects" | null>(null);
   const [collectionQuery, setCollectionQuery] = useState("");
+
   const openCollection = (collection: "credentials" | "arsenal" | "projects") => {
     setCollectionQuery("");
     setCollectionOpen(collection);
   };
+
   const matchesCollection = (text: string) => text.toLowerCase().includes(collectionQuery.trim().toLowerCase());
-  const filteredCredentials = credentialCollection.map((badge, index) => ({ badge, index })).filter(({ badge }) => matchesCollection(`${badge.name} ${badge.issuer} ${badge.category}`));
-  const filteredArsenal = arsenal.map((skill, index) => ({ skill, index })).filter(({ skill }) => matchesCollection(skill.join(" ")));
-  const filteredProjects = projects.filter((project) => matchesCollection(`${project.title} ${project.eyebrow} ${project.client} ${project.date} ${project.role} ${project.copy} ${project.details.join(" ")} ${project.tags.join(" ")}`));
+
+  // Dynamic collections derived from portfolioData
+  const dynamicCredentials = portfolioData.credentials.map((badge, index) => ({
+    badge: {
+      name: badge.name,
+      issuer: badge.issuer,
+      category: badge.category,
+      image: resolveAssetUrl(badge.image),
+      verifyUrl: badge.verifyUrl,
+    },
+    index,
+  }));
+
+  const dynamicArsenal = portfolioData.arsenal.map((skill, index) => ({
+    skill: [skill.name, skill.description, skill.monogram] as [string, string, string],
+    index,
+  }));
+
+  const filteredCredentials = dynamicCredentials.filter(({ badge }) =>
+    matchesCollection(`${badge.name} ${badge.issuer} ${badge.category}`)
+  );
+  const filteredArsenal = dynamicArsenal.filter(({ skill }) => matchesCollection(skill.join(" ")));
+  const filteredProjects = portfolioData.projects.filter((project) =>
+    matchesCollection(`${project.title} ${project.eyebrow} ${project.copy} ${project.tags.join(" ")} ${project.client}`)
+  );
+
   const [lightMode, setLightMode] = useState(false);
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
@@ -317,13 +583,13 @@ function App() {
     const card = rail?.querySelector<HTMLElement>(".accreditation-card");
     if (!rail || !card) return;
     const step = card.offsetWidth + parseFloat(getComputedStyle(rail).gap);
-    setCredentialPosition(Math.min(credentialCollection.length, Math.round(rail.scrollLeft / step) + 1));
+    setCredentialPosition(Math.min(portfolioData.credentials.length, Math.round(rail.scrollLeft / step) + 1));
   };
 
   useEffect(() => {
     let cancelled = false;
     const portrait = new Image();
-    portrait.src = clerdevPortrait;
+    portrait.src = resolveAssetUrl(portfolioData.hero.avatar);
     const minimum = new Promise((resolve) => window.setTimeout(resolve, 1100));
     const deadline = new Promise((resolve) => window.setTimeout(resolve, 3500));
     const assets = Promise.allSettled([portrait.decode(), document.fonts.ready]);
@@ -331,7 +597,7 @@ function App() {
       if (!cancelled) setLoading(false);
     });
     return () => { cancelled = true; };
-  }, []);
+  }, [portfolioData.hero.avatar]);
 
   useEffect(() => {
     if (loading) return;
@@ -341,7 +607,6 @@ function App() {
 
   useEffect(() => {
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const compactMotion = window.matchMedia("(max-width: 768px), (pointer: coarse)");
     const hero = document.querySelector<HTMLElement>(".hero");
     const planets = [...document.querySelectorAll<HTMLElement>(".section-planet")];
     let frame = 0;
@@ -350,7 +615,7 @@ function App() {
       const y = window.scrollY;
       const range = document.documentElement.scrollHeight - window.innerHeight;
       document.documentElement.style.setProperty("--page-progress", `${range > 0 ? y / range : 0}`);
-      if (motion.matches || compactMotion.matches) {
+      if (motion.matches) {
         hero?.style.removeProperty("--hero-drift");
         planets.forEach((planet) => planet.style.removeProperty("--scroll-depth"));
         return;
@@ -369,13 +634,11 @@ function App() {
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     motion.addEventListener("change", schedule);
-    compactMotion.addEventListener("change", schedule);
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
       motion.removeEventListener("change", schedule);
-      compactMotion.removeEventListener("change", schedule);
     };
   }, []);
 
@@ -397,19 +660,16 @@ function App() {
     const viewTransitionDocument = document as Document & {
       startViewTransition?: (update: () => void) => void;
     };
-    const nextLightMode = !lightMode;
-    const applyTheme = () => {
-      document.documentElement.dataset.theme = nextLightMode ? "dawn" : "night";
-      setLightMode(nextLightMode);
-    };
 
-    if (!viewTransitionDocument.startViewTransition || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      applyTheme();
+    if (!viewTransitionDocument.startViewTransition) {
+      setLightMode((current) => !current);
       return;
     }
 
     viewTransitionDocument.startViewTransition(() => {
-      flushSync(applyTheme);
+      flushSync(() => {
+        setLightMode((current) => !current);
+      });
     });
   };
 
@@ -433,7 +693,7 @@ function App() {
 
   useEffect(() => {
     const warp = document.querySelector<HTMLElement>(".scroll-warp");
-    if (!warp || window.matchMedia("(prefers-reduced-motion: reduce), (max-width: 768px), (pointer: coarse)").matches) return;
+    if (!warp) return;
 
     let previousY = window.scrollY;
     let previousTime = performance.now();
@@ -512,7 +772,7 @@ function App() {
     targets.forEach((target) => observer.observe(target));
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, []);
+  }, [portfolioData]);
 
   useEffect(() => {
     if (sent) contactSuccess.current?.focus();
@@ -557,24 +817,113 @@ function App() {
   };
 
   const closeMenu = () => setMenuOpen(false);
+  const isEditing = adminState.isLoggedIn && adminState.mode === "edit";
 
   return (
     <main>
-      {loaderVisible && <div className={`cosmic-loader${loading ? "" : " is-ready"}`} role="status" aria-live="polite">
-        <div className="loader-system" aria-hidden="true"><i /><i /><i /><span /></div>
-        <div className="loader-wordmark">Cler<span>Dev</span></div>
-        <p>{loading ? "Aligning the stars" : "Welcome to my universe"}</p>
-        <div className="loader-track" aria-hidden="true"><span /></div>
-        <small>CODE · SECURITY · CURIOSITY</small>
-      </div>}
-      <div className="sky" aria-hidden="true"><div className="stars stars-one" /><div className="stars stars-two" /></div>
+      {/* Toast Notification Container */}
+      <ToastContainer toasts={toasts} onDismiss={removeToast} />
+
+      {/* Floating Admin Dock */}
+      {adminState.isLoggedIn && (
+        <AdminBar
+          user={adminState.user}
+          mode={adminState.mode}
+          hasUnsavedChanges={adminState.hasUnsavedChanges}
+          isSaving={isSaving}
+          onToggleMode={() =>
+            setAdminState((prev) => ({
+              ...prev,
+              mode: prev.mode === "edit" ? "preview" : "edit",
+            }))
+          }
+          onSaveToGitHub={handleSaveToGitHub}
+          onDiscardChanges={handleDiscardChanges}
+          onLogout={handleLogout}
+        />
+      )}
+
+      {/* Admin Login Modal */}
+      <AdminLoginModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        onSuccess={handleLoginSuccess}
+      />
+
+      {/* Section Edit Modals */}
+      <EditHeroModal
+        isOpen={activeEditModal === "hero"}
+        data={portfolioData.hero}
+        token={adminState.token}
+        config={portfolioData.githubConfig}
+        onNotify={addToast}
+        onClose={() => setActiveEditModal(null)}
+        onSave={(updated) => updatePortfolio((p) => ({ ...p, hero: updated }))}
+      />
+
+      <EditAboutModal
+        isOpen={activeEditModal === "about"}
+        data={portfolioData.about}
+        onClose={() => setActiveEditModal(null)}
+        onSave={(updated) => updatePortfolio((p) => ({ ...p, about: updated }))}
+      />
+
+      <EditProjectsModal
+        isOpen={activeEditModal === "projects"}
+        projects={portfolioData.projects}
+        onClose={() => setActiveEditModal(null)}
+        onSave={(updated) => updatePortfolio((p) => ({ ...p, projects: updated }))}
+      />
+
+      <EditArsenalModal
+        isOpen={activeEditModal === "arsenal"}
+        arsenal={portfolioData.arsenal}
+        onClose={() => setActiveEditModal(null)}
+        onSave={(updated) => updatePortfolio((p) => ({ ...p, arsenal: updated }))}
+      />
+
+      <EditCredentialsModal
+        isOpen={activeEditModal === "credentials"}
+        credentials={portfolioData.credentials}
+        token={adminState.token}
+        config={portfolioData.githubConfig}
+        onNotify={addToast}
+        onClose={() => setActiveEditModal(null)}
+        onSave={(updated) => updatePortfolio((p) => ({ ...p, credentials: updated }))}
+      />
+
+      <EditContactModal
+        isOpen={activeEditModal === "contact"}
+        data={portfolioData.contact}
+        onClose={() => setActiveEditModal(null)}
+        onSave={(updated) => updatePortfolio((p) => ({ ...p, contact: updated }))}
+      />
+
+      {/* Cosmic Intro Loader */}
+      {loaderVisible && (
+        <div className={`cosmic-loader${loading ? "" : " is-ready"}`} role="status" aria-live="polite">
+          <div className="loader-system" aria-hidden="true"><i /><i /><i /><span /></div>
+          <div className="loader-wordmark">Cler<span>Dev</span></div>
+          <p>{loading ? "Aligning the stars" : "Welcome to my universe"}</p>
+          <div className="loader-track" aria-hidden="true"><span /></div>
+          <small>CODE · SECURITY · CURIOSITY</small>
+        </div>
+      )}
+
+      <div className="sky" aria-hidden="true">
+        <div className="stars stars-one" />
+        <div className="stars stars-two" />
+      </div>
+
       <div className="scroll-warp" aria-hidden="true">
         {Array.from({ length: 12 }).map((_, index) => <i key={index} />)}
       </div>
+
       <div className="scroll-progress" aria-hidden="true"><span /></div>
 
+      {/* Header */}
       <header className="site-header">
-        <a className="brand" href="#home" onClick={closeMenu} aria-label="ClerDev home">
+        <a className="brand" href="#home" onClick={(e) => { closeMenu(); handleLogoClick(); }} aria-label="ClerDev home">
           <span>Cler<span>Dev</span></span>
         </a>
         <nav id="primary-navigation" className={menuOpen ? "nav-links open" : "nav-links"} aria-label="Primary navigation">
@@ -595,29 +944,55 @@ function App() {
         </div>
       </header>
 
+      {/* Hero Section */}
       <section className="hero" id="home">
+        {isEditing && (
+          <button
+            className="admin-section-edit-trigger admin-hero-edit-btn"
+            type="button"
+            onClick={() => setActiveEditModal("hero")}
+          >
+            ✏️ Edit Hero
+          </button>
+        )}
+
         <div className="hero-copy">
-          <div className="status-pill"><span className="status-dot" /> Open to internships &amp; opportunities</div>
-          <p className="intro">Hello, world. I&apos;m</p>
-          <h1>John Clerwin<br /><span>Dela Cruz.</span></h1>
-          <div className="role-row">
-            <span>&lt;Web Developer /&gt;</span>
-            <span>&lt;Security Analyst /&gt;</span>
+          <div className="status-pill">
+            <span className="status-dot" /> {portfolioData.hero.statusText}
           </div>
-          <p className="hero-description">4th-Year IT Student at the University of Makati, building resilient digital experiences at the intersection of <strong>code</strong> and <strong>cybersecurity</strong>.</p>
+          <p className="intro">{portfolioData.hero.intro}</p>
+          <h1>
+            {portfolioData.hero.name.split(" ").slice(0, -2).join(" ")} {portfolioData.hero.name.split(" ").slice(-2, -1).join(" ")}<br />
+            <span>{portfolioData.hero.name.split(" ").slice(-1).join(" ")}.</span>
+          </h1>
+          <div className="role-row">
+            {portfolioData.hero.roles.map((role) => (
+              <span key={role}>&lt;{role} /&gt;</span>
+            ))}
+          </div>
+          <p className="hero-description">{portfolioData.hero.description}</p>
           <div className="hero-buttons">
             <a className="button" href="#projects">Explore my work <Icon name="arrow" size={18} /></a>
             <a className="text-link" href="#contact">Contact me <Icon name="chevron" size={16} /></a>
           </div>
           <div className="social-row">
             <span>Find me on</span>
-            <a className="social-chip" href="https://github.com/ClerZ03-wq" target="_blank" rel="noreferrer" aria-label="GitHub"><Icon name="github" size={16} /><span>GitHub</span></a>
-            <a className="social-chip" href="https://www.linkedin.com/in/clerz/" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Icon name="linkedin" size={16} /><span>LinkedIn</span></a>
-            <a className="social-chip" href="https://www.facebook.com/clerz.pogi.meow/" target="_blank" rel="noreferrer" aria-label="Facebook"><Icon name="facebook" size={16} /><span>Facebook</span></a>
-            <a className="aws-builder-link" href="https://builder.aws.com/community/@clerz" target="_blank" rel="noreferrer" aria-label="AWS Builder profile">
-              <img src={awsBuilderLogo} alt="AWS Builder" />
-              <span>AWS Builder</span>
-            </a>
+            {portfolioData.hero.socials.map((social) => {
+              if (social.icon === "aws") {
+                return (
+                  <a key={social.name} className="aws-builder-link" href={social.url} target="_blank" rel="noreferrer" aria-label="AWS Builder profile">
+                    <img src={resolveAssetUrl("asset:awsBuilderLogo")} alt="AWS Builder" />
+                    <span>{social.name}</span>
+                  </a>
+                );
+              }
+              return (
+                <a key={social.name} className="social-chip" href={social.url} target="_blank" rel="noreferrer" aria-label={social.name}>
+                  <Icon name={social.icon} size={16} />
+                  <span>{social.name}</span>
+                </a>
+              );
+            })}
           </div>
         </div>
 
@@ -629,7 +1004,7 @@ function App() {
             <div className="frame-heading"><span>01 / THE BUILDER</span><Icon name="spark" size={14} /></div>
             <div className="frame-trim" aria-hidden="true" />
             <div className="avatar-shell">
-              <img className="avatar-photo" src={clerdevPortrait} alt="John Clerwin Dela Cruz at AWS" />
+              <img className="avatar-photo" src={resolveAssetUrl(portfolioData.hero.avatar)} alt={portfolioData.hero.name} />
               <div className="avatar-grid" aria-hidden="true" />
               <span className="avatar-label">CODE WITH PURPOSE.</span>
             </div>
@@ -647,69 +1022,143 @@ function App() {
         <a className="scroll-cue" href="#about"><span>Scroll to discover</span><i><Icon name="chevron" size={15} /></i></a>
       </section>
 
+      {/* About Section */}
       <section className="section about-section" id="about" data-chapter="01">
         <span className="section-planet section-planet-cyan" aria-hidden="true"><i /></span>
-        <SectionTitle eyebrow="01 / About" title="Driven by curiosity. Built for impact." />
+        <SectionTitle
+          eyebrow={portfolioData.about.chapter}
+          title={portfolioData.about.title}
+          action={
+            isEditing && (
+              <button className="admin-section-edit-trigger" type="button" onClick={() => setActiveEditModal("about")}>
+                ✏️ Edit About
+              </button>
+            )
+          }
+        />
         <div className="about-grid">
           <div className="about-copy">
-            <div className="chapter-caption"><Icon name="code" size={16} /><span>THE MIND BEHIND THE MACHINE</span></div>
-            <p className="lead">I&apos;m an aspiring SOC and Full-Stack Engineer who believes the best technology isn&apos;t just functional—it&apos;s <em>secure by design.</em></p>
-            <p>My journey spans network defense, server administration, and thoughtful software engineering. I turn complex problems into reliable systems while constantly sharpening my understanding of the threats that challenge them.</p>
+            <div className="chapter-caption"><Icon name="code" size={16} /><span>{portfolioData.about.caption}</span></div>
+            <p className="lead">{portfolioData.about.lead}</p>
+            <p>{portfolioData.about.bio}</p>
             <div className="about-meta">
-              <div><span>Current base</span><strong>Makati City, PH</strong></div>
-              <div><span>Education</span><strong>BS Information Technology</strong></div>
+              <div><span>Current base</span><strong>{portfolioData.about.location}</strong></div>
+              <div><span>Education</span><strong>{portfolioData.about.education}</strong></div>
             </div>
-            <div className="personal-principle"><span>MY NORTH STAR</span><p>Build thoughtfully.<br />Defend relentlessly.<br /><em>Never stop learning.</em></p><Icon name="spark" size={24} /></div>
+            <div className="personal-principle">
+              <span>MY NORTH STAR</span>
+              <p>{portfolioData.about.northStarQuote}</p>
+              <Icon name="spark" size={24} />
+            </div>
           </div>
           <div className="achievements">
-            <article className="achievement-card featured">
-              <div className="achievement-icon"><Icon name="spark" /></div>
-              <span>Academic Distinction</span>
-              <h3>Dean&apos;s Lister</h3>
-              <p>University of Makati</p>
-              <b>Consistent excellence</b>
-            </article>
-            <article className="achievement-card">
-              <div className="achievement-icon gold"><Icon name="badge" /></div>
-              <span>Competition</span>
-              <h3>2nd Runner Up</h3>
-              <p>Web Design · Infotechnolympics</p>
-            </article>
-            <article className="achievement-card">
-              <div className="achievement-icon violet"><Icon name="server" /></div>
-              <span>TESDA Certified</span>
-              <h3>NC II</h3>
-              <p>Computer Systems Servicing</p>
-            </article>
+            {portfolioData.about.achievements.map((ach) => (
+              <article key={ach.id} className={`achievement-card ${ach.featured ? "featured" : ""}`}>
+                <div className={`achievement-icon ${ach.theme === "gold" ? "gold" : ""}`}>
+                  <Icon name={ach.theme === "gold" ? "badge" : ach.featured ? "spark" : "shield"} />
+                </div>
+                <span>{ach.badge}</span>
+                <h3>{ach.title}</h3>
+                <p>{ach.subtitle}</p>
+                {ach.detail && <b>{ach.detail}</b>}
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
+      {/* Projects Section */}
       <section className="section projects-section" id="projects" data-chapter="02">
         <span className="section-planet section-planet-gold" aria-hidden="true" />
-        <div className="section-collection-header"><SectionTitle eyebrow="02 / Selected work" title="Featured projects." copy="Practical systems built to observe, protect, and improve the way organizations operate." /><button className="view-all-button" type="button" aria-haspopup="dialog" onClick={() => openCollection("projects")}>View all projects <span>{projects.length}</span><Icon name="arrow" size={16} /></button></div>
-        <div className="project-grid">
-          {projects.map((project) => <ProjectCard key={project.title} project={project} onView={setSelectedProject} />)}
+        <div className="section-header-row">
+          <SectionTitle
+            eyebrow="02 / Selected Works"
+            title="Systems built to endure."
+            copy="A focused selection of platforms engineered with secure architectures, resilient data flows, and production-ready reliability."
+            action={
+              isEditing && (
+                <button className="admin-section-edit-trigger" type="button" onClick={() => setActiveEditModal("projects")}>
+                  ✏️ Manage Projects ({portfolioData.projects.length})
+                </button>
+              )
+            }
+          />
+          <button className="text-link view-all-link" type="button" onClick={() => openCollection("projects")}>
+            View full index <Icon name="arrow" size={16} />
+          </button>
+        </div>
+        <div className="projects-grid">
+          {portfolioData.projects.map((project) => (
+            <ProjectCard key={project.id} project={project} onView={setSelectedProject} />
+          ))}
         </div>
       </section>
 
+      {/* Arsenal Section */}
       <section className="section arsenal-section" id="arsenal" data-chapter="03">
-        <span className="section-planet section-planet-blue" aria-hidden="true"><i /></span>
-        <div className="section-collection-header"><SectionTitle eyebrow="03 / Capabilities" title="Technical arsenal." copy="A versatile toolkit built for engineering modern systems and defending the infrastructure behind them." /><button className="view-all-button" type="button" aria-haspopup="dialog" onClick={() => openCollection("arsenal")}>View all skills <span>{arsenal.length}</span><Icon name="arrow" size={16} /></button></div>
+        <span className="section-planet section-planet-violet" aria-hidden="true" />
+        <div className="section-header-row">
+          <SectionTitle
+            eyebrow="03 / Capability"
+            title="The technical arsenal."
+            copy="Languages, frameworks, and security disciplines that form the backbone of my software engineering and operations work."
+            action={
+              isEditing && (
+                <button className="admin-section-edit-trigger" type="button" onClick={() => setActiveEditModal("arsenal")}>
+                  ✏️ Edit Arsenal ({portfolioData.arsenal.length})
+                </button>
+              )
+            }
+          />
+          <button className="text-link view-all-link" type="button" onClick={() => openCollection("arsenal")}>
+            View all skills <Icon name="arrow" size={16} />
+          </button>
+        </div>
         <div className="arsenal-grid">
-          {arsenal.map((skill, index) => <ArsenalCard key={skill[0]} skill={skill} index={index} />)}
+          {portfolioData.arsenal.map((skill, index) => (
+            <ArsenalCard key={skill.id} skill={[skill.name, skill.description, skill.monogram]} index={index} />
+          ))}
         </div>
       </section>
 
-      <section className="section credentials-section" id="credentials" data-chapter="04">
-        <span className="section-planet section-planet-indigo" aria-hidden="true"><i /></span>
-        <div className="section-collection-header"><SectionTitle eyebrow="04 / Credentials" title="Verified accreditations." copy="Industry-recognized learning across the pillars of modern cybersecurity." /><button className="view-all-button" type="button" aria-haspopup="dialog" onClick={() => openCollection("credentials")}>View all credentials <span>{credentialCollection.length}</span><Icon name="arrow" size={16} /></button></div>
-        <div className="accreditation-summary">
-          <div className="collection-title"><Icon name="badge" size={18} /><div><strong>The credential collection</strong><small>06 cybersecurity · 02 community</small></div></div>
-          <div className="collection-navigation"><span>{String(credentialPosition).padStart(2, "0")} / 08</span><button type="button" onClick={() => scrollCredentials(-1)} aria-label="Previous credentials"><Icon name="chevron" size={17} /></button><button type="button" onClick={() => scrollCredentials(1)} aria-label="Next credentials"><Icon name="chevron" size={17} /></button></div>
+      {/* Credentials Section */}
+      <section className="section accreditations-section" id="credentials" data-chapter="04">
+        <span className="section-planet section-planet-credentials" aria-hidden="true" />
+        <div className="section-header-row">
+          <SectionTitle
+            eyebrow="04 / Verified Knowledge"
+            title="Accreditations &amp; Badges."
+            copy="Industry-recognized credentials earned through verified coursework and community participation."
+            action={
+              isEditing && (
+                <button className="admin-section-edit-trigger" type="button" onClick={() => setActiveEditModal("credentials")}>
+                  ✏️ Edit Badges ({portfolioData.credentials.length})
+                </button>
+              )
+            }
+          />
+          <button className="text-link view-all-link" type="button" onClick={() => openCollection("credentials")}>
+            Browse repository <Icon name="arrow" size={16} />
+          </button>
+        </div>
+        <div className="collection-control-bar">
+          <div className="collection-title">
+            <Icon name="badge" size={18} />
+            <div>
+              <strong>The credential collection</strong>
+              <small>{portfolioData.credentials.filter(c => c.category === "Cybersecurity").length} cybersecurity · {portfolioData.credentials.filter(c => c.category === "Community").length} community</small>
+            </div>
+          </div>
+          <div className="collection-navigation">
+            <span>{String(credentialPosition).padStart(2, "0")} / {String(portfolioData.credentials.length).padStart(2, "0")}</span>
+            <button type="button" onClick={() => scrollCredentials(-1)} aria-label="Previous credentials"><Icon name="chevron" size={17} /></button>
+            <button type="button" onClick={() => scrollCredentials(1)} aria-label="Next credentials"><Icon name="chevron" size={17} /></button>
+          </div>
         </div>
         <div className="accreditation-rail" ref={credentialRail} onScroll={updateCredentialPosition} tabIndex={0} aria-label="Credential collection. Use arrow keys or swipe to browse.">
-          {credentialCollection.map((badge, index) => <CredentialCard key={badge.name} badge={badge} index={index} />)}
+          {portfolioData.credentials.map((badge, index) => (
+            <CredentialCard key={badge.id} badge={badge} index={index} />
+          ))}
         </div>
         <div className="cisco-minimal">
           <strong>CISCO</strong>
@@ -718,17 +1167,35 @@ function App() {
         </div>
       </section>
 
+      {/* Contact Section */}
       <section className="section contact-section" id="contact" data-chapter="05">
         <span className="section-planet section-planet-contact" aria-hidden="true" />
         <div className="contact-copy">
-          <span className="eyebrow"><span className="eyebrow-line" />05 / Contact</span>
-          <h2>Let&apos;s build something<br /><span>remarkable.</span></h2>
-          <p>Have an opportunity, a security challenge, or an ambitious idea? I&apos;d love to hear about it.</p>
-          <div className="contact-topics"><span>Internships</span><span>Collaboration</span><span>Security &amp; development</span></div>
-          <a className="email-link" href="mailto:johnclerwindelacruz@gmail.com"><span><Icon name="mail" /></span><div><small>Drop me a line</small>johnclerwindelacruz@gmail.com</div></a>
-          <div className="availability"><span /><div><strong>Available for opportunities</strong><small>Usually responds within 24 hours</small></div></div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
+            <span className="eyebrow"><span className="eyebrow-line" />{portfolioData.contact.chapter}</span>
+            {isEditing && (
+              <button className="admin-section-edit-trigger" type="button" onClick={() => setActiveEditModal("contact")}>
+                ✏️ Edit Contact
+              </button>
+            )}
+          </div>
+          <h2>{portfolioData.contact.headlineMain}<br /><span>{portfolioData.contact.headlineHighlight}</span></h2>
+          <p>{portfolioData.contact.copy}</p>
+          <div className="contact-topics">
+            {portfolioData.contact.topics.map((topic) => (
+              <span key={topic}>{topic}</span>
+            ))}
+          </div>
+          <a className="email-link" href={`mailto:${portfolioData.contact.email}`}>
+            <span><Icon name="mail" /></span>
+            <div><small>Drop me a line</small>{portfolioData.contact.email}</div>
+          </a>
+          <div className="availability">
+            <span />
+            <div><strong>Available for opportunities</strong><small>{portfolioData.contact.responseTime}</small></div>
+          </div>
         </div>
-        <form className="contact-form" action="https://formspree.io/f/xkoypkaa" method="POST" onSubmit={submitForm} aria-busy={sending}>
+        <form className="contact-form" action={portfolioData.contact.formspreeUrl} method="POST" onSubmit={submitForm} aria-busy={sending}>
           <div className="message-window"><span className="window-lights" aria-hidden="true"><i /><i /><i /></span><span>new-message / clerdev</span><Icon name="terminal" size={15} /></div>
           {sent ? (
             <div className="form-success contact-transmitted" ref={contactSuccess} tabIndex={-1} role="status"><span><Icon name="check" size={28} /></span><small>SIGNAL DELIVERED</small><h3>Message sent!</h3><p>Thanks for reaching out. Your message is on its way to my inbox.</p><button type="button" className="text-link" onClick={() => setSent(false)}>Send another message <Icon name="arrow" size={16} /></button></div>
@@ -748,6 +1215,7 @@ function App() {
         </form>
       </section>
 
+      {/* Cyberpro ID Dialog */}
       {cyberproOpen && (
         <div className={`cyber-modal-backdrop${cyberproClosing ? " is-closing" : ""}`} role="presentation" onMouseDown={closeCyberpro}>
           <div className="cyber-modal" role="dialog" aria-modal="true" aria-labelledby="cyberpro-title" onMouseDown={(event) => event.stopPropagation()}>
@@ -757,7 +1225,7 @@ function App() {
 
             <div className="cyber-id-visual">
               <div className="cyber-credential-frame">
-                <img src={dictCyberproCredential} alt="QR code for John Clerwin Dela Cruz's DICT CyberPro verification" />
+                <img src={resolveAssetUrl("asset:dictCyberproCredential")} alt="QR code for John Clerwin Dela Cruz's DICT CyberPro verification" />
                 <span className="credential-scan-line" />
               </div>
             </div>
@@ -784,31 +1252,103 @@ function App() {
         </div>
       )}
 
+      {/* Footer */}
       <footer>
-        <a className="brand" href="#home" aria-label="ClerDev home"><span>Cler<span>Dev</span></span></a>
+        <a className="brand" href="#home" onClick={handleLogoClick} aria-label="ClerDev home"><span>Cler<span>Dev</span></span></a>
         <p>Designed &amp; engineered under the stars by ClerDev.</p>
-        <div><span>© 2025 John Clerwin Dela Cruz</span><button className="arcade-trigger" type="button" onClick={() => setArcadeOpen(true)} aria-label="Discover the Secret Sector retro arcade" title="Seven playable classics hidden among the stars"><Icon name="spark" size={14} /><span>Secret sector</span></button><a href="#home" aria-label="Back to top">↑</a></div>
+        <div>
+          <span>© 2026 John Clerwin Dela Cruz</span>
+          {/* Secret Sector Arcade */}
+          <button className="arcade-trigger" type="button" onClick={() => setArcadeOpen(true)} aria-label="Discover the Secret Sector retro arcade" title="Seven playable classics hidden among the stars">
+            <Icon name="spark" size={14} />
+            <span>Secret sector</span>
+          </button>
+          {/* Admin Terminal Trigger */}
+          <button
+            className="arcade-trigger"
+            type="button"
+            onClick={() => adminState.isLoggedIn ? setAdminState(s => ({ ...s, mode: s.mode === 'edit' ? 'preview' : 'edit' })) : setLoginModalOpen(true)}
+            aria-label="Admin Terminal"
+            title="Admin Terminal (or press Ctrl+Shift+A)"
+          >
+            <Icon name="shield" size={14} />
+            <span>{adminState.isLoggedIn ? (adminState.mode === 'edit' ? 'Editing' : 'Preview') : 'Admin'}</span>
+          </button>
+          <a href="#home" aria-label="Back to top">↑</a>
+        </div>
       </footer>
+
       {arcadeOpen && <SpaceFighter onClose={() => setArcadeOpen(false)} />}
-      {collectionOpen && <CollectionDialog
-        title={collectionOpen === "credentials" ? "Credential collection." : collectionOpen === "arsenal" ? "Technical arsenal." : "Project collection."}
-        count={collectionOpen === "credentials" ? credentialCollection.length : collectionOpen === "arsenal" ? arsenal.length : projects.length}
-        query={collectionQuery}
-        onQueryChange={setCollectionQuery}
-        onClose={() => setCollectionOpen(null)}
-      >
-        {(closeCollection) => <>
-        <p className="collection-results" role="status">{collectionOpen === "credentials" ? filteredCredentials.length : collectionOpen === "arsenal" ? filteredArsenal.length : filteredProjects.length} results</p>
-        {collectionOpen === "credentials" && <div className="credentials-section collection-credential-grid">{filteredCredentials.map(({ badge, index }) => <CredentialCard key={badge.name} badge={badge} index={index} />)}</div>}
-        {collectionOpen === "arsenal" && <div className="arsenal-section"><div className="arsenal-grid">{filteredArsenal.map(({ skill, index }) => <ArsenalCard key={skill[0]} skill={skill} index={index} />)}</div></div>}
-        {collectionOpen === "projects" && <div className="collection-project-list">{filteredProjects.map((project) => <article className="collection-project-row" key={project.title}>
-          <span className="collection-project-number">{project.number}</span>
-          <div className="collection-project-info"><span>{project.eyebrow}</span><h3>{project.title}</h3><div className="collection-project-meta"><span>{project.client}</span><span>{project.date}</span></div><p>{project.copy}</p><div className="tag-row">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div></div>
-          <button className="collection-project-link" type="button" onClick={() => closeCollection(() => setSelectedProject(project))} aria-label={`View details for ${project.title}`}>View details <Icon name="arrow" size={16} /></button>
-        </article>)}</div>}
-        {(collectionOpen === "credentials" ? filteredCredentials.length : collectionOpen === "arsenal" ? filteredArsenal.length : filteredProjects.length) === 0 && <div className="collection-empty"><Icon name="spark" size={28} /><h3>No matches in this constellation.</h3><p>Try another name, topic, or technology.</p><button type="button" className="text-link" onClick={() => setCollectionQuery("")}>Clear search</button></div>}
-        </>}
-      </CollectionDialog>}
+
+      {collectionOpen && (
+        <CollectionDialog
+          title={collectionOpen === "credentials" ? "Credential collection." : collectionOpen === "arsenal" ? "Technical arsenal." : "Project collection."}
+          count={collectionOpen === "credentials" ? dynamicCredentials.length : collectionOpen === "arsenal" ? dynamicArsenal.length : portfolioData.projects.length}
+          query={collectionQuery}
+          onQueryChange={setCollectionQuery}
+          onClose={() => setCollectionOpen(null)}
+        >
+          {(closeCollection) => <>
+            <p className="collection-results" role="status">
+              {collectionOpen === "credentials" ? filteredCredentials.length : collectionOpen === "arsenal" ? filteredArsenal.length : filteredProjects.length} results
+            </p>
+            {collectionOpen === "credentials" && (
+              <div className="credentials-section collection-credential-grid">
+                {filteredCredentials.map(({ badge, index }) => (
+                  <CredentialCard key={badge.name} badge={badge} index={index} />
+                ))}
+              </div>
+            )}
+            {collectionOpen === "arsenal" && (
+              <div className="arsenal-section">
+                <div className="arsenal-grid">
+                  {filteredArsenal.map(({ skill, index }) => (
+                    <ArsenalCard key={skill[0]} skill={skill} index={index} />
+                  ))}
+                </div>
+              </div>
+            )}
+            {collectionOpen === "projects" && (
+              <div className="collection-project-list">
+                {filteredProjects.map((project) => (
+                  <article className="collection-project-row" key={project.title}>
+                    <span className="collection-project-number">{project.number}</span>
+                    <div className="collection-project-info">
+                      <span>{project.eyebrow}</span>
+                      <h3>{project.title}</h3>
+                      <div className="collection-project-meta">
+                        <span>{project.client}</span>
+                        <span>{project.date}</span>
+                      </div>
+                      <p>{project.copy}</p>
+                      <div className="tag-row">
+                        {project.tags.map((tag) => <span key={tag}>{tag}</span>)}
+                      </div>
+                    </div>
+                    <button
+                      className="collection-project-link"
+                      type="button"
+                      onClick={() => closeCollection(() => setSelectedProject(project))}
+                      aria-label={`View details for ${project.title}`}
+                    >
+                      View details <Icon name="arrow" size={16} />
+                    </button>
+                  </article>
+                ))}
+              </div>
+            )}
+            {(collectionOpen === "credentials" ? filteredCredentials.length : collectionOpen === "arsenal" ? filteredArsenal.length : filteredProjects.length) === 0 && (
+              <div className="collection-empty">
+                <Icon name="spark" size={28} />
+                <h3>No matches in this constellation.</h3>
+                <p>Try another name, topic, or technology.</p>
+                <button type="button" className="text-link" onClick={() => setCollectionQuery("")}>Clear search</button>
+              </div>
+            )}
+          </>}
+        </CollectionDialog>
+      )}
+
       {selectedProject && <ProjectDetailsDialog project={selectedProject} onClose={() => setSelectedProject(null)} />}
     </main>
   );
