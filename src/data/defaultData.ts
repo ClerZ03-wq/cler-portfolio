@@ -191,6 +191,15 @@ export const defaultPortfolioData: PortfolioData = {
       image: "asset:isc2Badge",
       verifyUrl: "https://www.isc2.org/",
     },
+    {
+      id: "cred-1792249016331",
+      name: "IBM SkillsBuild Cybersecurity Certificate",
+      short: "CERT",
+      issuer: "IBM",
+      category: "Cybersecurity",
+      image: "https://raw.githubusercontent.com/ClerZ03-wq/cler-portfolio/main/public/uploads/1792249143871-ibm-skillsbuild-cybersecurity-certificate.png",
+      verifyUrl: "https://www.credly.com/badges/81e667a8-11a8-4e5e-b181-a2bec198753e/linked_in?t=tn0ebd",
+    },
   ],
   contact: {
     chapter: "05 / Contact",
