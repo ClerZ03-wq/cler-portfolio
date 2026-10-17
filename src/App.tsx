@@ -82,27 +82,122 @@ function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
 function CredentialCard({
   badge,
   index,
+  total,
+  isEditing,
+  isDragging,
+  isDragTarget,
+  onDragStart,
+  onDragOver,
+  onDragLeave,
+  onDrop,
+  onDragEnd,
+  onMoveLeft,
+  onMoveRight,
+  onMoveToFirst,
+  onMoveToLast,
 }: {
   badge: { name: string; issuer: string; category: string; image: string; verifyUrl?: string };
   index: number;
+  total?: number;
+  isEditing?: boolean;
+  isDragging?: boolean;
+  isDragTarget?: boolean;
+  onDragStart?: (e: React.DragEvent) => void;
+  onDragOver?: (e: React.DragEvent) => void;
+  onDragLeave?: (e: React.DragEvent) => void;
+  onDrop?: (e: React.DragEvent) => void;
+  onDragEnd?: () => void;
+  onMoveLeft?: () => void;
+  onMoveRight?: () => void;
+  onMoveToFirst?: () => void;
+  onMoveToLast?: () => void;
 }) {
+  const isCommunity = badge.category === "Community";
+  const isFirst = index === 0;
+  const isLast = total !== undefined && index === total - 1;
+
   return (
-    <article className={`accreditation-card credential-ticket${badge.category === "Community" ? " community-ticket" : ""}`}>
+    <article
+      className={`accreditation-card credential-ticket${isCommunity ? " community-ticket" : ""}${isDragging ? " is-dragging" : ""}${isDragTarget ? " is-drag-target" : ""}${isEditing ? " is-editing" : ""}`}
+      draggable={Boolean(isEditing || onDragStart)}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+      onDrop={onDrop}
+      onDragEnd={onDragEnd}
+      aria-grabbed={isDragging}
+    >
+      {isEditing && (
+        <div className="card-admin-sort-bar" onClick={(e) => e.stopPropagation()}>
+          <div className="card-sort-actions">
+            <button
+              type="button"
+              className="card-sort-btn"
+              onClick={onMoveToFirst}
+              disabled={isFirst}
+              title="Move to first position (No. 01)"
+            >
+              ⏮
+            </button>
+            <button
+              type="button"
+              className="card-sort-btn"
+              onClick={onMoveLeft}
+              disabled={isFirst}
+              title="Move left (earlier in rail)"
+            >
+              ◀
+            </button>
+            <span className="card-sort-badge">#{index + 1}</span>
+            <button
+              type="button"
+              className="card-sort-btn"
+              onClick={onMoveRight}
+              disabled={isLast}
+              title="Move right (later in rail)"
+            >
+              ▶
+            </button>
+            <button
+              type="button"
+              className="card-sort-btn"
+              onClick={onMoveToLast}
+              disabled={isLast}
+              title="Move to last position"
+            >
+              ⏭
+            </button>
+          </div>
+          <span className="card-drag-grip" title="Drag card to sort position">⠿</span>
+        </div>
+      )}
+
       <div className="ticket-header">
-        <span>{badge.category}</span>
-        <span>NO. {String(index + 1).padStart(2, "0")}</span>
+        <span className="ticket-category-tag">{badge.category}</span>
+        <span className="ticket-index-number">NO. {String(index + 1).padStart(2, "0")}</span>
       </div>
+
       <div className="badge-display">
-        <img src={resolveAssetUrl(badge.image)} alt={`${badge.name} badge`} loading="lazy" />
+        <span className="badge-rivet rivet-tl" aria-hidden="true" />
+        <span className="badge-rivet rivet-tr" aria-hidden="true" />
+        <span className="badge-rivet rivet-bl" aria-hidden="true" />
+        <span className="badge-rivet rivet-br" aria-hidden="true" />
+        <img
+          src={resolveAssetUrl(badge.image)}
+          alt={`${badge.name} badge`}
+          loading="lazy"
+        />
       </div>
+
       <div className="ticket-caption">
-        <span>{badge.issuer}</span>
-        <h3>{badge.name}</h3>
+        <span className="ticket-issuer-label">{badge.issuer}</span>
+        <h3 title={badge.name}>{badge.name}</h3>
       </div>
+
       <div className="ticket-footer">
-        <span>
-          <Icon name={badge.category === "Community" ? "spark" : "shield"} size={12} />
-          {badge.category === "Community" ? "Connect & grow" : "Learn & defend"}
+        <span className="ticket-action-note">
+          <Icon name={isCommunity ? "spark" : "shield"} size={12} />
+          {isCommunity ? "Connect & grow" : "Learn & defend"}
         </span>
         <span className="ticket-barcode" aria-hidden="true" />
       </div>
@@ -584,6 +679,73 @@ function App() {
     if (!rail || !card) return;
     const step = card.offsetWidth + parseFloat(getComputedStyle(rail).gap);
     setCredentialPosition(Math.min(portfolioData.credentials.length, Math.round(rail.scrollLeft / step) + 1));
+  };
+
+  // Drag-and-drop & sorting state for credentials showcase
+  const [draggedCredIndex, setDraggedCredIndex] = useState<number | null>(null);
+  const [dragOverCredIndex, setDragOverCredIndex] = useState<number | null>(null);
+
+  const reorderCredentials = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex || fromIndex < 0 || toIndex < 0 || fromIndex >= portfolioData.credentials.length || toIndex >= portfolioData.credentials.length) return;
+    updatePortfolio((prev) => {
+      const updated = [...prev.credentials];
+      const [moved] = updated.splice(fromIndex, 1);
+      updated.splice(toIndex, 0, moved);
+      return { ...prev, credentials: updated };
+    });
+  };
+
+  const moveCredentialRelative = (index: number, delta: number) => {
+    const target = index + delta;
+    if (target < 0 || target >= portfolioData.credentials.length) return;
+    reorderCredentials(index, target);
+    addToast(`Moved "${portfolioData.credentials[index]?.name || "Credential"}" to position #${target + 1}`, "info");
+  };
+
+  const moveCredentialToFirst = (index: number) => {
+    if (index === 0) return;
+    reorderCredentials(index, 0);
+    addToast(`Moved "${portfolioData.credentials[index]?.name || "Credential"}" to 1st position 🚀`, "success");
+  };
+
+  const moveCredentialToLast = (index: number) => {
+    const lastIndex = portfolioData.credentials.length - 1;
+    if (index === lastIndex) return;
+    reorderCredentials(index, lastIndex);
+    addToast(`Moved "${portfolioData.credentials[index]?.name || "Credential"}" to last position 🏁`, "info");
+  };
+
+  const handleCredDragStart = (e: React.DragEvent, index: number) => {
+    e.dataTransfer.setData("text/plain", String(index));
+    e.dataTransfer.effectAllowed = "move";
+    setDraggedCredIndex(index);
+  };
+
+  const handleCredDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (dragOverCredIndex !== index) {
+      setDragOverCredIndex(index);
+    }
+  };
+
+  const handleCredDrop = (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault();
+    if (draggedCredIndex !== null && draggedCredIndex !== targetIndex) {
+      const movedItem = portfolioData.credentials[draggedCredIndex];
+      reorderCredentials(draggedCredIndex, targetIndex);
+      addToast(
+        `Moved "${movedItem?.name || "Credential"}" to position #${targetIndex + 1} 🎯 Click "Publish Changes" to push to GitHub.`,
+        "success"
+      );
+    }
+    setDraggedCredIndex(null);
+    setDragOverCredIndex(null);
+  };
+
+  const handleCredDragEnd = () => {
+    setDraggedCredIndex(null);
+    setDragOverCredIndex(null);
   };
 
   useEffect(() => {
@@ -1122,7 +1284,7 @@ function App() {
       </section>
 
       {/* Credentials Section */}
-      <section className="section accreditations-section" id="credentials" data-chapter="04">
+      <section className="section credentials-section accreditations-section" id="credentials" data-chapter="04">
         <span className="section-planet section-planet-credentials" aria-hidden="true" />
         <div className="section-header-row">
           <SectionTitle
@@ -1141,6 +1303,16 @@ function App() {
             Browse repository <Icon name="arrow" size={16} />
           </button>
         </div>
+
+        {isEditing && (
+          <div className="admin-rail-reorder-hint">
+            <span className="admin-reorder-icon">⠿</span>
+            <span>
+              <strong>Draggable showcase active:</strong> Click and drag any card to reorder your collection, or use the ◀ ▶ buttons on the cards to sort what goes first and last. Click <em>Publish Changes</em> to push to GitHub.
+            </span>
+          </div>
+        )}
+
         <div className="collection-control-bar">
           <div className="collection-title">
             <Icon name="badge" size={18} />
@@ -1157,7 +1329,23 @@ function App() {
         </div>
         <div className="accreditation-rail" ref={credentialRail} onScroll={updateCredentialPosition} tabIndex={0} aria-label="Credential collection. Use arrow keys or swipe to browse.">
           {portfolioData.credentials.map((badge, index) => (
-            <CredentialCard key={badge.id} badge={badge} index={index} />
+            <CredentialCard
+              key={badge.id}
+              badge={badge}
+              index={index}
+              total={portfolioData.credentials.length}
+              isEditing={isEditing}
+              isDragging={draggedCredIndex === index}
+              isDragTarget={dragOverCredIndex === index}
+              onDragStart={(e) => handleCredDragStart(e, index)}
+              onDragOver={(e) => handleCredDragOver(e, index)}
+              onDrop={(e) => handleCredDrop(e, index)}
+              onDragEnd={handleCredDragEnd}
+              onMoveLeft={() => moveCredentialRelative(index, -1)}
+              onMoveRight={() => moveCredentialRelative(index, 1)}
+              onMoveToFirst={() => moveCredentialToFirst(index)}
+              onMoveToLast={() => moveCredentialToLast(index)}
+            />
           ))}
         </div>
         <div className="cisco-minimal">

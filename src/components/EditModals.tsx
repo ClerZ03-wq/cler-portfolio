@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from "react";
+import { useState, useEffect, type ChangeEvent } from "react";
 import type {
   AboutData,
   AchievementCard,
@@ -788,6 +788,8 @@ export function EditArsenalModal({
 // ----------------------------------------------------
 // EDIT CREDENTIALS / BADGES MODAL
 // ----------------------------------------------------
+// EDIT CREDENTIALS / BADGES MODAL
+// ----------------------------------------------------
 export function EditCredentialsModal({
   isOpen,
   credentials,
@@ -806,6 +808,15 @@ export function EditCredentialsModal({
   onNotify: (msg: string, type: "success" | "error" | "info") => void;
 }) {
   const [items, setItems] = useState<CredentialItem[]>(credentials);
+  const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
+
+  // Sync state whenever modal is opened with fresh credentials
+  useEffect(() => {
+    if (isOpen) {
+      setItems(credentials);
+    }
+  }, [credentials, isOpen]);
 
   if (!isOpen) return null;
 
@@ -819,7 +830,7 @@ export function EditCredentialsModal({
       image: "asset:ibmSecurityOperations",
       verifyUrl: "",
     };
-    setItems([...items, newItem]);
+    setItems((prev) => [...prev, newItem]);
   };
 
   const handleUpdate = (index: number, patch: Partial<CredentialItem>) => {
@@ -827,7 +838,59 @@ export function EditCredentialsModal({
   };
 
   const handleDelete = (index: number) => {
+    if (items.length <= 1) {
+      alert("You must keep at least one credential item.");
+      return;
+    }
     setItems((prev) => prev.filter((_, idx) => idx !== index));
+  };
+
+  const moveItem = (fromIdx: number, toIdx: number) => {
+    if (
+      fromIdx === toIdx ||
+      fromIdx < 0 ||
+      toIdx < 0 ||
+      fromIdx >= items.length ||
+      toIdx >= items.length
+    ) {
+      return;
+    }
+    setItems((prev) => {
+      const updated = [...prev];
+      const [moved] = updated.splice(fromIdx, 1);
+      updated.splice(toIdx, 0, moved);
+      return updated;
+    });
+  };
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    e.dataTransfer.setData("text/plain", String(index));
+    e.dataTransfer.effectAllowed = "move";
+    setDraggedIdx(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (dragOverIdx !== index) {
+      setDragOverIdx(index);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault();
+    if (draggedIdx !== null && draggedIdx !== targetIndex) {
+      const movedItem = items[draggedIdx];
+      moveItem(draggedIdx, targetIndex);
+      onNotify(`Moved "${movedItem?.name || "Credential"}" to position #${targetIndex + 1}`, "info");
+    }
+    setDraggedIdx(null);
+    setDragOverIdx(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIdx(null);
+    setDragOverIdx(null);
   };
 
   const handleSave = (e: React.FormEvent) => {
@@ -848,82 +911,156 @@ export function EditCredentialsModal({
           </div>
           <div>
             <h2 className="admin-modal-title">Edit Credentials & Badges</h2>
-            <p className="admin-modal-subtitle">Upload badge graphics to GitHub storage and manage verification links.</p>
+            <p className="admin-modal-subtitle">Reorder badges to choose what goes first and last. Upload custom badge artwork directly to GitHub.</p>
+          </div>
+        </div>
+
+        <div className="admin-cred-sort-guide">
+          <span className="admin-guide-icon">⠿</span>
+          <div>
+            <strong>Drag cards or use buttons to sort:</strong> Reorder which credentials appear first (No. 01) and last on your public showcase rail.
           </div>
         </div>
 
         <form onSubmit={handleSave} className="admin-edit-form">
           <div className="admin-cred-editor-list">
             {items.map((cred, idx) => (
-              <div key={cred.id} className="admin-cred-card-item">
+              <div
+                key={cred.id}
+                className={`admin-cred-card-item${draggedIdx === idx ? " is-dragging" : ""}${dragOverIdx === idx ? " is-drag-target" : ""}`}
+                draggable
+                onDragStart={(e) => handleDragStart(e, idx)}
+                onDragOver={(e) => handleDragOver(e, idx)}
+                onDrop={(e) => handleDrop(e, idx)}
+                onDragEnd={handleDragEnd}
+              >
                 <div className="admin-cred-header">
-                  <strong>#{idx + 1}: {cred.name}</strong>
-                  <button
-                    type="button"
-                    className="admin-row-delete-btn"
-                    onClick={() => handleDelete(idx)}
-                    title="Delete credential"
-                  >
-                    &times;
-                  </button>
-                </div>
-                <div className="admin-form-grid">
-                  <div className="admin-field-group">
-                    <label>Badge Title</label>
-                    <input
-                      type="text"
-                      className="admin-input-text"
-                      value={cred.name}
-                      onChange={(e) => handleUpdate(idx, { name: e.target.value })}
-                      required
-                    />
+                  <div className="admin-cred-order-pill">
+                    <span className="admin-cred-grip" title="Drag to reorder position">⠿</span>
+                    <span className="admin-cred-num">
+                      #{idx + 1} {idx === 0 ? "— (First in rail)" : idx === items.length - 1 ? "— (Last in rail)" : ""}
+                    </span>
+                    <span className={`admin-cat-tag cat-${cred.category?.toLowerCase() || "cyber"}`}>
+                      {cred.category}
+                    </span>
                   </div>
-                  <div className="admin-field-group">
-                    <label>Issuer / Body</label>
-                    <input
-                      type="text"
-                      className="admin-input-text"
-                      value={cred.issuer}
-                      onChange={(e) => handleUpdate(idx, { issuer: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div className="admin-field-group">
-                    <label>Category</label>
-                    <select
-                      className="admin-select"
-                      value={cred.category}
-                      onChange={(e) =>
-                        handleUpdate(idx, {
-                          category: e.target.value as CredentialItem["category"],
-                        })
-                      }
+
+                  <div className="admin-cred-reorder-btns">
+                    <button
+                      type="button"
+                      className="admin-sort-btn"
+                      onClick={() => moveItem(idx, 0)}
+                      disabled={idx === 0}
+                      title="Make First (jump to No. 01)"
                     >
-                      <option value="Cybersecurity">Cybersecurity</option>
-                      <option value="Community">Community</option>
-                      <option value="Accreditation">Accreditation</option>
-                      <option value="Cloud">Cloud</option>
-                    </select>
+                      ⏮ First
+                    </button>
+                    <button
+                      type="button"
+                      className="admin-sort-btn"
+                      onClick={() => moveItem(idx, idx - 1)}
+                      disabled={idx === 0}
+                      title="Move up"
+                    >
+                      ▲ Up
+                    </button>
+                    <button
+                      type="button"
+                      className="admin-sort-btn"
+                      onClick={() => moveItem(idx, idx + 1)}
+                      disabled={idx === items.length - 1}
+                      title="Move down"
+                    >
+                      ▼ Down
+                    </button>
+                    <button
+                      type="button"
+                      className="admin-sort-btn"
+                      onClick={() => moveItem(idx, items.length - 1)}
+                      disabled={idx === items.length - 1}
+                      title="Make Last (jump to end)"
+                    >
+                      ⏭ Last
+                    </button>
+                    <button
+                      type="button"
+                      className="admin-row-delete-btn"
+                      onClick={() => handleDelete(idx)}
+                      title="Delete credential"
+                    >
+                      &times;
+                    </button>
                   </div>
-                  <div className="admin-field-group">
-                    <label>Verification Link (e.g. Credly)</label>
-                    <input
-                      type="url"
-                      className="admin-input-text"
-                      placeholder="https://credly.com/..."
-                      value={cred.verifyUrl || ""}
-                      onChange={(e) => handleUpdate(idx, { verifyUrl: e.target.value })}
+                </div>
+
+                <div className="admin-cred-content-grid">
+                  <div className="admin-cred-preview-box" title={cred.name}>
+                    <img
+                      src={resolveAssetUrl(cred.image)}
+                      alt={cred.name}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.opacity = "0.3";
+                      }}
                     />
                   </div>
-                  <div className="admin-field-group full-width">
-                    <GitHubImageUploader
-                      label="Badge Image Icon (Upload to GitHub)"
-                      value={cred.image}
-                      onChange={(url) => handleUpdate(idx, { image: url })}
-                      token={token}
-                      config={config}
-                      onNotify={onNotify}
-                    />
+                  <div className="admin-form-grid">
+                    <div className="admin-field-group">
+                      <label>Badge Title</label>
+                      <input
+                        type="text"
+                        className="admin-input-text"
+                        value={cred.name}
+                        onChange={(e) => handleUpdate(idx, { name: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div className="admin-field-group">
+                      <label>Issuer / Body</label>
+                      <input
+                        type="text"
+                        className="admin-input-text"
+                        value={cred.issuer}
+                        onChange={(e) => handleUpdate(idx, { issuer: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div className="admin-field-group">
+                      <label>Category</label>
+                      <select
+                        className="admin-select"
+                        value={cred.category}
+                        onChange={(e) =>
+                          handleUpdate(idx, {
+                            category: e.target.value as CredentialItem["category"],
+                          })
+                        }
+                      >
+                        <option value="Cybersecurity">Cybersecurity</option>
+                        <option value="Community">Community</option>
+                        <option value="Accreditation">Accreditation</option>
+                        <option value="Cloud">Cloud</option>
+                      </select>
+                    </div>
+                    <div className="admin-field-group">
+                      <label>Verification Link (e.g. Credly)</label>
+                      <input
+                        type="url"
+                        className="admin-input-text"
+                        placeholder="https://credly.com/..."
+                        value={cred.verifyUrl || ""}
+                        onChange={(e) => handleUpdate(idx, { verifyUrl: e.target.value })}
+                      />
+                    </div>
+                    <div className="admin-field-group full-width">
+                      <GitHubImageUploader
+                        label="Badge Image Icon (Upload to GitHub)"
+                        value={cred.image}
+                        onChange={(url) => handleUpdate(idx, { image: url })}
+                        token={token}
+                        config={config}
+                        onNotify={onNotify}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

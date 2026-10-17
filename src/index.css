@@ -3689,16 +3689,23 @@ footer {
 }
 .collection-navigation button:hover { border-color: var(--cyan); background: var(--panel-hover); }
 .collection-navigation button:first-of-type svg { rotate: 180deg; }
-.credentials-section .accreditation-rail {
+.credentials-section .accreditation-rail,
+.accreditations-section .accreditation-rail {
+  display: flex;
   gap: 16px;
-  padding: 10px 2px 22px;
+  padding: 10px 4px 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 4px;
   align-items: stretch;
-  scroll-padding-inline: 2px;
 }
-.credentials-section .credential-ticket {
+
+:is(.credentials-section, .accreditations-section) .credential-ticket,
+.accreditation-card.credential-ticket {
   --ticket-accent: var(--cyan);
-  flex: 0 0 230px;
-  min-height: 0;
+  flex: 0 0 235px;
+  width: 235px;
+  min-height: 385px;
   display: flex;
   flex-direction: column;
   padding: 0;
@@ -3707,53 +3714,295 @@ footer {
   border-top: 2px solid var(--ticket-accent);
   background: var(--panel-solid);
   overflow: hidden;
-  transition: border-color .3s ease, box-shadow .3s ease;
+  position: relative;
+  scroll-snap-align: start;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.25s ease,
+              box-shadow 0.25s ease,
+              opacity 0.2s ease;
+  user-select: none;
 }
-.credentials-section .community-ticket { --ticket-accent: var(--gold); }
-.credentials-section .credential-ticket:hover {
-  transform: none;
+
+:is(.credentials-section, .accreditations-section) .community-ticket,
+.accreditation-card.credential-ticket.community-ticket {
+  --ticket-accent: var(--gold);
+}
+
+:is(.credentials-section, .accreditations-section) .credential-ticket:hover,
+.accreditation-card.credential-ticket:hover {
+  transform: translateY(-4px);
   border-color: var(--ticket-accent);
   background: var(--panel-solid);
-  box-shadow: 0 8px 22px color-mix(in srgb, var(--ticket-accent) 9%, transparent);
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--ticket-accent) 18%, transparent);
 }
+
+/* Dragging and Drop target highlights */
+.credential-ticket.is-dragging {
+  opacity: 0.35;
+  transform: scale(0.96) !important;
+  border: 2px dashed var(--ticket-accent) !important;
+  cursor: grabbing !important;
+}
+
+.credential-ticket.is-drag-target {
+  border-color: var(--cyan) !important;
+  box-shadow: 0 0 0 2px var(--cyan), 0 14px 34px rgba(56, 189, 248, 0.45) !important;
+  transform: translateY(-6px) scale(1.02) !important;
+}
+
+/* Card Admin Sort Toolbar */
+.card-admin-sort-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: rgba(15, 23, 42, 0.96);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.25);
+  font-size: 11px;
+  position: relative;
+  z-index: 5;
+}
+
+.card-sort-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-sort-btn {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  color: #cbd5e1;
+  font-size: 10px;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.card-sort-btn:hover:not(:disabled) {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: #38bdf8;
+  color: #ffffff;
+}
+
+.card-sort-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.card-sort-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: #38bdf8;
+  padding: 0 4px;
+}
+
+.card-drag-grip {
+  color: #64748b;
+  font-size: 14px;
+  cursor: grab;
+  padding: 2px 4px;
+  line-height: 1;
+}
+
+.card-drag-grip:hover {
+  color: #38bdf8;
+}
+
+/* Ticket Header */
 .credential-ticket > .ticket-header {
-  padding: 16px 16px 0;
+  padding: 14px 16px 0;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 8px;
 }
-.credential-ticket .ticket-header span { font: 7px var(--font-mono); letter-spacing: .13em; color: var(--ticket-accent); }
-.credential-ticket .ticket-header span:last-child { color: var(--muted); }
-.credential-ticket > .badge-display {
-  margin: 16px;
-  padding: 10px;
-  aspect-ratio: 1;
-  position: relative;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: radial-gradient(circle, color-mix(in srgb, var(--ticket-accent) 9%, var(--bg-elevated)), var(--bg-elevated));
+
+.credential-ticket .ticket-header span {
+  font: 700 8px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  color: var(--ticket-accent);
+  text-transform: uppercase;
 }
-.badge-display img { width: 100%; height: 100%; object-fit: contain; border-radius: 5px; transition: transform .5s cubic-bezier(.22, 1, .36, 1); }
-.credential-ticket:hover .badge-display img { transform: scale(1.035); }
-.credential-ticket > .ticket-caption { padding: 0 18px 22px; flex: 1; }
-.credential-ticket .ticket-caption > span { font-size: 8px; color: var(--ticket-accent); }
-.credential-ticket .ticket-caption h3 { margin: 8px 0 0; font: 500 15px/1.4 var(--font-display); letter-spacing: -.02em; overflow-wrap: anywhere; }
+
+.credential-ticket .ticket-header span:last-child {
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+/* Badge Display Box with cosmetic corner rivets */
+.credential-ticket > .badge-display {
+  margin: 12px 16px;
+  width: calc(100% - 32px);
+  aspect-ratio: 1 / 1;
+  padding: 14px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--ticket-accent) 22%, var(--line));
+  border-radius: 12px;
+  background: radial-gradient(circle at center, color-mix(in srgb, var(--ticket-accent) 12%, #060b17), #030712);
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.badge-rivet {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ticket-accent);
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.rivet-tl { top: 6px; left: 6px; }
+.rivet-tr { top: 6px; right: 6px; }
+.rivet-bl { bottom: 6px; left: 6px; }
+.rivet-br { bottom: 6px; right: 6px; }
+
+.badge-display img {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 6px;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.credential-ticket:hover .badge-display img {
+  transform: scale(1.05);
+}
+
+/* Caption with fixed height title */
+.credential-ticket > .ticket-caption {
+  padding: 0 16px 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.credential-ticket .ticket-caption > span {
+  display: block;
+  font: 700 8px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ticket-accent);
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 12px;
+}
+
+.credential-ticket .ticket-caption h3 {
+  margin: 0;
+  font: 600 13px/1.35 var(--font-display);
+  letter-spacing: -0.015em;
+  color: var(--fg);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 52px;
+}
+
+/* Ticket Footer with Notch Circles */
 .credential-ticket > .ticket-footer {
   position: relative;
-  padding: 16px 18px;
+  padding: 13px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   border-top: 1px dashed var(--line-bright);
   background: var(--bg-elevated);
+  margin-top: auto;
 }
-.ticket-footer::before, .ticket-footer::after { content: ""; position: absolute; top: -7px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line); }
+
+.ticket-footer::before,
+.ticket-footer::after {
+  content: "";
+  position: absolute;
+  top: -6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  z-index: 2;
+}
+
 .ticket-footer::before { left: -7px; }
 .ticket-footer::after { right: -7px; }
-.ticket-footer > span:first-child { display: flex; align-items: center; gap: 6px; font: 7px var(--font-mono); color: var(--muted); letter-spacing: .03em; text-transform: none; }
-.ticket-footer svg { color: var(--ticket-accent); }
-.ticket-barcode { width: 35px; height: 15px; opacity: .5; background: repeating-linear-gradient(90deg, var(--muted) 0 1px, transparent 1px 3px, var(--muted) 3px 5px, transparent 5px 7px); }
+
+.ticket-footer > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 7.5px var(--font-mono);
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ticket-footer svg {
+  color: var(--ticket-accent);
+  flex-shrink: 0;
+}
+
+.ticket-barcode {
+  width: 32px;
+  height: 13px;
+  opacity: 0.45;
+  background: repeating-linear-gradient(90deg, var(--muted) 0 1px, transparent 1px 3px, var(--muted) 3px 5px, transparent 5px 7px);
+  flex-shrink: 0;
+}
+
+/* Rail helper hint */
+.admin-rail-reorder-hint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px dashed rgba(56, 189, 248, 0.35);
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.admin-rail-reorder-hint strong {
+  color: #38bdf8;
+}
+
+.admin-rail-reorder-hint em {
+  color: #7dd3fc;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.admin-rail-reorder-hint .admin-reorder-icon {
+  font-size: 16px;
+  color: #38bdf8;
+  line-height: 1;
+}
 .credentials-section .accreditation-rail:focus-visible { outline: 2px solid var(--cyan); outline-offset: 5px; border-radius: 18px; }
 @media (max-width: 650px) {
   .credentials-section .accreditation-rail { gap: 12px; }
